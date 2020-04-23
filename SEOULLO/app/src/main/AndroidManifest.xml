@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.instagramclone">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name="com.instagramclone.LoginActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.instagramclone.Tabs.UserFragment" />
+        <activity android:name="com.instagramclone.Tabs.GridFragment" />
+        <activity android:name="com.instagramclone.Tabs.AlarmFragment" />
+        <activity android:name="com.instagramclone.Tabs.AddPhotoActivity"
+                  android:launchMode="singleTop"
+            />
+        <activity android:name="com.instagramclone.Tabs.MapFragment" />
+        <activity android:name="com.instagramclone.MainActivity" />
+        <activity android:name="com.instagramclone.GridClickedActivity" />
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="8bw2ryp9g4" />
+    </application>
+
+</manifest>
