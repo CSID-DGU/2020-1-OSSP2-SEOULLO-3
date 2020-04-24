@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "848633585473",
+    "firebase_url": "https://tourism-5864e.firebaseio.com",
+    "project_id": "tourism-5864e",
+    "storage_bucket": "tourism-5864e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848633585473:android:bc2b9c17dd29b002ba4bc0",
+        "android_client_info": {
+          "package_name": "com.example.tourism"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQCCUsFwZvvUQW-XU_1r1mSKqvMLFX8x0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848633585473:android:1e141fad3437b043ba4bc0",
+        "android_client_info": {
+          "package_name": "com.seoullo.seoullotour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQCCUsFwZvvUQW-XU_1r1mSKqvMLFX8x0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
