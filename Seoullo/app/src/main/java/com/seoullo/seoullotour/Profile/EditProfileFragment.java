@@ -64,12 +64,14 @@ public class EditProfileFragment extends Fragment implements
                             Log.d(TAG, "User re-authenticated.");
 
                             // Check if email is a new field in database
-                            mAuth.fetchProvidersForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            //ProviderQueryResult -> SignInMethodQueryResult, fetchprovidersforemail -> fetchSignInMethodsForEmail
+                            mAuth.fetchSignInMethodsForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                                     if (task.isSuccessful()) {
                                         try {
-                                            if (task.getResult().getProviders().size() == 1) {
+                                            //task.getResult().getProviders().size() == 1 -> task.getResult().getSignInMethods().size() == 1
+                                            if (task.getResult().getSignInMethods().size() == 1) {
                                                 Log.d(TAG, "onComplete: that email is already in use");
                                                 Toast.makeText(getActivity(), "That email is already in use", Toast.LENGTH_SHORT).show();
                                             } else {
