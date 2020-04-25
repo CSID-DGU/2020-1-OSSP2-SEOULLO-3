@@ -19,7 +19,9 @@ import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 import com.seoullo.seoullotour.Utils.Permissions;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
+import com.seoullo.seoullotour.databinding.ActivityShareBinding;
 
+//TODO: binding
 public class ShareActivity extends AppCompatActivity {
     private static final String TAG = "ShareActivity";
 

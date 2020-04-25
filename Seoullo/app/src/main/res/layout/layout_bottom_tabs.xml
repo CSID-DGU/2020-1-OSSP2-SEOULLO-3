@@ -1,8 +1,9 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge>
 
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_alignParentBottom="true">
@@ -15,12 +16,11 @@
             android:id="@+id/tabsBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
-
-        </com.google.android.material.tabs.TabLayout>
+            android:background="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
 </RelativeLayout>
 
 </merge>
+</layout>

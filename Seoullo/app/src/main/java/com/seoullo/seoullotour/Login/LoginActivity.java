@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.seoullo.seoullotour.Home.HomeActivity;
+import com.seoullo.seoullotour.MainActivity;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 import com.seoullo.seoullotour.R;
 
@@ -157,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
          If the user is logged in then navigate to HomeActivity and call 'finish()'
           */
         if(mAuth.getCurrentUser() != null){
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
