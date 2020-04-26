@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home.HomeActivity"/>
+        <activity android:name=".Home.HomeActivity" />
         <activity android:name=".Login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,14 +23,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Likes.LikesActivity"/>
-        <activity android:name=".Profile.ProfileActivity"/>
-        <activity android:name=".Search.SearchActivity" android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".Share.ShareActivity"/>
-        <activity android:name=".Map.MapActivity" />
-        <activity android:name=".Profile.AccountSettingsActivity"/>
-        <activity android:name=".Login.RegisterActivity"/>
-        <activity android:name=".Share.NextActivity"/>
+        <activity android:name=".Likes.LikesActivity"
+            android:noHistory="true" />
+        <activity android:name=".Profile.ProfileActivity"
+            android:noHistory="true" />
+        <activity android:name=".Search.SearchActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:noHistory="true" />
+        <activity android:name=".Share.ShareActivity" />
+        <activity android:name=".Map.MapActivity"
+            android:noHistory="true" />
+        <activity android:name=".Profile.AccountSettingsActivity" />
+        <activity android:name=".Login.RegisterActivity" />
+        <activity android:name=".Share.NextActivity" />
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/NAVER_CLIENT_ID"/>

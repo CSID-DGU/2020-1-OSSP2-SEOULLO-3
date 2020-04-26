@@ -182,7 +182,10 @@ public class HomeActivity extends AppCompatActivity implements
 
         if(user == null){
             Intent intent = new Intent(mContext, LoginActivity.class);
+/*            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
             startActivity(intent);
+            finish();
         }
     }
     /**
