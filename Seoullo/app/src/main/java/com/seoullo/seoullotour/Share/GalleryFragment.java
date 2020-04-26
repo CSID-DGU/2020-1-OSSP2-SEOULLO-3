@@ -47,6 +47,7 @@ public class GalleryFragment extends Fragment {
     private Spinner directorySpinner;
 
     private TextView empty;
+    private TextView nextbutton;
 
     //vars
     private ArrayList<String> directories;
@@ -64,6 +65,7 @@ public class GalleryFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
         empty = (TextView) view.findViewById(android.R.id.empty);
+        nextbutton = (TextView) view.findViewById(R.id.tvNext);
 
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
@@ -100,7 +102,6 @@ public class GalleryFragment extends Fragment {
         });
 
         init();
-
         return view;
     }
 
@@ -158,6 +159,8 @@ public class GalleryFragment extends Fragment {
 
         if (imgURLs.isEmpty()) {
             gridView.setEmptyView(empty);
+            nextbutton.setVisibility(View.INVISIBLE);
+
         } else {
             //set the grid column width
             int gridWidth = getResources().getDisplayMetrics().widthPixels;

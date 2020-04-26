@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="사진이 없습니다."
+            android:text="no image in gallery"
             android:textColor="@color/white" />
 
         <RelativeLayout
