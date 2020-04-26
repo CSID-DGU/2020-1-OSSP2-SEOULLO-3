@@ -22,7 +22,7 @@ import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 
 public class MapActivity extends AppCompatActivity {
     private static final String TAG = "MapActivity";
-    public static final int ACTIVITY_NUM = 3;
+    public static final int ACTIVITY_NUM = 2;
     private Context mContext = MapActivity.this;
     //widget
     private ViewPager mViewPager;

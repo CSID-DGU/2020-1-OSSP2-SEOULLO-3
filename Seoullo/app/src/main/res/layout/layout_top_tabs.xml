@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_alignParentTop="true"
+    android:background="@color/theme_deepblue"
     android:id="@+id/top_tab">
 
 <!--    <com.google.android.material.appbar.AppBarLayout-->
@@ -23,14 +24,19 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/seoullo"/>
+        android:src="@drawable/seoullo_yellow"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        />
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="30dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:background="@color/theme_deepblue"
         android:id="@+id/add_post"
-        android:src="@drawable/ic_camera"
+        android:src="@drawable/camera_outline_white"
         android:layout_alignParentEnd="true"
-        android:background="@color/white"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         />
@@ -41,7 +47,7 @@
         android:id="@+id/top_division"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/theme_deepblue"
+        android:background="@color/theme_lightblue"
         android:orientation="horizontal"
         android:layout_below="@id/top_tab"/>
 

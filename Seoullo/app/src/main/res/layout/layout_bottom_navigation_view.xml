@@ -9,7 +9,7 @@
             android:layout_height="1dp"
             android:layout_width="match_parent"
             android:layout_alignParentTop="true"
-            android:background="@color/theme_deepblue"
+            android:background="@color/theme_lightblue"
             android:layout_marginBottom="1dp"
             android:orientation="horizontal" />
 
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/bottomNavViewBar"
-            android:background="@color/white"
+            android:background="@color/theme_deepblue"
             android:layout_below="@id/bottom_division"
             app:menu="@menu/bottom_navigation_menu">
 
