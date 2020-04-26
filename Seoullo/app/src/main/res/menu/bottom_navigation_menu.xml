@@ -3,28 +3,33 @@
     <item
         android:id="@+id/ic_home"
         android:icon="@drawable/ic_house"
+        android:enabled="true"
         android:title="">
     </item>
 
     <item
         android:id="@+id/ic_search"
         android:icon="@drawable/ic_search"
+        android:enabled="true"
         android:title="">
     </item>
 
     <item
         android:id="@+id/ic_map"
         android:icon="@drawable/ic_heart_white"
+        android:enabled="true"
         android:title="">
     </item>
     <item
         android:id="@+id/ic_bookmark"
-        android:icon="@drawable/ic_web"
+        android:icon="@drawable/ic_bookmark_border"
+        android:enabled="true"
         android:title="">
     </item>
     <item
         android:id="@+id/ic_user"
         android:icon="@drawable/ic_android"
+        android:enabled="true"
         android:title="">
     </item>
 </menu>

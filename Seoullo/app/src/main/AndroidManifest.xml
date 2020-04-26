@@ -26,9 +26,16 @@
         <activity android:name=".Profile.ProfileActivity"/>
         <activity android:name=".Search.SearchActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".Share.ShareActivity"/>
+        <activity android:name=".Map.MapActivity" />
         <activity android:name=".Profile.AccountSettingsActivity"/>
         <activity android:name=".Login.RegisterActivity"/>
         <activity android:name=".Share.NextActivity"/>
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="8bw2ryp9g4"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBb3Swy9aF0Sdl2bFM90YKeDDQiAv1Y10I"/>
     </application>
 
 </manifest>
