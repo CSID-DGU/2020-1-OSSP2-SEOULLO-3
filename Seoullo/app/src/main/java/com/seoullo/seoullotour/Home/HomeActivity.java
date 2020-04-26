@@ -26,6 +26,7 @@ import com.seoullo.seoullotour.Login.LoginActivity;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.R;
+import com.seoullo.seoullotour.Share.ShareActivity;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
@@ -61,6 +62,8 @@ public class HomeActivity extends AppCompatActivity implements
     private RelativeLayout mRelativeLayout;
     private ImageButton mImageButton;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +72,15 @@ public class HomeActivity extends AppCompatActivity implements
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
-        mImageButton = (ImageButton) findViewById(R.id.add_review_button);
+        mImageButton = (ImageButton) findViewById(R.id.add_post);
 
-        //TODO : mImageButton.setOnClickListener(this);
+        //camera button 클릭 이벤트
+        mImageButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, ShareActivity.class));
+            }
+        });
         setupFirebaseAuth();
 
         initImageLoader();
@@ -142,6 +151,8 @@ public class HomeActivity extends AppCompatActivity implements
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_instagram_black);
 //        tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
+
+
 
     /**
      * BottomNavigationView setup

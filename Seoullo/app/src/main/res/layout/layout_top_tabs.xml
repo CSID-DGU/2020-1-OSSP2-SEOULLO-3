@@ -23,7 +23,7 @@
     <ImageButton
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:id="@+id/add_review_button"
+        android:id="@+id/add_post"
         android:src="@drawable/ic_camera"
         android:layout_alignParentEnd="true"
         android:background="@color/white"
