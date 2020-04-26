@@ -29,7 +29,7 @@ public class LikesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: started");
 
-        ImageButton imageButton = (ImageButton)findViewById(R.id.add_review_button);
+        ImageButton imageButton = (ImageButton)findViewById(R.id.add_post);
         imageButton.setVisibility(View.INVISIBLE);
         setupBottomNavigationView();
     }
