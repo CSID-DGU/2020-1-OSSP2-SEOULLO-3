@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class HomeActivity extends AppCompatActivity implements
     private ViewPager mViewPager;
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
+    private ImageButton mImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,9 @@ public class HomeActivity extends AppCompatActivity implements
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
+        mImageButton = (ImageButton) findViewById(R.id.add_review_button);
 
+        //TODO : mImageButton.setOnClickListener(this);
         setupFirebaseAuth();
 
         initImageLoader();
@@ -126,17 +130,17 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CameraFragment()); //index 0
+//        adapter.addFragment(new CameraFragment()); //index 0
         adapter.addFragment(new HomeFragment()); //index 1
-        adapter.addFragment(new MessagesFragment()); //index 2
+//        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_instagram_black);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(mViewPager);
+//
+//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_instagram_black);
+//        tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
 
     /**

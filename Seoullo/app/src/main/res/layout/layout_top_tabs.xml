@@ -4,25 +4,40 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:layout_alignParentTop="true">
+    android:layout_alignParentTop="true"
+    android:id="@+id/top_tab">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
-        <com.google.android.material.tabs.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tabs"
-            android:background="@drawable/white_grey_border_bottom">
+<!--        <com.google.android.material.tabs.TabLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/tabs"-->
+<!--            android:background="@drawable/white_grey_border_bottom">-->
+<!--        </com.google.android.material.tabs.TabLayout>-->
 
-        </com.google.android.material.tabs.TabLayout>
 
-
-    </com.google.android.material.appbar.AppBarLayout>
-
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_review_button"
+        android:src="@drawable/ic_camera"
+        android:layout_alignParentEnd="true"
+        android:background="@color/white"
+        android:layout_centerVertical="true"
+        />
 
 
 </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/top_division"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/design_default_color_primary_dark"
+        android:orientation="horizontal"
+        android:layout_below="@id/top_tab"/>
 
 </merge>
