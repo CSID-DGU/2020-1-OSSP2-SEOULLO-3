@@ -21,6 +21,14 @@
         android:orientation="vertical"
         android:layout_below="@id/relLayout1">
 
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="사진이 없습니다."
+            android:textColor="@color/white" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
