@@ -1,63 +1,42 @@
 {
   "project_info": {
-    "project_number": "848633585473",
-    "firebase_url": "https://tourism-5864e.firebaseio.com",
-    "project_id": "tourism-5864e",
-    "storage_bucket": "tourism-5864e.appspot.com"
+    "project_number": "31823940316",
+    "firebase_url": "https://seoullo-4fbc1.firebaseio.com",
+    "project_id": "seoullo-4fbc1",
+    "storage_bucket": "seoullo-4fbc1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:848633585473:android:bc2b9c17dd29b002ba4bc0",
-        "android_client_info": {
-          "package_name": "com.example.tourism"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDQCCUsFwZvvUQW-XU_1r1mSKqvMLFX8x0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:848633585473:android:1e141fad3437b043ba4bc0",
+        "mobilesdk_app_id": "1:31823940316:android:689833d8cfbdae419c4219",
         "android_client_info": {
           "package_name": "com.seoullo.seoullotour"
         }
       },
       "oauth_client": [
         {
-          "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+          "client_id": "31823940316-9cgrdtefjmsg7r9fkjo8blrd0454f961.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seoullo.seoullotour",
+            "certificate_hash": "5f9967560bfe2a5091bfc691973d45523961390c"
+          }
+        },
+        {
+          "client_id": "31823940316-j0vgsgknv333isotts9aban183hvnual.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDQCCUsFwZvvUQW-XU_1r1mSKqvMLFX8x0"
+          "current_key": "AIzaSyBwTVK2qmqkWzxq9gfo3KKPX9KHA34g3I0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "848633585473-su99j77g9dmlaujvlkm7naseou8j6d24.apps.googleusercontent.com",
+              "client_id": "31823940316-j0vgsgknv333isotts9aban183hvnual.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
