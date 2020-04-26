@@ -141,7 +141,7 @@ public class HomeActivity extends AppCompatActivity implements
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 //        adapter.addFragment(new CameraFragment()); //index 0
         adapter.addFragment(new HomeFragment()); //index 1
-        adapter.addFragment(new GridFragment());
+        //adapter.addFragment(new GridFragment());
 //        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
 
