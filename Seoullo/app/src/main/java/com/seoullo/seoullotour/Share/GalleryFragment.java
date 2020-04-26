@@ -122,38 +122,40 @@ public class GalleryFragment extends Fragment {
         directories.add(filePaths.CAMERA);
 
         ArrayList<String> directoryNames = new ArrayList<>();
-        if(directoryNames.isEmpty()){
-            gridView.setEmptyView(empty);
-            nextScreen.setVisibility(View.INVISIBLE);
-        }
-        else {
-            for (int i = 0; i < directories.size(); i++) {
-                Log.d(TAG, "init: directory: " + directories.get(i));
-                int index = directories.get(i).lastIndexOf("/");
-                String string = directories.get(i).substring(index);
-                directoryNames.add(string);
+
+        for (int i = 0; i < directories.size(); i++) {
+            Log.d(TAG, "init: directory: " + directories.get(i));
+            int index = directories.get(i).lastIndexOf("/");
+            String string = directories.get(i).substring(index);
+            directoryNames.add(string);
+
+            if (directoryNames.isEmpty()) {
+                gridView.setEmptyView(empty);
+                nextScreen.setVisibility(View.INVISIBLE);
+            } else {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_spinner_item, directoryNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                directorySpinner.setAdapter(adapter);
+
+                directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Log.d(TAG, "onItemClick: selected: " + directories.get(position));
+
+                        //setup our image grid for the directory chosen
+                        setupGridView(directories.get(position));
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+
+                });
             }
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_spinner_item, directoryNames);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            directorySpinner.setAdapter(adapter);
-
-            directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(TAG, "onItemClick: selected: " + directories.get(position));
-
-                    //setup our image grid for the directory chosen
-                    setupGridView(directories.get(position));
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
         }
+
     }
 
 
@@ -162,35 +164,35 @@ public class GalleryFragment extends Fragment {
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
 
 
-            //set the grid column width
-            int gridWidth = getResources().getDisplayMetrics().widthPixels;
-            int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-            gridView.setColumnWidth(imageWidth);
+        //set the grid column width
+        int gridWidth = getResources().getDisplayMetrics().widthPixels;
+        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+        gridView.setColumnWidth(imageWidth);
 
-            //use the grid adapter to adapter the images to gridview
-            GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
-            gridView.setAdapter(adapter);
+        //use the grid adapter to adapter the images to gridview
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+        gridView.setAdapter(adapter);
 
-            //set the first image to be displayed when the activity fragment view is inflated
-            try {
+        //set the first image to be displayed when the activity fragment view is inflated
+        try {
 
-                setImage(imgURLs.get(0), galleryImage, mAppend);
-                mSelectedImage = imgURLs.get(0);
+            setImage(imgURLs.get(0), galleryImage, mAppend);
+            mSelectedImage = imgURLs.get(0);
 
 
-            } catch (ArrayIndexOutOfBoundsException e) {
-                Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
+        }
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
+
+                setImage(imgURLs.get(position), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(position);
             }
-
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
-
-                    setImage(imgURLs.get(position), galleryImage, mAppend);
-                    mSelectedImage = imgURLs.get(position);
-                }
-            });
+        });
 
     }
 
