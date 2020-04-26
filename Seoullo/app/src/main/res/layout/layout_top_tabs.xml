@@ -28,6 +28,7 @@
         android:layout_alignParentEnd="true"
         android:background="@color/white"
         android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
         />
 
 
@@ -36,7 +37,7 @@
         android:id="@+id/top_division"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/design_default_color_primary_dark"
+        android:background="@color/theme_deepblue"
         android:orientation="horizontal"
         android:layout_below="@id/top_tab"/>
 

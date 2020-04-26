@@ -32,7 +32,7 @@
         <activity android:name=".Share.NextActivity"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="8bw2ryp9g4"/>
+            android:value="@string/NAVER_CLIENT_ID"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBb3Swy9aF0Sdl2bFM90YKeDDQiAv1Y10I"/>

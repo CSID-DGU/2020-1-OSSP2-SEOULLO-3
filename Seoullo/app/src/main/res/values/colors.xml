@@ -13,5 +13,12 @@
 
     <color name="darkRed">#cc0000</color>
 
+    <!-- 앱 테마 -->
+    <color name="theme_deepblue">#024873</color>
+    <color name="theme_lightblue">#049DD9</color>
+    <color name="theme_camel">#F2B705</color>
+    <color name="theme_orange">#F28705</color>
+    <color name="theme_brown">#591202</color>
+
 
 </resources>
