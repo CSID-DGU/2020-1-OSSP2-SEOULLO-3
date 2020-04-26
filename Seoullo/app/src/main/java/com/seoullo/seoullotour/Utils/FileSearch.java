@@ -1,5 +1,7 @@
 package com.seoullo.seoullotour.Utils;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 
