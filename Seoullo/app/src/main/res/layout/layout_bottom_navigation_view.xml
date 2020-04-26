@@ -1,16 +1,24 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:id="@+id/bottom_division"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:background="@color/theme_deepblue"
+            android:layout_marginBottom="1dp"
+            android:orientation="horizontal" />
 
         <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/bottomNavViewBar"
-            android:background="@drawable/white_grey_border_top"
+            android:background="@color/white"
+            android:layout_below="@id/bottom_division"
             app:menu="@menu/bottom_navigation_menu">
 
         </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>

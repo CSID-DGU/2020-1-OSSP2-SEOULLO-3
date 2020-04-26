@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Seoullo</string>
+    <!-- KEYS -->
+    <string name="NAVER_CLIENT_ID">8bw2ryp9g4</string>
 
     <!-- Fragment names -->
     <string name="edit_profile_fragment">Edit Profile</string>
@@ -68,7 +70,5 @@
     <string name="next">Next</string>
     <string name="string_share">Share</string>
     <string name="string_next">Next</string>
-
-
 
 </resources>
