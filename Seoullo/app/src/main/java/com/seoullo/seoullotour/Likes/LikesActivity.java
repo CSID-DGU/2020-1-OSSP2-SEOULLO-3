@@ -6,17 +6,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.tabs.TabLayout;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
-
+//TODO : BOOKMARK
 public class LikesActivity extends AppCompatActivity {
     private static final String TAG = "LikesActivity";
-    public static final int ACTIVITY_NUM = 3;
+    public static final int ACTIVITY_NUM = 4;
 
     private Context mContext = LikesActivity.this;
 
@@ -26,6 +29,8 @@ public class LikesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: started");
 
+        ImageButton imageButton = (ImageButton)findViewById(R.id.add_review_button);
+        imageButton.setVisibility(View.INVISIBLE);
         setupBottomNavigationView();
     }
 

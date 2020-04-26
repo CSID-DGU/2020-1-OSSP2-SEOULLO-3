@@ -29,16 +29,28 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.firebase:firebase-auth:19.3.1'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //firebase
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    //bottom navigation & design tool
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     implementation 'com.google.android.material:material:1.1.0'
+    // 네이버 지도 SDK
+    implementation 'com.naver.maps:map-sdk:3.7.1'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    // 네이버 지오코딩
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation group: 'cz.msebera.android' , name: 'httpclient' , version: '4.4.1.2'
+    //google geocoding
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    //google place autocomplete
+    implementation 'com.google.android.libraries.places:places:2.2.0'
 
 }
