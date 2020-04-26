@@ -21,11 +21,14 @@ import androidx.fragment.app.Fragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Profile.AccountSettingsActivity;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.FilePaths;
 import com.seoullo.seoullotour.Utils.FileSearch;
 import com.seoullo.seoullotour.Utils.GridImageAdapter;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -43,6 +46,9 @@ public class GalleryFragment extends Fragment {
     private ProgressBar mProgressBar;
     private Spinner directorySpinner;
 
+    private TextView empty;
+    private TextView nextbutton;
+
     //vars
     private ArrayList<String> directories;
     private String mAppend = "file:/";
@@ -58,6 +64,9 @@ public class GalleryFragment extends Fragment {
         directorySpinner = (Spinner) view.findViewById(R.id.spinnerDirectory);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
+        empty = (TextView) view.findViewById(android.R.id.empty);
+        nextbutton = (TextView) view.findViewById(R.id.tvNext);
+
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
 
@@ -77,11 +86,11 @@ public class GalleryFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to the final share screen.");
 
-                if(isRootTask()){
+                if (isRootTask()) {
                     Intent intent = new Intent(getActivity(), com.seoullo.seoullotour.Share.NextActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
                     startActivity(intent);
-                }else{
+                } else {
                     Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
                     intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
@@ -93,20 +102,18 @@ public class GalleryFragment extends Fragment {
         });
 
         init();
-
         return view;
     }
 
-    private boolean isRootTask(){
-        if(((com.seoullo.seoullotour.Share.ShareActivity)getActivity()).getTask() == 0){
+    private boolean isRootTask() {
+        if (((com.seoullo.seoullotour.Share.ShareActivity) getActivity()).getTask() == 0) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    private void init(){
+    private void init() {
         FilePaths filePaths = new FilePaths();
 
         //check for other folders indide "/storage/emulated/0/pictures"
@@ -142,44 +149,53 @@ public class GalleryFragment extends Fragment {
 
             }
         });
+
     }
 
 
-    private void setupGridView(String selectedDirectory){
+    private void setupGridView(String selectedDirectory) {
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
 
-        //set the grid column width
-        int gridWidth = getResources().getDisplayMetrics().widthPixels;
-        int imageWidth = gridWidth/NUM_GRID_COLUMNS;
-        gridView.setColumnWidth(imageWidth);
+        if (imgURLs.isEmpty()) {
+            gridView.setEmptyView(empty);
+            nextbutton.setVisibility(View.INVISIBLE);
 
-        //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
-        gridView.setAdapter(adapter);
+        } else {
+            //set the grid column width
+            int gridWidth = getResources().getDisplayMetrics().widthPixels;
+            int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+            gridView.setColumnWidth(imageWidth);
 
-        //set the first image to be displayed when the activity fragment view is inflated
-        try{
-            setImage(imgURLs.get(0), galleryImage, mAppend);
-            mSelectedImage = imgURLs.get(0);
-        }catch (ArrayIndexOutOfBoundsException e){
-            Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " +e.getMessage() );
-        }
+            //use the grid adapter to adapter the images to gridview
+            GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+            gridView.setAdapter(adapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
+            //set the first image to be displayed when the activity fragment view is inflated
+            try {
 
-                setImage(imgURLs.get(position), galleryImage, mAppend);
-                mSelectedImage = imgURLs.get(position);
+                setImage(imgURLs.get(0), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(0);
+
+
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
             }
-        });
 
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
+
+                    setImage(imgURLs.get(position), galleryImage, mAppend);
+                    mSelectedImage = imgURLs.get(position);
+                }
+            });
+        }
     }
 
 
-    private void setImage(String imgURL, ImageView image, String append){
+    private void setImage(String imgURL, ImageView image, String append) {
         Log.d(TAG, "setImage: setting image");
 
         ImageLoader imageLoader = ImageLoader.getInstance();
