@@ -107,19 +107,21 @@
 <!--            app:menu="@menu/bottom_navigation_menu" />-->
         <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:id="@+id/bottom_navigation"
-            android:background="@drawable/white_grey_border_top"
-            app:menu="@menu/bottom_navigation_menu"/>
+            android:background="@color/colorWhite"
+            app:menu="@menu/bottom_navigation_menu"
+            android:foregroundGravity="center"
+            />
 
-        <LinearLayout
-            android:id="@+id/nav_division"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@id/bottom_navigation"
-            android:background="@color/colorDivision"
-            android:orientation="horizontal" />
+<!--        <LinearLayout-->
+<!--            android:id="@+id/nav_division"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_above="@id/bottom_navigation"-->
+<!--            android:background="@color/colorDivision"-->
+<!--            android:orientation="horizontal" />-->
 
         <!-- Contents -->
         <FrameLayout

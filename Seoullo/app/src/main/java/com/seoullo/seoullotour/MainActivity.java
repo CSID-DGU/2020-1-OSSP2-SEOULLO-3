@@ -2,9 +2,11 @@ package com.seoullo.seoullotour;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -48,9 +50,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this);
         binding.bottomNavigation.setSelectedItemId(R.id.ic_home);
+        Menu menu = binding.bottomNavigation.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
+        setBottomNavigation();
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
         switch (item.getItemId()) {
 
             case R.id.ic_home :
@@ -207,5 +214,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public void onClick_add_review(View view) {
         Toast.makeText(getApplicationContext(),"ON DEVELOPING !", Toast.LENGTH_LONG).show();
         //startActivity(new Intent(MainActivity.this, AddPhotoActivity.class));
+    }
+    public void setBottomNavigation() {
+        binding.bottomNavigation.enableAnimation(true);
+        binding.bottomNavigation.enableItemShiftingMode(false);
+        binding.bottomNavigation.enableShiftingMode(false);
     }
 }

@@ -3,13 +3,13 @@
     <item
         android:id="@+id/ic_home"
         android:icon="@drawable/ic_house"
-        android:title="home">
+        android:title="">
     </item>
 
     <item
         android:id="@+id/ic_bookmark"
         android:icon="@drawable/ic_search"
-        android:title="bookmark">
+        android:title="">
     </item>
 
 <!--    <item-->
@@ -21,13 +21,13 @@
     <item
         android:id="@+id/ic_map"
         android:icon="@drawable/ic_alert"
-        android:title="map">
+        android:title="">
     </item>
 
     <item
         android:id="@+id/ic_account"
         android:icon="@drawable/ic_android"
-        android:title="account">
+        android:title="">
     </item>
 
 </menu>
