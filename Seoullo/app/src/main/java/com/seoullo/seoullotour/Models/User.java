@@ -3,28 +3,12 @@ package com.seoullo.seoullotour.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 public class User implements Parcelable{
 
-    public String user_id;
+    private String user_id;
     private long phone_number;
     private String email;
     private String username;
-    //ADDED : 0425
-    public String location;
-    public String explain;
-    public String imageUrl;
-    public String imageName;
-    public String uid;
-    public String timestamp;
-    public ArrayList<Place> places;
-    public int favoriteCount = 0;
-    public int bookmarkCount = 0;
-    public Map<String, Boolean> favorites = new HashMap<>();
-    public Map<String, Boolean> bookmarks = new HashMap<>();
 
     public User(String user_id, long phone_number, String email, String username) {
         this.user_id = user_id;

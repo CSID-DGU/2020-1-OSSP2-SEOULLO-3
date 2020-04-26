@@ -30,7 +30,6 @@ import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 import com.seoullo.seoullotour.Utils.UniversalImageLoader;
 import com.seoullo.seoullotour.Utils.ViewCommentsFragment;
-import com.seoullo.seoullotour.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity implements
         MainfeedListAdapter.OnLoadMoreItemsListener{
@@ -74,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements
         initImageLoader();
         setupBottomNavigationView();
         setupViewPager();
+
     }
 
 
