@@ -42,20 +42,26 @@ public class BottomNavigationViewHelper {
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
-                    case R.id.ic_bookmark:
+                    case R.id.ic_search:
                         Intent intent2  = new Intent(context, SearchActivity.class);//ACTIVITY_NUM = 1
                         context.startActivity(intent2);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
                     case R.id.ic_map:
-                        Intent intent4 = new Intent(context, LikesActivity.class);//ACTIVITY_NUM = 3
+                        Intent intent3 = new Intent(context, LikesActivity.class);//ACTIVITY_NUM = 3
+                        context.startActivity(intent3);
+                        callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        break;
+
+                    case R.id.ic_bookmark:
+                        Intent intent4 = new Intent(context, LikesActivity.class);//ACTIVITY_NUM = 4
                         context.startActivity(intent4);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
                     case R.id.ic_user:
-                        Intent intent5 = new Intent(context, ProfileActivity.class);//ACTIVITY_NUM = 4
+                        Intent intent5 = new Intent(context, ProfileActivity.class);//ACTIVITY_NUM = 5
                         context.startActivity(intent5);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;

@@ -7,20 +7,24 @@
     </item>
 
     <item
-        android:id="@+id/ic_bookmark"
+        android:id="@+id/ic_search"
         android:icon="@drawable/ic_search"
         android:title="">
     </item>
 
     <item
         android:id="@+id/ic_map"
-        android:icon="@drawable/ic_circle"
+        android:icon="@drawable/ic_heart_white"
         android:title="">
     </item>
-
+    <item
+        android:id="@+id/ic_bookmark"
+        android:icon="@drawable/ic_web"
+        android:title="">
+    </item>
     <item
         android:id="@+id/ic_user"
-        android:icon="@drawable/ic_alert"
+        android:icon="@drawable/ic_android"
         android:title="">
     </item>
 </menu>
