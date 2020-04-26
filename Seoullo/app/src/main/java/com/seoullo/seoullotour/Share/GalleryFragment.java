@@ -47,7 +47,7 @@ public class GalleryFragment extends Fragment {
     private Spinner directorySpinner;
 
     private TextView empty;
-    private TextView nextbutton;
+    private TextView nextScreen;
 
     //vars
     private ArrayList<String> directories;
@@ -65,7 +65,6 @@ public class GalleryFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
         empty = (TextView) view.findViewById(android.R.id.empty);
-        nextbutton = (TextView) view.findViewById(R.id.tvNext);
 
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
@@ -80,7 +79,7 @@ public class GalleryFragment extends Fragment {
         });
 
 
-        TextView nextScreen = (TextView) view.findViewById(R.id.tvNext);
+        nextScreen = (TextView) view.findViewById(R.id.tvNext);
         nextScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,33 +122,38 @@ public class GalleryFragment extends Fragment {
         directories.add(filePaths.CAMERA);
 
         ArrayList<String> directoryNames = new ArrayList<>();
-        for (int i = 0; i < directories.size(); i++) {
-            Log.d(TAG, "init: directory: " + directories.get(i));
-            int index = directories.get(i).lastIndexOf("/");
-            String string = directories.get(i).substring(index);
-            directoryNames.add(string);
+        if(directoryNames.isEmpty()){
+            gridView.setEmptyView(empty);
+            nextScreen.setVisibility(View.INVISIBLE);
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, directoryNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        directorySpinner.setAdapter(adapter);
-
-        directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: selected: " + directories.get(position));
-
-                //setup our image grid for the directory chosen
-                setupGridView(directories.get(position));
+        else {
+            for (int i = 0; i < directories.size(); i++) {
+                Log.d(TAG, "init: directory: " + directories.get(i));
+                int index = directories.get(i).lastIndexOf("/");
+                String string = directories.get(i).substring(index);
+                directoryNames.add(string);
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_spinner_item, directoryNames);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            directorySpinner.setAdapter(adapter);
 
-            }
-        });
+            directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, "onItemClick: selected: " + directories.get(position));
 
+                    //setup our image grid for the directory chosen
+                    setupGridView(directories.get(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
     }
 
 
@@ -157,11 +161,7 @@ public class GalleryFragment extends Fragment {
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
 
-        if (imgURLs.isEmpty()) {
-            gridView.setEmptyView(empty);
-            nextbutton.setVisibility(View.INVISIBLE);
 
-        } else {
             //set the grid column width
             int gridWidth = getResources().getDisplayMetrics().widthPixels;
             int imageWidth = gridWidth / NUM_GRID_COLUMNS;
@@ -191,7 +191,7 @@ public class GalleryFragment extends Fragment {
                     mSelectedImage = imgURLs.get(position);
                 }
             });
-        }
+
     }
 
 
