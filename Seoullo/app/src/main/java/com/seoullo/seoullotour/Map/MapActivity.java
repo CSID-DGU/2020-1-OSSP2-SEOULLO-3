@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -27,7 +28,7 @@ public class MapActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
-    private RelativeLayout topTab;
+    private LinearLayout mLinearLayout;
 
     //TODO: link to fragment
     @Override
@@ -36,10 +37,11 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
-        topTab = (RelativeLayout) findViewById(R.id.relLayout1);
-        topTab.setVisibility(View.INVISIBLE);
+        mRelativeLayout.setVisibility(View.GONE);
+        mLinearLayout = (LinearLayout) findViewById(R.id.bottom_division);
+        mLinearLayout.setVisibility(View.GONE);
 
         setupBottomNavigationView();
         setupViewPager();

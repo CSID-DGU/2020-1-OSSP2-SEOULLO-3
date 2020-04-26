@@ -66,8 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
 
-        LatLng latLng = new LatLng(37.5582529,126.9980009);
-        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,17f));
+        LatLng latLng = new LatLng(37.5582,127.0002);
+        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
     }
 
     //view life cycle
