@@ -119,7 +119,7 @@ public class GalleryFragment extends Fragment {
         if (FileSearch.getDirectoryPaths(filePaths.PICTURES) != null) {
             directories = FileSearch.getDirectoryPaths(filePaths.PICTURES);
         }
-        directories.add(filePaths.CAMERA);
+        directories.add(filePaths.PICTURES);
 
         ArrayList<String> directoryNames = new ArrayList<>();
 

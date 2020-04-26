@@ -2,6 +2,7 @@ package com.seoullo.seoullotour.Profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
@@ -130,6 +135,7 @@ public class ProfileFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
+
 
         return view;
     }
@@ -294,8 +300,20 @@ public class ProfileFragment extends Fragment {
 
         //User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://tourism-5864e.appspot.com");
+        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
+                .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(getActivity())
+                                .load(uri)
+                                .into(mProfilePhoto);
 
-        UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+                    }
+                });
+
+      //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
 
         mDisplayName.setText(settings.getDisplay_name());
         mUsername.setText(settings.getUsername());
