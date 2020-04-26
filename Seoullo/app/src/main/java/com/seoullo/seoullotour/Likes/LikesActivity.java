@@ -19,7 +19,7 @@ import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 //TODO : BOOKMARK
 public class LikesActivity extends AppCompatActivity {
     private static final String TAG = "LikesActivity";
-    public static final int ACTIVITY_NUM = 4;
+    public static final int ACTIVITY_NUM = 3;
 
     private Context mContext = LikesActivity.this;
 

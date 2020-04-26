@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;
-    private static final int HOME_FRAGMENT = 1;
+    private static final int HOME_FRAGMENT = 0;
 
     private Context mContext = HomeActivity.this;
 
@@ -141,6 +141,7 @@ public class HomeActivity extends AppCompatActivity implements
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 //        adapter.addFragment(new CameraFragment()); //index 0
         adapter.addFragment(new HomeFragment()); //index 1
+        adapter.addFragment(new GridFragment());
 //        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
 

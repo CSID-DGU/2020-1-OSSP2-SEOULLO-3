@@ -27,6 +27,7 @@ public class FilePaths extends AppCompatActivity {
     // "storage/emulated/0"
     //    public String CAMERA = ROOT_DIR + "/DCIM/camera";
 
+
     public String ROOT_DIR = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/";
     public String PICTURES = Environment.getExternalStorageDirectory() + "/Pictures";
     public String DOWNLOAD = Environment.getExternalStorageDirectory() + "/Download";
