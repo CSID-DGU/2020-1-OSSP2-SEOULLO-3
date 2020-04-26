@@ -27,6 +27,7 @@ import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.FilePaths;
 import com.seoullo.seoullotour.Utils.FileSearch;
 import com.seoullo.seoullotour.Utils.GridImageAdapter;
+import com.seoullo.seoullotour.Share.ShareActivity;
 
 import org.w3c.dom.Text;
 
@@ -116,13 +117,13 @@ public class GalleryFragment extends Fragment {
         FilePaths filePaths = new FilePaths();
 
         //check for other folders indide "/storage/emulated/0/pictures"
-        if (FileSearch.getDirectoryPaths(filePaths.PICTURES) != null) {
-            directories = FileSearch.getDirectoryPaths(filePaths.PICTURES);
+        if (FileSearch.getDirectoryPaths(filePaths.ROOT_DIR) != null) {
+            directories = FileSearch.getDirectoryPaths(filePaths.ROOT_DIR);
+            directories.add(filePaths.DOWNLOAD);
+//            directories.add(filePaths.PICTURES);
         }
-        directories.add(filePaths.CAMERA);
 
         ArrayList<String> directoryNames = new ArrayList<>();
-
         for (int i = 0; i < directories.size(); i++) {
             Log.d(TAG, "init: directory: " + directories.get(i));
             int index = directories.get(i).lastIndexOf("/");

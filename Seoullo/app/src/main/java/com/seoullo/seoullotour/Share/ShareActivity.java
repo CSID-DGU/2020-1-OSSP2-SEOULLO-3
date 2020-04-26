@@ -20,6 +20,7 @@ import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 import com.seoullo.seoullotour.Utils.Permissions;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 
+
 public class ShareActivity extends AppCompatActivity {
     private static final String TAG = "ShareActivity";
 
