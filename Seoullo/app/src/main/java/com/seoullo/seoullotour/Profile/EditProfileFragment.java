@@ -163,7 +163,7 @@ public class EditProfileFragment extends Fragment implements
             public void onClick(View v) {
                 Log.d(TAG, "onClick: attempting to save changes.");
                 saveProfileSettings();
-
+                getActivity().finish();
             }
         });
 
