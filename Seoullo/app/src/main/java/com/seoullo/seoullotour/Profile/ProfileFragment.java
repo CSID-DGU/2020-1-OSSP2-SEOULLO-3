@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -301,7 +302,7 @@ public class ProfileFragment extends Fragment {
         //User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://tourism-5864e.appspot.com");
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
         storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
                 .addOnSuccessListener( new OnSuccessListener<Uri>() {
                     @Override
@@ -309,7 +310,6 @@ public class ProfileFragment extends Fragment {
                         Glide.with(getActivity())
                                 .load(uri)
                                 .into(mProfilePhoto);
-
                     }
                 });
 
@@ -337,7 +337,7 @@ public class ProfileFragment extends Fragment {
                 Log.d(TAG, "onClick: navigating to account settings.");
                 Intent intent = new Intent(mContext, AccountSettingsActivity.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                //getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }

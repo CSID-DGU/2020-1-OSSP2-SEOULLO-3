@@ -277,7 +277,7 @@ public class EditProfileFragment extends Fragment implements
         UserAccountSettings settings = userSettings.getSettings();
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://tourism-5864e.appspot.com");
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
         storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
                 .addOnSuccessListener( new OnSuccessListener<Uri>() {
                     @Override
