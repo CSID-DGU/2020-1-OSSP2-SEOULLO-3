@@ -43,13 +43,68 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/imageShare"
                     android:id="@+id/caption"
-                    android:hint="write an caption..."
+                    android:hint="문구입력..."
                     android:layout_marginLeft="20dp"
                     android:layout_centerVertical="true"
                     android:background="@null"/>
 
             </RelativeLayout>
-
+            <RelativeLayout
+                android:id="@+id/rel_layout_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rel_layout_2"
+                android:background="@color/white"
+                >
+                <LinearLayout
+                    android:id="@+id/linLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/location_outline"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textview_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="위치 추가"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    />
+                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/place_division"
+                    android:layout_below="@id/linLayout"
+                    android:orientation="horizontal"
+                    android:background="@color/grey"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    />
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/places_autocomplete_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/place_division"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textSize="15sp"
+                    android:hint="장소 입력..."
+                    />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_autocomplete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/places_autocomplete_edit_text"
+                    />
+            </RelativeLayout>
         </RelativeLayout>
 
     </ScrollView>
