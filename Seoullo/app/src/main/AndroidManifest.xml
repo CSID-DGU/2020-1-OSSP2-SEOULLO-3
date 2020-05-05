@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".Likes.LikesActivity"
             android:noHistory="true" />
         <activity android:name=".Profile.ProfileActivity"

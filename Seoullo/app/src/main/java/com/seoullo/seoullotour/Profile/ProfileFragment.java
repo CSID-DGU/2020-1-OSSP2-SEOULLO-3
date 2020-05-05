@@ -337,6 +337,7 @@ public class ProfileFragment extends Fragment {
                 Log.d(TAG, "onClick: navigating to account settings.");
                 Intent intent = new Intent(mContext, AccountSettingsActivity.class);
                 startActivity(intent);
+                getActivity().finish();
                 //getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
