@@ -15,12 +15,13 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rel_layout_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rel_layout_1"
-        android:id="@+id/rel_layout_2">
+        android:layout_marginTop="1dp">
 
-        <include layout="@layout/layout_center_profile"/>
+        <include layout="@layout/layout_center_profile" />
 
     </RelativeLayout>
 
