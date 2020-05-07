@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
     }
     //팔로우 하는 사람 게시물만 보여지도록 함 --> 우리는 다 볼 수 있도록 하는게 목적
     private void getAllPosts() {
-        Log.d(TAG, "getFollowing: searching for following");
+        Log.d(TAG, "getAllPosts: show all posts");
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: found user: " +
+                            Log.d(TAG, "onDataChange: found posts: " +
                                     singleSnapshot.child(getString(R.string.field_photo_id)).getValue());
 
                             mAllUserPosts.add(singleSnapshot.child(getString(R.string.field_photo_id)).getValue().toString());
