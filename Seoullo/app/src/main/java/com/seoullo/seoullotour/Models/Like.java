@@ -1,6 +1,6 @@
 package com.seoullo.seoullotour.Models;
 
-public class Like {
+public class Like { 
 
     private String user_id;
 

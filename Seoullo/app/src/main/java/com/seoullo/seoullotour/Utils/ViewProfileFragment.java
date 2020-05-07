@@ -73,7 +73,7 @@ public class ViewProfileFragment extends Fragment {
 
     //widgets
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription,
-    mFollow, mUnfollow;
+            mFollow, mUnfollow;
     private ProgressBar mProgressBar;
     private CircleImageView mProfilePhoto;
     private GridView gridView;

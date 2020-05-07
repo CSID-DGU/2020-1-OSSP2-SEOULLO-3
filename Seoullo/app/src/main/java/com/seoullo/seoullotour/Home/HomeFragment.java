@@ -47,53 +47,17 @@ public class HomeFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.listView);
         mAllUserPosts = new ArrayList<>();
         mPhotos = new ArrayList<>();
-        getAllPosts();
+//        getAllPosts();
+        getPhotos();
 
         return view;
-    }
-    //팔로우 하는 사람 게시물만 보여지도록 함 --> 우리는 다 볼 수 있도록 하는게 목적
-    private void getAllPosts() {
-        Log.d(TAG, "getAllPosts: show all posts");
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_photos))
-                .child(getString(R.string.field_photo_id))
-                .orderByChild(getString(R.string.field_photo_id));
-//        query.addValueEventListener(new ValueEventListener() {
-        FirebaseDatabase.getInstance().getReference()
-                .child(getString(R.string.dbname_photos))
-                .orderByChild(getString(R.string.field_photo_id))
-                .addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: found posts: " +
-                                    singleSnapshot.child(getString(R.string.field_photo_id)).getValue());
-
-                            mAllUserPosts.add(singleSnapshot.child(getString(R.string.field_photo_id)).getValue().toString());
-                        }
-                        //get the photos
-                        getPhotos();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
     }
 
     private void getPhotos() {
         Log.d(TAG, "getPhotos: getting photos");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        for (int i = 0; i < mAllUserPosts.size(); i++) {
-            final int count = i;
-            reference
-                    .child(getString(R.string.dbname_photos))
-                    .orderByChild(getString(R.string.field_photo_id))
-                    .equalTo(mAllUserPosts.get(i))
+            reference.child(getString(R.string.dbname_photos))
+                    .orderByChild(getString(R.string.field_likes_count))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -101,10 +65,11 @@ public class HomeFragment extends Fragment {
 
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
                                 photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                                 photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
                                 photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+
                                 photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
@@ -122,9 +87,24 @@ public class HomeFragment extends Fragment {
                                 photo.setComments(comments);
                                 mPhotos.add(photo);
                             }
-                            if (count >= mAllUserPosts.size() - 1) {
-                                //display our photos
-                                displayPhotos();
+//                            displayPhotos();
+                            try {
+                                //최신순으로 보여줌.
+//                Collections.sort(mPhotos, new Comparator<Photo>() {
+//                    @Override
+//                    public int compare(Photo o1, Photo o2) {
+//                        return o2.getDate_created().compareTo(o1.getDate_created());
+//                    }
+//                });
+
+                                mResults = 10;
+                                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
+                                mListView.setAdapter(mAdapter);
+
+                            } catch (NullPointerException e) {
+                                Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
                             }
                         }
 
@@ -133,32 +113,22 @@ public class HomeFragment extends Fragment {
 
                         }
                     });
-        }
     }
 
     private void displayPhotos() {
         mPaginatedPhotos = new ArrayList<>();
         if (mPhotos != null) {
             try {
-                Collections.sort(mPhotos, new Comparator<Photo>() {
-                    @Override
-                    public int compare(Photo o1, Photo o2) {
-                        return o2.getDate_created().compareTo(o1.getDate_created());
-                    }
-                });
-
-                int iterations = mPhotos.size();
-
-                if (iterations > 10) {
-                    iterations = 10;
-                }
+                //최신순으로 보여줌.
+//                Collections.sort(mPhotos, new Comparator<Photo>() {
+//                    @Override
+//                    public int compare(Photo o1, Photo o2) {
+//                        return o2.getDate_created().compareTo(o1.getDate_created());
+//                    }
+//                });
 
                 mResults = 10;
-                for (int i = 0; i < iterations; i++) {
-                    mPaginatedPhotos.add(mPhotos.get(i));
-                }
-
-                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPaginatedPhotos);
+                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
                 mListView.setAdapter(mAdapter);
 
             } catch (NullPointerException e) {
@@ -198,5 +168,32 @@ public class HomeFragment extends Fragment {
             Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
         }
     }
+    //팔로우 하는 사람 게시물만 보여지도록 함 --> 우리는 다 볼 수 있도록 하는게 목적
+    //--> 필요가 없는 것 같음.
+/*    private void getAllPosts() {
+        Log.d(TAG, "getAllPosts: show all posts");
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.dbname_photos))
+                .orderByChild(getString(R.string.field_likes_count))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            Log.d(TAG, "onDataChange: found posts: " +
+                                    singleSnapshot.child(getString(R.string.field_photo_id)).getValue());
+
+                            mAllUserPosts.add(singleSnapshot.child(getString(R.string.field_photo_id)).getValue().toString());
+                        }
+                        //get the photos
+                        getPhotos();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }*/
 
 }
