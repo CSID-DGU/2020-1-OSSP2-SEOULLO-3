@@ -127,6 +127,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         //set the caption
         holder.caption.setText(getItem(position).getCaption());
+//        holder.username.setText(getItem(position).getUser_id());
 
         //set the comment
         List<Comment> comments = getItem(position).getComments();
@@ -156,25 +157,26 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         final ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
 
-
         //get the profile image and username
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .orderByChild(mContext.getString(R.string.field_user_id))
                 .equalTo(getItem(position).getUser_id());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        query.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
 
-                    // currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
+                    currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
 
                     Log.d(TAG, "onDataChange: found user: "
                             + singleSnapshot.getValue(UserAccountSettings.class).getUsername());
-
                     holder.username.setText(singleSnapshot.getValue(UserAccountSettings.class).getUsername());
-                    holder.username.setOnClickListener(new View.OnClickListener() {
+
+                            holder.username.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Log.d(TAG, "onClick: navigating to profile of: " +
@@ -293,17 +295,19 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             Log.d(TAG, "onDoubleTap: double tap detected.");
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
             Query query = reference
                     .child(mContext.getString(R.string.dbname_photos))
                     .child(mHolder.photo.getPhoto_id())
                     .child(mContext.getString(R.string.field_likes));
+
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                        Log.d(TAG, "출력해줘제발");
 
                         String keyID = singleSnapshot.getKey();
-
                         //case1: Then user already liked the photo
                         if(mHolder.likeByCurrentUser &&
                                 singleSnapshot.getValue(Like.class).getUser_id()
@@ -379,11 +383,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .child(mContext.getString(R.string.dbname_users))
                 .orderByChild(mContext.getString(R.string.field_user_id))
                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
+                        @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+
                     currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
+                    System.out.println(currentUsername);
                 }
 
             }
