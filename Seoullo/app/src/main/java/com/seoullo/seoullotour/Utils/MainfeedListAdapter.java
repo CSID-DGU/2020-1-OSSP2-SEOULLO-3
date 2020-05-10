@@ -3,6 +3,7 @@ package com.seoullo.seoullotour.Utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -17,14 +18,20 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Home.HomeActivity;
+import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
@@ -37,12 +44,14 @@ import com.seoullo.seoullotour.Models.UserAccountSettings;
 
 import org.w3c.dom.Text;
 
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -154,8 +163,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
 
         //set the profile image
-        final ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
+//        final ImageLoader imageLoader = ImageLoader.getInstance();
+//        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
+
+
 
         //get the profile image and username
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -190,8 +201,41 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                     });
 
-                    imageLoader.displayImage(singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
-                            holder.mprofileImage);
+                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+            storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                    .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(mContext)
+                                    .load(uri)
+                                    .into(holder.mprofileImage);
+                        }
+                    });
+//                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(toString(getItem(position).getImage_path()));
+//                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(getItem(position).getImage_path());
+//                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            Glide.with(mContext)
+//                                    .load(uri.toString())
+//                                    .into(holder.image);
+//                        }
+//                    });
+                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("photo1").getDownloadUrl()
+                            .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(mContext)
+                                            .load(uri)
+                                            .into(holder.image);
+                                }
+                            });
+                    //Glide.with(mContext).load(getItem(position).getImage_path()).into(holder.image);
+
+
+//                    imageLoader.displayImage(singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
+//                            holder.mprofileImage);
                     holder.mprofileImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

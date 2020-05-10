@@ -13,13 +13,15 @@ public class Photo implements Parcelable{
     private String photo_id;
     private String user_id;
     private String tags;
+    private String image_name;
     private List<Like> likes;
     private List<Comment> comments;
 
     public Photo() {
     }
 
-    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String tags, List<Like> likes, List<Comment> comments) {
+    public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags, List<Like> likes, List<Comment> comments) {
+        this.image_name = image_name;
         this.caption = caption;
         this.date_created = date_created;
         this.image_path = image_path;
@@ -31,6 +33,7 @@ public class Photo implements Parcelable{
     }
 
     protected Photo(Parcel in) {
+        image_name = in.readString();
         caption = in.readString();
         date_created = in.readString();
         image_path = in.readString();
@@ -70,7 +73,12 @@ public class Photo implements Parcelable{
     public String getImage_path() {
         return image_path;
     }
-
+    public String getImage_name() {
+        return image_name;
+    }
+    public void setImage_name(String image_name) {
+        this.image_name = image_name;
+    }
     public void setImage_path(String image_path) {
         this.image_path = image_path;
     }
@@ -82,6 +90,8 @@ public class Photo implements Parcelable{
     public void setPhoto_id(String photo_id) {
         this.photo_id = photo_id;
     }
+
+
 
     public String getUser_id() {
         return user_id;
@@ -122,6 +132,7 @@ public class Photo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(image_name);
         dest.writeString(caption);
         dest.writeString(date_created);
         dest.writeString(image_path);

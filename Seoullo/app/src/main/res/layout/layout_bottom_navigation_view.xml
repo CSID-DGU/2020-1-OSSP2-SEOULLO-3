@@ -20,7 +20,6 @@
             android:background="@color/theme_deepblue"
             android:layout_below="@id/bottom_division"
             app:menu="@menu/bottom_navigation_menu">
-
         </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
 
     </RelativeLayout>

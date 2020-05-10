@@ -54,7 +54,7 @@ public class GalleryFragment extends Fragment {
     private ArrayList<String> directories;
     private String mAppend = "file:/";
     private String mSelectedImage;
-
+    private String imageName;
 
     @Nullable
     @Override
