@@ -409,7 +409,7 @@ public class ViewProfileFragment extends Fragment {
             imgUrls.add(photos.get(i).getImage_path());
         }
         GridImageAdapter adapter = new GridImageAdapter(getActivity(),R.layout.layout_grid_imageview,
-                "", imgUrls);
+                "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid() );
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

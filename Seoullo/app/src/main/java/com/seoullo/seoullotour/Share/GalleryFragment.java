@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -171,7 +172,7 @@ public class GalleryFragment extends Fragment {
         gridView.setColumnWidth(imageWidth);
 
         //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs , FirebaseAuth.getInstance().getCurrentUser().getUid());
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
