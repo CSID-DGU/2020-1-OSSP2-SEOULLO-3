@@ -62,17 +62,17 @@ public class FirebaseMethods {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mContext = context;
 
-        if(mAuth.getCurrentUser() != null){
+        if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
         }
     }
 
-    public void uploadNewPhoto(String photoType, final String caption,final int count, final String imgUrl, Bitmap bm){
+    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm) {
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
         //case1) new photo
-        if(photoType.equals(mContext.getString(R.string.new_photo))){
+        if (photoType.equals(mContext.getString(R.string.new_photo))) {
             Log.d(TAG, "uploadNewPhoto: uploading NEW photo.");
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -114,7 +114,7 @@ public class FirebaseMethods {
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                    if(progress - 15 > mPhotoUploadProgress){
+                    if (progress - 15 > mPhotoUploadProgress) {
                         Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
                         mPhotoUploadProgress = progress;
                     }
@@ -125,7 +125,7 @@ public class FirebaseMethods {
 
         }
         //case new profile photo
-        else if(photoType.equals(mContext.getString(R.string.profile_photo))){
+        else if (photoType.equals(mContext.getString(R.string.profile_photo))) {
             Log.d(TAG, "uploadNewPhoto: uploading new PROFILE photo");
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -151,10 +151,10 @@ public class FirebaseMethods {
                     //insert into 'user_account_settings' node
                     setProfilePhoto(firebaseUrl.toString());
 
-                    ((AccountSettingsActivity)mContext).setViewPager
-                            (((AccountSettingsActivity)mContext).pagerAdapter
+                    ((AccountSettingsActivity) mContext).setViewPager
+                            (((AccountSettingsActivity) mContext).pagerAdapter
                                     .getFragmentNumber(mContext.getString(R.string.edit_profile_fragment))
-                    );
+                            );
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -168,7 +168,7 @@ public class FirebaseMethods {
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                    if(progress - 15 > mPhotoUploadProgress){
+                    if (progress - 15 > mPhotoUploadProgress) {
                         Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
                         mPhotoUploadProgress = progress;
                     }
@@ -179,7 +179,7 @@ public class FirebaseMethods {
         }
     }
 
-    private void setProfilePhoto(String url){
+    private void setProfilePhoto(String url) {
         Log.d(TAG, "setProfilePhoto: setting new profile image: " + url);
 
         myRef.child(mContext.getString(R.string.dbname_user_account_settings))
@@ -188,13 +188,13 @@ public class FirebaseMethods {
                 .setValue(url);
     }
 
-    private String getTimestamp(){
+    private String getTimestamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         return sdf.format(new Date());
     }
 
-    private void addPhotoToDatabase(String caption, String url){
+    private void addPhotoToDatabase(String caption, String url) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);
@@ -215,12 +215,12 @@ public class FirebaseMethods {
 
     }
 
-    public int getImageCount(DataSnapshot dataSnapshot){
+    public int getImageCount(DataSnapshot dataSnapshot) {
         int count = 0;
-        for(DataSnapshot ds: dataSnapshot
+        for (DataSnapshot ds : dataSnapshot
                 .child(mContext.getString(R.string.dbname_user_photos))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .getChildren()){
+                .getChildren()) {
             count++;
         }
         return count;
@@ -228,16 +228,17 @@ public class FirebaseMethods {
 
     /**
      * Update 'user_account_settings' node for the current user
+     *
      * @param displayName
      * @param website
      * @param description
      * @param phoneNumber
      */
-    public void updateUserAccountSettings(String displayName, String website, String description, long phoneNumber){
+    public void updateUserAccountSettings(String displayName, String website, String description, long phoneNumber) {
 
         Log.d(TAG, "updateUserAccountSettings: updating user account settings.");
 
-        if(displayName != null){
+        if (displayName != null) {
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_display_name))
@@ -245,21 +246,21 @@ public class FirebaseMethods {
         }
 
 
-        if(website != null) {
+        if (website != null) {
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_website))
                     .setValue(website);
         }
 
-        if(description != null) {
+        if (description != null) {
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_description))
                     .setValue(description);
         }
 
-        if(phoneNumber != 0) {
+        if (phoneNumber != 0) {
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_phone_number))
@@ -269,9 +270,10 @@ public class FirebaseMethods {
 
     /**
      * update username in the 'users' node and 'user_account_settings' node
+     *
      * @param username
      */
-    public void updateUsername(String username){
+    public void updateUsername(String username) {
         Log.d(TAG, "updateUsername: upadting username to: " + username);
 
         myRef.child(mContext.getString(R.string.dbname_users))
@@ -287,9 +289,10 @@ public class FirebaseMethods {
 
     /**
      * update the email in the 'user's' node
+     *
      * @param email
      */
-    public void updateEmail(String email){
+    public void updateEmail(String email) {
         Log.d(TAG, "updateEmail: upadting email to: " + email);
 
         myRef.child(mContext.getString(R.string.dbname_users))
@@ -320,11 +323,12 @@ public class FirebaseMethods {
 
     /**
      * Register a new email and password to Firebase Authentication
+     *
      * @param email
      * @param password
      * @param username
      */
-    public void registerNewEmail(final String email, final String password, final String username){
+    public void registerNewEmail(final String email, final String password, final String username) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -338,8 +342,7 @@ public class FirebaseMethods {
                             Toast.makeText(mContext, R.string.auth_failed,
                                     Toast.LENGTH_SHORT).show();
 
-                        }
-                        else if(task.isSuccessful()){
+                        } else if (task.isSuccessful()) {
                             //send verificaton email
                             sendVerificationEmail();
 
@@ -351,17 +354,17 @@ public class FirebaseMethods {
                 });
     }
 
-    public void sendVerificationEmail(){
+    public void sendVerificationEmail() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user != null){
+        if (user != null) {
             user.sendEmailVerification()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
 
-                            }else{
+                            } else {
                                 Toast.makeText(mContext, "couldn't send verification email.", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -372,15 +375,16 @@ public class FirebaseMethods {
     /**
      * Add information to the users nodes
      * Add information to the user_account_settings node
+     *
      * @param email
      * @param username
      * @param description
      * @param website
      * @param profile_photo
      */
-    public void addNewUser(String email, String username, String description, String website, String profile_photo){
+    public void addNewUser(String email, String username, String description, String website, String profile_photo) {
 
-        User user = new User( userID,  1,  email,  StringManipulation.condenseUsername(username) );
+        User user = new User(userID, 1, email, StringManipulation.condenseUsername(username));
 
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)
@@ -409,100 +413,73 @@ public class FirebaseMethods {
     /**
      * Retrieves the account settings for teh user currently logged in
      * Database: user_acount_Settings node
+     *
      * @param dataSnapshot
      * @return
      */
-    public UserSettings getUserSettings(DataSnapshot dataSnapshot){
+    public UserSettings getUserSettings(DataSnapshot dataSnapshot) {
         Log.d(TAG, "getUserAccountSettings: retrieving user account settings from firebase.");
 
 
-        UserAccountSettings settings  = new UserAccountSettings();
+        UserAccountSettings settings = new UserAccountSettings();
         User user = new User();
 
-        for(DataSnapshot ds: dataSnapshot.getChildren()){
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
             // user_account_settings node
-            if(ds.getKey().equals(mContext.getString(R.string.dbname_user_account_settings))) {
-                Log.d(TAG, "getUserAccountSettings: user account settings node datasnapshot: " + ds);
+            try {
+                settings.setDisplay_name(
+                        ds.getValue(UserAccountSettings.class).getDisplay_name()
+                );
+                settings.setUsername(
+                        ds.getValue(UserAccountSettings.class).getUsername()
+                );
+                settings.setWebsite(
+                        ds.getValue(UserAccountSettings.class).getWebsite()
+                );
+                settings.setDescription(
+                        ds.getValue(UserAccountSettings.class).getDescription()
+                );
+                settings.setProfile_photo(
+                        ds.getValue(UserAccountSettings.class).getProfile_photo()
+                );
+                settings.setPosts(
+                        ds.getValue(UserAccountSettings.class).getPosts()
+                );
+                settings.setFollowing(
+                        ds.getValue(UserAccountSettings.class).getFollowing()
+                );
+                settings.setFollowers(
+                        ds.getValue(UserAccountSettings.class).getFollowers()
+                );
 
-                try {
-
-                    settings.setDisplay_name(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getDisplay_name()
-                    );
-                    settings.setUsername(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getUsername()
-                    );
-                    settings.setWebsite(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getWebsite()
-                    );
-                    settings.setDescription(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getDescription()
-                    );
-                    settings.setProfile_photo(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getProfile_photo()
-                    );
-                    settings.setPosts(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getPosts()
-                    );
-                    settings.setFollowing(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getFollowing()
-                    );
-                    settings.setFollowers(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getFollowers()
-                    );
-
-                    Log.d(TAG, "getUserAccountSettings: retrieved user_account_settings information: " + settings.toString());
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "getUserAccountSettings: NullPointerException: " + e.getMessage());
-                }
+                Log.d(TAG, "getUserAccountSettings: retrieved user_account_settings information: " + settings.toString());
+            } catch (NullPointerException e) {
+                Log.e(TAG, "getUserAccountSettings: NullPointerException: " + e.getMessage());
             }
-
 
             // users node
             Log.d(TAG, "getUserSettings: snapshot key: " + ds.getKey());
-            if(ds.getKey().equals(mContext.getString(R.string.dbname_users))) {
-                Log.d(TAG, "getUserAccountSettings: users node datasnapshot: " + ds);
+            Log.d(TAG, "getUserAccountSettings: users node datasnapshot: " + ds);
 
-                user.setUsername(
-                        ds.child(userID)
-                                .getValue(User.class)
-                                .getUsername()
-                );
-                user.setEmail(
-                        ds.child(userID)
-                                .getValue(User.class)
-                                .getEmail()
-                );
-                user.setPhone_number(
-                        ds.child(userID)
-                                .getValue(User.class)
-                                .getPhone_number()
-                );
-                user.setUser_id(
-                        ds.child(userID)
-                                .getValue(User.class)
-                                .getUser_id()
-                );
+            user.setUsername(
+                    ds.getValue(User.class)
+                            .getUsername()
+            );
+            user.setEmail(
+                    ds.getValue(User.class)
+                            .getEmail()
+            );
+            user.setPhone_number(
+                    ds.getValue(User.class)
+                            .getPhone_number()
+            );
+            user.setUser_id(
+                    ds.getValue(User.class)
+                            .getUser_id()
+            );
 
-                Log.d(TAG, "getUserAccountSettings: retrieved users information: " + user.toString());
-            }
+            Log.d(TAG, "getUserAccountSettings: retrieved users information: " + user.toString());
         }
         return new UserSettings(user, settings);
 
