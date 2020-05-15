@@ -65,6 +65,7 @@ public class NextActivity extends AppCompatActivity {
     private String mAppend = "file:/";
     private int imageCount = 0;
     private String imgUrl;
+    private String imgName;
 
     private Bitmap bitmap;
     private Intent intent;
@@ -102,6 +103,7 @@ public class NextActivity extends AppCompatActivity {
 
                 if (intent.hasExtra(getString(R.string.selected_image))) {
                     imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+                    imgName = intent.getStringExtra("image_name");
                     mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
