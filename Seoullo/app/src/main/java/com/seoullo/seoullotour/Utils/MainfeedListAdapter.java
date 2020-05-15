@@ -349,19 +349,25 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        Log.d(TAG, "출력해줘제발");
 
                         String keyID = singleSnapshot.getKey();
                         //case1: Then user already liked the photo
                         if(mHolder.likeByCurrentUser &&
                                 singleSnapshot.getValue(Like.class).getUser_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                            mHolder.photo.subtractLikeCount();
 
                             mReference.child(mContext.getString(R.string.dbname_photos))
                                     .child(mHolder.photo.getPhoto_id())
                                     .child(mContext.getString(R.string.field_likes))
                                     .child(keyID)
                                     .removeValue();
+
+                            mReference.child(mContext.getString(R.string.dbname_photos))
+                                    .child(mHolder.photo.getPhoto_id())
+                                    .child(mContext.getString(R.string.field_likes_count))
+//                                    .child(keyID)
+                                    .setValue(mHolder.photo.getLikeCount());
 ///
                             mReference.child(mContext.getString(R.string.dbname_user_photos))
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -369,6 +375,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     .child(mContext.getString(R.string.field_likes))
                                     .child(keyID)
                                     .removeValue();
+
+                            mReference.child(mContext.getString(R.string.dbname_user_photos))
+                                    .child(mHolder.photo.getPhoto_id())
+                                    .child(mContext.getString(R.string.field_likes_count))
+//                                    .child(keyID)
+                                    .setValue(mHolder.photo.getLikeCount());
 
                             mHolder.heart.toggleLike();
                             getLikesString(mHolder);
@@ -399,11 +411,26 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private void addNewLike(final ViewHolder holder){
         Log.d(TAG, "addNewLike: adding new like");
 
-        String newLikeID = mReference.push().getKey();
+//        String newLikeID = mReference.push().getKey();
+        String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Like like = new Like();
         like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        holder.photo.addLikeCount();
 
         mReference.child(mContext.getString(R.string.dbname_photos))
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes))
+                .child(newLikeID)
+                .setValue(like);
+
+        mReference.child(mContext.getString(R.string.dbname_photos))
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes_count))
+//                .child(newLikeID)
+                .setValue(holder.photo.getLikeCount());
+
+        mReference.child(mContext.getString(R.string.dbname_user_photos))
+                .child(holder.photo.getUser_id())
                 .child(holder.photo.getPhoto_id())
                 .child(mContext.getString(R.string.field_likes))
                 .child(newLikeID)
@@ -412,9 +439,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         mReference.child(mContext.getString(R.string.dbname_user_photos))
                 .child(holder.photo.getUser_id())
                 .child(holder.photo.getPhoto_id())
-                .child(mContext.getString(R.string.field_likes))
-                .child(newLikeID)
-                .setValue(like);
+                .child(mContext.getString(R.string.field_likes_count))
+//                .child(newLikeID)
+                .setValue(holder.photo.getLikeCount());
 
         holder.heart.toggleLike();
         getLikesString(holder);
