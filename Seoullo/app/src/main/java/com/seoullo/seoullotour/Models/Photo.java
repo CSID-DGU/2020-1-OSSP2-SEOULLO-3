@@ -123,9 +123,9 @@ public class Photo implements Parcelable{
 
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
 
-    public void addLikeCount() { likeCount += 1; }
+    public int addLikeCount() { return this.likeCount + 1; }
 
-    public void subtractLikeCount() { likeCount -= 1; }
+    public int subtractLikeCount() { return this.likeCount - 1; }
 
     public List<Comment> getComments() {
         return comments;

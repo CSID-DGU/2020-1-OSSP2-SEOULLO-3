@@ -349,7 +349,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-
                         String keyID = singleSnapshot.getKey();
                         //case1: Then user already liked the photo
                         if(mHolder.likeByCurrentUser &&
@@ -366,21 +365,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             mReference.child(mContext.getString(R.string.dbname_photos))
                                     .child(mHolder.photo.getPhoto_id())
                                     .child(mContext.getString(R.string.field_likes_count))
-//                                    .child(keyID)
                                     .setValue(mHolder.photo.getLikeCount());
-///
-                            mReference.child(mContext.getString(R.string.dbname_user_photos))
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(mHolder.photo.getPhoto_id())
-                                    .child(mContext.getString(R.string.field_likes))
-                                    .child(keyID)
-                                    .removeValue();
 
                             mReference.child(mContext.getString(R.string.dbname_user_photos))
+                                    .child(mHolder.photo.getUser_id())
                                     .child(mHolder.photo.getPhoto_id())
-                                    .child(mContext.getString(R.string.field_likes_count))
-//                                    .child(keyID)
-                                    .setValue(mHolder.photo.getLikeCount());
+                                    .child(mContext.getString(R.string.field_likes))
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .removeValue();
 
                             mHolder.heart.toggleLike();
                             getLikesString(mHolder);
@@ -415,7 +407,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Like like = new Like();
         like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        holder.photo.addLikeCount();
+        int likeCount = holder.photo.addLikeCount();
 
         mReference.child(mContext.getString(R.string.dbname_photos))
                 .child(holder.photo.getPhoto_id())
@@ -426,8 +418,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         mReference.child(mContext.getString(R.string.dbname_photos))
                 .child(holder.photo.getPhoto_id())
                 .child(mContext.getString(R.string.field_likes_count))
-//                .child(newLikeID)
-                .setValue(holder.photo.getLikeCount());
+                .setValue(likeCount);
 
         mReference.child(mContext.getString(R.string.dbname_user_photos))
                 .child(holder.photo.getUser_id())
@@ -435,13 +426,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .child(mContext.getString(R.string.field_likes))
                 .child(newLikeID)
                 .setValue(like);
-
-        mReference.child(mContext.getString(R.string.dbname_user_photos))
-                .child(holder.photo.getUser_id())
-                .child(holder.photo.getPhoto_id())
-                .child(mContext.getString(R.string.field_likes_count))
-//                .child(newLikeID)
-                .setValue(holder.photo.getLikeCount());
 
         holder.heart.toggleLike();
         getLikesString(holder);
@@ -556,7 +540,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         setupLikesString(holder, holder.likesString);
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
