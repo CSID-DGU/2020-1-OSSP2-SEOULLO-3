@@ -67,7 +67,7 @@ public class FirebaseMethods {
         }
     }
 
-    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm) {
+    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm, final String location) {
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
@@ -97,7 +97,7 @@ public class FirebaseMethods {
                     Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
 
                     //add the new photo to 'photos' node and 'user_photos' node
-                    addPhotoToDatabase(caption, firebaseUrl.toString());
+                    addPhotoToDatabase(caption, firebaseUrl.toString(), location);
 
                     //navigate to the main feed so the user can see their photo
                     Intent intent = new Intent(mContext, HomeActivity.class);
@@ -194,7 +194,7 @@ public class FirebaseMethods {
         return sdf.format(new Date());
     }
 
-    private void addPhotoToDatabase(String caption, String url) {
+    private void addPhotoToDatabase(String caption, String url, String location) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);
@@ -206,6 +206,7 @@ public class FirebaseMethods {
         photo.setTags(tags);
         photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
         photo.setPhoto_id(newPhotoKey);
+        photo.setLocation(location);    //added location
 
         //insert into database
         myRef.child(mContext.getString(R.string.dbname_user_photos))

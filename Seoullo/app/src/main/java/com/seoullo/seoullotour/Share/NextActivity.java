@@ -60,7 +60,7 @@ public class NextActivity extends AppCompatActivity {
     //widgets
     private EditText mCaption;
     private RecyclerView mAdapter;
-
+    private AutoCompleteTextView mAuto;
     //vars
     private String mAppend = "file:/";
     private int imageCount = 0;
@@ -68,6 +68,8 @@ public class NextActivity extends AppCompatActivity {
 
     private Bitmap bitmap;
     private Intent intent;
+    //place location
+    private String location;
 
     public NextActivity() {
     }
@@ -79,6 +81,20 @@ public class NextActivity extends AppCompatActivity {
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         mCaption = (EditText) findViewById(R.id.caption);
         mAdapter = (RecyclerView) findViewById(R.id.recyclerview_autocomplete);
+
+        //autocomplete text
+        mAuto = findViewById(R.id.places_autocomplete_edit_text);
+        ArrayAdapter arrayAdapter = new GooglePlacesAutocompleteAdapter(getApplicationContext(), R.layout.layout_list_item);
+        mAuto.setAdapter(arrayAdapter);
+        mAuto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                String str = (String) adapterView.getItemAtPosition(position);
+                mAuto.setText(str);
+                location = str;
+                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         setupFirebaseAuth();
 
@@ -102,29 +118,16 @@ public class NextActivity extends AppCompatActivity {
 
                 if (intent.hasExtra(getString(R.string.selected_image))) {
                     imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location);
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, null, bitmap);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, null, bitmap, location);
                 }
 
             }
         });
         setImage();
-
-        //autocomplete text
-        final AutoCompleteTextView auto = findViewById(R.id.places_autocomplete_edit_text);
-        ArrayAdapter arrayAdapter = new GooglePlacesAutocompleteAdapter(getApplicationContext(), R.layout.layout_list_item);
-        auto.setAdapter(arrayAdapter);
-        auto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                String str = (String) adapterView.getItemAtPosition(position);
-                auto.setText(str);
-                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void someMethod() {

@@ -43,14 +43,34 @@
                                 android:layout_alignParentRight="true"
                                 android:layout_marginRight="20dp"
                                 android:id="@+id/ivEllipses"/>
-
                         </RelativeLayout>
-
+        <RelativeLayout
+            android:id="@+id/group_location"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/relLayout1"
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/location_outline"
+                android:layout_marginStart="10dp"
+                />
+            <TextView
+                android:id="@+id/show_location"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:textSize="15sp"
+                android:text="LOCATION"
+                />
+        </RelativeLayout>
                         <com.seoullo.seoullotour.Utils.SquareImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/post_image"
-                            android:layout_below="@id/relLayout1"
+                            android:layout_below="@id/group_location"
                             android:scaleType="centerCrop"/>
 
                         <RelativeLayout
