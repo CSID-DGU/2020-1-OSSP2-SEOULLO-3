@@ -173,7 +173,8 @@ public class GalleryFragment extends Fragment {
         gridView.setColumnWidth(imageWidth);
 
         //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs , FirebaseAuth.getInstance().getCurrentUser().getUid());
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend,
+                imgURLs , FirebaseAuth.getInstance().getCurrentUser().getUid(), 2);
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
@@ -192,7 +193,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
-
                 setImage(imgURLs.get(position), galleryImage, mAppend);
                 mSelectedImage = imgURLs.get(position);
                 imageName = imgURLs.get(position).substring(imgURLs.get(position).lastIndexOf("/")+1);

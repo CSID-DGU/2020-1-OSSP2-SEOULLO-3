@@ -222,7 +222,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                                    .into(holder.image);
 //                        }
 //                    });
-                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("photo1").getDownloadUrl()
+                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child(holder.photo.getImage_name())
+                            .getDownloadUrl()
                             .addOnSuccessListener( new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
