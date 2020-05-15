@@ -41,21 +41,20 @@ public class GalleryFragment extends Fragment {
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
 
-
     //widgets
     private GridView gridView;
     private ImageView galleryImage;
     private ProgressBar mProgressBar;
     private Spinner directorySpinner;
-
     private TextView empty;
     private TextView nextScreen;
 
     //vars
+    private String imageName;
     private ArrayList<String> directories;
     private String mAppend = "file:/";
     private String mSelectedImage;
-    private String imageName;
+
 
     @Nullable
     @Override
@@ -90,10 +89,12 @@ public class GalleryFragment extends Fragment {
                 if (isRootTask()) {
                     Intent intent = new Intent(getActivity(), com.seoullo.seoullotour.Share.NextActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                    intent.putExtra("image_name",imageName);
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                    intent.putExtra("image_name",imageName);
                     intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
                     startActivity(intent);
                     getActivity().finish();
@@ -180,6 +181,7 @@ public class GalleryFragment extends Fragment {
 
             setImage(imgURLs.get(0), galleryImage, mAppend);
             mSelectedImage = imgURLs.get(0);
+            imageName = imgURLs.get(0).substring(imgURLs.get(0).lastIndexOf("/")+1);
 
 
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -193,6 +195,7 @@ public class GalleryFragment extends Fragment {
 
                 setImage(imgURLs.get(position), galleryImage, mAppend);
                 mSelectedImage = imgURLs.get(position);
+                imageName = imgURLs.get(position).substring(imgURLs.get(position).lastIndexOf("/")+1);
             }
         });
 
