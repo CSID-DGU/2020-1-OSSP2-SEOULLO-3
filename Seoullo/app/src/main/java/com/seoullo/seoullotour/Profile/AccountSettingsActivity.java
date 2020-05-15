@@ -63,7 +63,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             }
         });
     }
-
+    //profile사진에는 장소가 필요없으니 ""로 처리했음
     private void getIncomingIntent() {
         Intent intent = getIntent();
         if(intent.hasExtra(getString(R.string.selected_image))
@@ -73,19 +73,21 @@ public class AccountSettingsActivity extends AppCompatActivity {
             //if there is an imageUrl attached as an extra, then it was chosen from the gallery/photo fragment
             Log.d(TAG, "getIncomingIntent: New incoming imgUrl");
             if(intent.getStringExtra(getString(R.string.return_to_fragment)).equals(getString(R.string.edit_profile_fragment))) {
-
                 if (intent.hasExtra(getString(R.string.selected_image))) {
 
                     //set the new profile picture
                     FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
                     firebaseMethods.uploadNewPhoto(getString(R.string.profile_photo), null, 0,
-                            intent.getStringExtra(getString(R.string.selected_image)), null ,"imagenamess");
+                            intent.getStringExtra(getString(R.string.selected_image)), null ,"","imagenamess");
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     //set the new profile picture
                     FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
                     firebaseMethods.uploadNewPhoto(getString(R.string.profile_photo), null, 0,
-                            null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)),"imagenamess");
+
+                            null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)),"","imagenamess");
+
+
                 }
             }
         }

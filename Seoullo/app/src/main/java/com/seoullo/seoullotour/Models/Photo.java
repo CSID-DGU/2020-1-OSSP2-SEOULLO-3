@@ -17,11 +17,14 @@ public class Photo implements Parcelable{
     private List<Like> likes;
     private int likeCount;
     private List<Comment> comments;
+    private String location;    //added 0516 00:16
+    private List<Place> places;
 
     public Photo() {
     }
 
-    public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags, List<Like> likes, int likeCount, List<Comment> comments) {
+    public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags,
+                 List<Like> likes, int likeCount, List<Comment> comments, String location, List<Place> places) {
         this.image_name = image_name;
         this.caption = caption;
         this.date_created = date_created;
@@ -32,6 +35,8 @@ public class Photo implements Parcelable{
         this.likes = likes;
         this.likeCount = likeCount;
         this.comments = comments;
+        this.location = location;
+        this.places = places;
     }
 
     protected Photo(Parcel in) {
@@ -42,6 +47,7 @@ public class Photo implements Parcelable{
         photo_id = in.readString();
         user_id = in.readString();
         tags = in.readString();
+        location = in.readString();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -93,8 +99,6 @@ public class Photo implements Parcelable{
         this.photo_id = photo_id;
     }
 
-
-
     public String getUser_id() {
         return user_id;
     }
@@ -134,6 +138,16 @@ public class Photo implements Parcelable{
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    //added 0516 00:00
+    public void setLocation(String location) { this.location = location; }
+
+    public String getLocation() { return location; }
+
+    public void setPLaces(List<Place> places) { this.places = places; }
+
+    public List<Place> getPlaces() { return places; }
+
 
     @Override
     public int describeContents() {

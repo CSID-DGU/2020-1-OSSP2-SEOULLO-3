@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Seoullo</string>
-    <!-- KEYS -->
-    <string name="NAVER_CLIENT_ID">8bw2ryp9g4</string>
-
     <!-- Fragment names -->
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="view_post_fragment">View Post</string>
