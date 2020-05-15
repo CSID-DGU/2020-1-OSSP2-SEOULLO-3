@@ -3,6 +3,8 @@ package com.seoullo.seoullotour.Share;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,6 +73,7 @@ public class NextActivity extends AppCompatActivity {
     private Intent intent;
     //place location
     private String location;
+    private static String API_KEY = "";
 
     public NextActivity() {
     }
@@ -82,6 +85,8 @@ public class NextActivity extends AppCompatActivity {
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         mCaption = (EditText) findViewById(R.id.caption);
         mAdapter = (RecyclerView) findViewById(R.id.recyclerview_autocomplete);
+        //API KEY init
+        API_KEY = getApiKeyFromManifest(this);
 
         //autocomplete text
         mAuto = findViewById(R.id.places_autocomplete_edit_text);
@@ -231,7 +236,6 @@ public class NextActivity extends AppCompatActivity {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-    private static final String API_KEY = "AIzaSyCWJmhcRuCnJ1rcGWtW9fW_sLo2_ADD0jY";
     //google place auto complete
     //place autocomplete custom version
     @SuppressLint("LongLogTag")
@@ -333,5 +337,24 @@ public class NextActivity extends AppCompatActivity {
             };
             return filter;
         }
+    }
+    //google api key
+    public static String getApiKeyFromManifest(Context context) {
+        String apiKey = null;
+
+        try {
+            String e = context.getPackageName();
+            ApplicationInfo ai = context
+                    .getPackageManager()
+                    .getApplicationInfo(e, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if(bundle != null) {
+                apiKey = bundle.getString("com.google.android.geo.API_KEY");
+            }
+        } catch (Exception var6) {
+            Log.d(TAG, "Caught non-fatal exception while retrieving apiKey: " + var6);
+        }
+
+        return apiKey;
     }
 }

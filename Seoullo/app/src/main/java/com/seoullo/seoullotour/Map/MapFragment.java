@@ -1,7 +1,12 @@
 package com.seoullo.seoullotour.Map;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +27,46 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.seoullo.seoullotour.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+
+    private static String TAG = "MapFragment";
     //naver map
     private MapView mapView;
     private NaverMap nMap;
+    private String NAVER_CLIENT_ID = "";
     //현위치
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
 
+    //naver api key
+    public static String getApiKeyFromManifest(Context context) {
+        String apiKey = null;
+
+        try {
+            String e = context.getPackageName();
+            ApplicationInfo ai = context
+                    .getPackageManager()
+                    .getApplicationInfo(e, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if(bundle != null) {
+                apiKey = bundle.getString("com.naver.maps.map.CLIENT_ID");
+            }
+        } catch (Exception var6) {
+            Log.d(TAG, "Caught non-fatal exception while retrieving apiKey: " + var6);
+        }
+
+        return apiKey;
+    }
+
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //API KEY init
+        NAVER_CLIENT_ID = getApiKeyFromManifest(this.getContext());
+
         //네이버지도
         NaverMapSdk.getInstance(this.getContext()).setClient(
-                new NaverMapSdk.NaverCloudPlatformClient("8bw2ryp9g4"));
+                new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
 
         //xml layout
         View view = inflater.inflate(R.layout.activity_map, container, false);
