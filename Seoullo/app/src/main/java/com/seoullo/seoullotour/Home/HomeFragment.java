@@ -56,40 +56,43 @@ public class HomeFragment extends Fragment {
     private void getPhotos() {
         Log.d(TAG, "getPhotos: getting photos");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            reference.child(getString(R.string.dbname_photos))
-                    .orderByChild(getString(R.string.field_likes_count))
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+        reference.child(getString(R.string.dbname_photos))
+//                .child(getString(R.string.field_photo_id))
+                .orderByChild(getString(R.string.field_likes_count))
+//                .orderByValue()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                                Photo photo = new Photo();
-                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                                Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+                            Photo photo = new Photo();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+                            photo.setImage_name(objectMap.get("image_name").toString());
+                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                                photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                                ArrayList<Comment> comments = new ArrayList<Comment>();
-                                for (DataSnapshot dSnapshot : singleSnapshot
-                                        .child(getString(R.string.field_comments)).getChildren()) {
-                                    Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                    comments.add(comment);
-                                }
-
-                                photo.setComments(comments);
-                                mPhotos.add(photo);
+                            ArrayList<Comment> comments = new ArrayList<Comment>();
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_comments)).getChildren()) {
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
                             }
+
+                            photo.setComments(comments);
+                            mPhotos.add(photo);
+                            Log.d(TAG, "포토아이디" + photo.getPhoto_id());
+                        }
 //                            displayPhotos();
-                            try {
-                                //최신순으로 보여줌.
+                        try {
+                            //최신순으로 보여줌.
 //                Collections.sort(mPhotos, new Comparator<Photo>() {
 //                    @Override
 //                    public int compare(Photo o1, Photo o2) {
@@ -97,22 +100,22 @@ public class HomeFragment extends Fragment {
 //                    }
 //                });
 
-                                mResults = 10;
-                                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
-                                mListView.setAdapter(mAdapter);
+                            mResults = 10;
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
+                            mListView.setAdapter(mAdapter);
 
-                            } catch (NullPointerException e) {
-                                Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
-                            } catch (IndexOutOfBoundsException e) {
-                                Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
-                            }
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
+                        } catch (IndexOutOfBoundsException e) {
+                            Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                    }
+                });
     }
 
     private void displayPhotos() {

@@ -104,7 +104,6 @@
                     android:horizontalSpacing="0.1dp"
                     android:stretchMode="columnWidth"
                     android:gravity="center">
-
                 </GridView>
 
             </RelativeLayout>

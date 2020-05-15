@@ -174,6 +174,7 @@ public class ProfileFragment extends Fragment {
                         photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                         photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                        photo.setImage_name(objectMap.get("image_name").toString());
 
                         ArrayList<Comment> comments = new ArrayList<Comment>();
                         for (DataSnapshot dSnapshot : singleSnapshot
@@ -209,8 +210,11 @@ public class ProfileFragment extends Fragment {
                 for(int i = 0; i < photos.size(); i++){
                     imgUrls.add(photos.get(i).getImage_path());
                 }
+                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
+                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
+                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
                 GridImageAdapter adapter = new GridImageAdapter(getActivity(),R.layout.layout_grid_imageview,
-                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos);
                 gridView.setAdapter(adapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

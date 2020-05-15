@@ -20,6 +20,7 @@ import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.R;
 
 import java.util.ArrayList;
@@ -31,18 +32,33 @@ public class GridImageAdapter extends ArrayAdapter<String> {
     private int layoutResource;
     private String mAppend;
     private String uid;
+    private int gridFlag;
     private int photosize;
     private ArrayList<String> imgURLs;
+    private ArrayList<Photo> photos = new ArrayList<>();
 
-    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid) {
+    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag) {
         super(context, layoutResource, imgURLs);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContext = context;
+        this.gridFlag = flag;
         this.uid = uid;
         this.layoutResource = layoutResource;
         mAppend = append;
         this.imgURLs = imgURLs;
     }
+    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag,  ArrayList<Photo> photos) {
+        super(context, layoutResource, imgURLs);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mContext = context;
+        this.gridFlag = flag;
+        this.uid = uid;
+        this.layoutResource = layoutResource;
+        mAppend = append;
+        this.imgURLs = imgURLs;
+        this.photos = photos;
+    }
+
 
     /**
      * SquareImageView change image propositions (to a square)
@@ -64,7 +80,7 @@ public class GridImageAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
-
+        int holderIndex = photos.size()-1-position;
         if(convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
@@ -76,57 +92,62 @@ public class GridImageAdapter extends ArrayAdapter<String> {
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String photo_name = "photo" + Integer.toString(position+1);
         String imgURL = getItem(position);
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-        storageReference.child("photos").child("users").child(uid).child(photo_name).getDownloadUrl()
-                .addOnSuccessListener( new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(mContext)
-                                .load(uri)
-                                .into(holder.image);
+       // String photo_name = "photo" + Integer.toString(position + 1);
+
+        if(gridFlag == 1) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+            //if(holderIndex >= 0) {
+                storageReference.child("photos").child("users").child(uid).child(photos.get(0).getImage_name()).getDownloadUrl()
+                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(mContext)
+                                        .load(uri)
+                                        .into(holder.image);
+                                holder.mProgressBar.setVisibility(View.GONE);
+                            }
+                        });
+           // }
+        }
+        else if(gridFlag == 2) {
+
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    if (holder.mProgressBar != null) {
+                        holder.mProgressBar.setVisibility(View.VISIBLE);
+                    }
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    if (holder.mProgressBar != null) {
                         holder.mProgressBar.setVisibility(View.GONE);
                     }
-                });
 
-//        ImageLoader imageLoader = ImageLoader.getInstance();
-//
-//        imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.VISIBLE);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//
-//            }
-//        });
+                }
 
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    if (holder.mProgressBar != null) {
+                        holder.mProgressBar.setVisibility(View.GONE);
+                    }
+
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    if (holder.mProgressBar != null) {
+                        holder.mProgressBar.setVisibility(View.GONE);
+                    }
+
+                }
+            });
+        }
 
         return convertView;
     }

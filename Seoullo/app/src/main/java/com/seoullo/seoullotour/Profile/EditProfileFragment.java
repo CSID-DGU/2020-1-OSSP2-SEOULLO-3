@@ -278,16 +278,17 @@ public class EditProfileFragment extends Fragment implements
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
-                .addOnSuccessListener( new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(getActivity())
-                                .load(uri)
-                                .into(mProfilePhoto);
-
-                    }
-                });
+        // 프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
+//        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
+//                .addOnSuccessListener( new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        Glide.with(getActivity())
+//                                .load(uri)
+//                                .into(mProfilePhoto);
+//
+//                    }
+//                });
       //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
 
         mDisplayName.setText(settings.getDisplay_name());

@@ -67,7 +67,8 @@ public class FirebaseMethods {
         }
     }
 
-    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm) {
+
+    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm, final String location, final String imgName){
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
@@ -77,7 +78,8 @@ public class FirebaseMethods {
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = mStorageReference
-                    .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
+                    //스토리지에 사용자id/사진명 저장
+                    .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/"+ imgName);//photo" + (count + 1));
 
             //convert image url to bitmap
             if (bm == null) {
@@ -97,7 +99,8 @@ public class FirebaseMethods {
                     Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
 
                     //add the new photo to 'photos' node and 'user_photos' node
-                    addPhotoToDatabase(caption, firebaseUrl.toString());
+
+                    addPhotoToDatabase(caption, firebaseUrl.toString(), location,imgName);
 
                     //navigate to the main feed so the user can see their photo
                     Intent intent = new Intent(mContext, HomeActivity.class);
@@ -194,18 +197,21 @@ public class FirebaseMethods {
         return sdf.format(new Date());
     }
 
-    private void addPhotoToDatabase(String caption, String url) {
+
+    private void addPhotoToDatabase(String caption, String url, String location, String imgName) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);
         String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_photos)).push().getKey();
         Photo photo = new Photo();
         photo.setCaption(caption);
+        photo.setImage_name(imgName);
         photo.setDate_created(getTimestamp());
         photo.setImage_path(url);
         photo.setTags(tags);
         photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
         photo.setPhoto_id(newPhotoKey);
+        photo.setLocation(location);    //added location
 
         //insert into database
         myRef.child(mContext.getString(R.string.dbname_user_photos))

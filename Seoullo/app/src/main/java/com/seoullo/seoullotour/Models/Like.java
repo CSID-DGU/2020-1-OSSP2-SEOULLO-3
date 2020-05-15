@@ -19,6 +19,7 @@ public class Like {
         this.user_id = user_id;
     }
 
+
     @Override
     public String toString() {
         return super.toString();
