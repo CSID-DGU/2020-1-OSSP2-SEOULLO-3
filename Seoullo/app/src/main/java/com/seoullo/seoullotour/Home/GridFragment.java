@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,18 +81,11 @@ public class GridFragment extends Fragment {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
-//                    .orderByChild(getString(R.string.field_likes_count))
+                    .orderByChild(getString(R.string.field_likes_count))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        //            FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_photos)).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                        photos.clear();
-//                    photos.clear();
-//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                        photos.add(snapshot.getValue(Photo.class));
-//                    }
-//
+                            photos.clear();
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                                 Photo photo = new Photo();
@@ -116,23 +112,8 @@ public class GridFragment extends Fragment {
                                 photo.setComments(comments);
                                 photos.add(photo);
                                 Log.d(TAG, "포토사이즈" + photos.size());
-
                             }
                             notifyDataSetChanged();
-
-//                            displayPhotos();
-//                        try {
-//
-//
-//                            mResults = 10;
-//                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
-//                            mListView.setAdapter(mAdapter);
-//
-//                        } catch (NullPointerException e) {
-//                            Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
-//                        } catch (IndexOutOfBoundsException e) {
-//                            Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
-//                        }
                         }
 
                         @Override
@@ -140,12 +121,6 @@ public class GridFragment extends Fragment {
 
                         }
                     });
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//                }
-//            });
         }
 
         @Override
@@ -164,34 +139,21 @@ public class GridFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-            Log.d(TAG, "출력" + photos.size());
-            Log.d(TAG, "이미지path: " + photos.get(position).getImage_path());
-            Log.d(TAG, "이미지 NAME: " + photos.get(position).getImage_name());
-
-            Glide.with(holder.itemView.getContext())
-                    .load(photos.get(position).getImage_name())
-//                    .load(photos.get(position).getPhoto_id())
-                    .apply(new RequestOptions().centerCrop())
-                    .into(((CustomViewHolder) holder).imageView);
-
-            /*FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-            storageReference.child(getString(R.string.dbname_photos)).child(photos.get(position).getPhoto_id()).getDownloadUrl()
-                    .addOnSuccessListener( new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-
-                            Glide.with(holder.itemView.getContext())
-                                    .load(uri)
-                                    .apply(new RequestOptions().centerCrop())
-                                    .into(((CustomViewHolder) holder).imageView);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    });*/
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference()
+                    .child("photos").child("users").child(photos.get(position).getUser_id()).child(photos.get(position).getImage_name());
+            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        // Glide 이용하여 이미지뷰에 로딩
+                        Glide.with(holder.itemView.getContext())
+                                .load(task.getResult())
+                                .into(((CustomViewHolder) holder).imageView);
+                    } else {
+                    }
+                }
+            });
         }
 
         @Override
