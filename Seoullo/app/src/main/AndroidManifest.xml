@@ -34,7 +34,7 @@
         <activity android:name=".Share.ShareActivity" />
         <activity android:name=".Map.MapActivity"
             android:noHistory="true" />
-        <activity android:name=".Map.RecommendActivity"
+        <activity android:name=".Recommend.RecommendActivity"
             android:noHistory="true" />
         <activity android:name=".Profile.AccountSettingsActivity" />
         <activity android:name=".Login.RegisterActivity" />

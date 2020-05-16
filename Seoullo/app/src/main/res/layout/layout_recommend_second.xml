@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/theme_deepblue"
+    >
+
+    <TextView
+        android:id="@+id/recommend_title"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="5dp"
+
+        android:text="TITLE"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:gravity="center"
+        />
+    <LinearLayout
+        android:id="@+id/title_division"
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:background="@color/white"
+
+        app:layout_constraintTop_toBottomOf="@id/recommend_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal" />
+    <LinearLayout
+        android:id="@+id/group_vicinity"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+
+        app:layout_constraintTop_toBottomOf="@id/title_division"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/group_info1"
+        android:layout_marginTop="10dp"
+        >
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="60dp"
+            android:src="@drawable/location_outline_white"
+
+            />
+        <TextView
+            android:id="@+id/recommend_vicinity"
+            android:layout_width="250dp"
+            android:layout_height="25dp"
+
+            android:layout_marginStart="10dp"
+
+            android:textSize="15sp"
+            android:text="Vicinity"
+            android:textColor="@color/theme_camel"
+            android:textStyle="italic"
+            android:gravity="center_vertical"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/group_info1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/group_vicinity"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="15dp"
+        >
+        <ImageView
+            android:id="@+id/recommend_image"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+
+            android:layout_margin="10dp"
+
+            android:src="@color/theme_orange"
+            />
+        <TextView
+            android:id="@+id/recommend_desc"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="10dp"
+
+            android:text="this is the test case of recommendation script this will be filled with a lot of informations"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/group_info2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/group_info1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/recommend_anotherdesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="20sp"
+            android:text="another decriptions will be located here !"
+            android:textColor="@color/white"
+
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+
+            android:gravity="top"
+            />
+
+    </LinearLayout>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

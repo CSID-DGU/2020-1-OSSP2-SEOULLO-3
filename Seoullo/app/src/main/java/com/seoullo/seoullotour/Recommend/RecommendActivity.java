@@ -1,4 +1,4 @@
-package com.seoullo.seoullotour.Map;
+package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
 import android.os.Bundle;
