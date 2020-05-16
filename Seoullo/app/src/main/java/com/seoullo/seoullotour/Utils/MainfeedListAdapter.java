@@ -59,9 +59,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
-    public interface OnLoadMoreItemsListener{
+    public interface OnLoadMoreItemsListener {
         void onLoadMoreItems();
     }
+
     OnLoadMoreItemsListener mOnLoadMoreItemsListener;
 
     private static final String TAG = "MainfeedListAdapter";
@@ -80,15 +81,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         mReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         CircleImageView mprofileImage;
         String likesString;
-        TextView username, timeDetla, caption, likes, comments;
+        TextView username, timeDetla, caption, likes, comments, location;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment;
 
         UserAccountSettings settings = new UserAccountSettings();
-        User user  = new User();
+        User user = new User();
         StringBuilder users;
         String mLikesString;
         boolean likeByCurrentUser;
@@ -103,7 +104,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         final ViewHolder holder;
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
             holder = new ViewHolder();
 
@@ -121,10 +122,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.photo = getItem(position);
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
+            holder.location = (TextView) convertView.findViewById(R.id.show_location);
 
             convertView.setTag(holder);
 
-        }else{
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -145,27 +147,27 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: loading comment thread for " + getItem(position).getPhoto_id());
-                ((HomeActivity)mContext).onCommentThreadSelected(getItem(position),
+                ((HomeActivity) mContext).onCommentThreadSelected(getItem(position),
                         mContext.getString(R.string.home_activity));
 
                 //going to need to do something else?
-                ((HomeActivity)mContext).hideLayout();
+                ((HomeActivity) mContext).hideLayout();
 
             }
         });
 
         //set the time it was posted
         String timestampDifference = getTimestampDifference(getItem(position));
-        if(!timestampDifference.equals("0")){
+        if (!timestampDifference.equals("0")) {
             holder.timeDetla.setText(timestampDifference + " DAYS AGO");
-        }else{
+        } else {
             holder.timeDetla.setText("TODAY");
         }
+
 
         //set the profile image
 //        final ImageLoader imageLoader = ImageLoader.getInstance();
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
-
 
 
         //get the profile image and username
@@ -179,7 +181,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                     currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
 
@@ -187,7 +189,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             + singleSnapshot.getValue(UserAccountSettings.class).getUsername());
                     holder.username.setText(singleSnapshot.getValue(UserAccountSettings.class).getUsername());
 
-                            holder.username.setOnClickListener(new View.OnClickListener() {
+                    holder.username.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Log.d(TAG, "onClick: navigating to profile of: " +
@@ -201,17 +203,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                     });
 
-                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-            storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
-                    .addOnSuccessListener( new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Glide.with(mContext)
-                                    .load(uri)
-                                    .into(holder.mprofileImage);
-                        }
-                    });
+                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                    StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(mContext)
+                                            .load(uri)
+                                            .into(holder.mprofileImage);
+                                }
+                            });
 //                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(toString(getItem(position).getImage_path()));
 //                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(getItem(position).getImage_path());
 //                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -222,9 +224,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                                    .into(holder.image);
 //                        }
 //                    });
+
+
                     storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child(holder.photo.getImage_name())
                             .getDownloadUrl()
-                            .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Glide.with(mContext)
@@ -252,16 +256,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     });
 
 
-
                     holder.settings = singleSnapshot.getValue(UserAccountSettings.class);
                     holder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((HomeActivity)mContext).onCommentThreadSelected(getItem(position),
+                            ((HomeActivity) mContext).onCommentThreadSelected(getItem(position),
                                     mContext.getString(R.string.home_activity));
 
                             //another thing?
-                            ((HomeActivity)mContext).hideLayout();
+                            ((HomeActivity) mContext).hideLayout();
                         }
                     });
                 }
@@ -282,7 +285,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found user: " +
                             singleSnapshot.getValue(User.class).getUsername());
 
@@ -297,35 +300,36 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
-        if(reachedEndOfList(position)){
+        if (reachedEndOfList(position)) {
             loadMoreData();
         }
 
         return convertView;
     }
 
-    private boolean reachedEndOfList(int position){
+    private boolean reachedEndOfList(int position) {
         return position == getCount() - 1;
     }
 
-    private void loadMoreData(){
+    private void loadMoreData() {
 
-        try{
+        try {
             mOnLoadMoreItemsListener = (OnLoadMoreItemsListener) getContext();
-        }catch (ClassCastException e){
-            Log.e(TAG, "loadMoreData: ClassCastException: " +e.getMessage() );
+        } catch (ClassCastException e) {
+            Log.e(TAG, "loadMoreData: ClassCastException: " + e.getMessage());
         }
 
-        try{
+        try {
             mOnLoadMoreItemsListener.onLoadMoreItems();
-        }catch (NullPointerException e){
-            Log.e(TAG, "loadMoreData: ClassCastException: " +e.getMessage() );
+        } catch (NullPointerException e) {
+            Log.e(TAG, "loadMoreData: ClassCastException: " + e.getMessage());
         }
     }
 
-    public class GestureListener extends GestureDetector.SimpleOnGestureListener{
+    public class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         ViewHolder mHolder;
+
         public GestureListener(ViewHolder holder) {
             mHolder = holder;
         }
@@ -349,12 +353,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         String keyID = singleSnapshot.getKey();
                         //case1: Then user already liked the photo
-                        if(mHolder.likeByCurrentUser &&
+                        if (mHolder.likeByCurrentUser &&
                                 singleSnapshot.getValue(Like.class).getUser_id()
-                                        .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                        .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             mHolder.photo.subtractLikeCount();
 
                             mReference.child(mContext.getString(R.string.dbname_photos))
@@ -379,13 +383,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             getLikesString(mHolder);
                         }
                         //case2: The user has not liked the photo
-                        else if(!mHolder.likeByCurrentUser){
+                        else if (!mHolder.likeByCurrentUser) {
                             //add new like
                             addNewLike(mHolder);
                             break;
                         }
                     }
-                    if(!dataSnapshot.exists()){
+                    if (!dataSnapshot.exists()) {
                         //add new like
                         addNewLike(mHolder);
                     }
@@ -401,7 +405,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
     }
 
-    private void addNewLike(final ViewHolder holder){
+    private void addNewLike(final ViewHolder holder) {
         Log.d(TAG, "addNewLike: adding new like");
 
 //        String newLikeID = mReference.push().getKey();
@@ -432,7 +436,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         getLikesString(holder);
     }
 
-    private void getCurrentUsername(){
+    private void getCurrentUsername() {
         Log.d(TAG, "getCurrentUsername: retrieving user account settings");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
@@ -441,9 +445,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                     currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
                     System.out.println(currentUsername);
@@ -458,10 +462,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         });
     }
 
-    private void getLikesString(final ViewHolder holder){
+    private void getLikesString(final ViewHolder holder) {
         Log.d(TAG, "getLikesString: getting likes string");
 
-        try{
+        try {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference
                     .child(mContext.getString(R.string.dbname_photos))
@@ -471,7 +475,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
-                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference
@@ -481,7 +485,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                     Log.d(TAG, "onDataChange: found like: " +
                                             singleSnapshot.getValue(User.class).getUsername());
 
@@ -491,33 +495,29 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 String[] splitUsers = holder.users.toString().split(",");
 
-                                if(holder.users.toString().contains(currentUsername + ",")){//mitch, mitchell.tabian
+                                if (holder.users.toString().contains(currentUsername + ",")) {//mitch, mitchell.tabian
                                     holder.likeByCurrentUser = true;
-                                }else{
+                                } else {
                                     holder.likeByCurrentUser = false;
                                 }
 
                                 int length = splitUsers.length;
-                                if(length == 1){
+                                if (length == 1) {
                                     holder.likesString = "Liked by " + splitUsers[0];
-                                }
-                                else if(length == 2){
+                                } else if (length == 2) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + " and " + splitUsers[1];
-                                }
-                                else if(length == 3){
+                                } else if (length == 3) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + " and " + splitUsers[2];
 
-                                }
-                                else if(length == 4){
+                                } else if (length == 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
                                             + " and " + splitUsers[3];
-                                }
-                                else if(length > 4){
+                                } else if (length > 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
@@ -534,20 +534,21 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             }
                         });
                     }
-                    if(!dataSnapshot.exists()){
+                    if (!dataSnapshot.exists()) {
                         holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
                         setupLikesString(holder, holder.likesString);
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
-        }catch (NullPointerException e){
-            Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage() );
+        } catch (NullPointerException e) {
+            Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
             holder.likesString = "";
             holder.likeByCurrentUser = false;
             //setup likes string
@@ -555,10 +556,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
     }
 
-    private void setupLikesString(final ViewHolder holder, String likesString){
+    private void setupLikesString(final ViewHolder holder, String likesString) {
         Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
 
-        if(holder.likeByCurrentUser){
+        if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");
             holder.heartWhite.setVisibility(View.GONE);
             holder.heartRed.setVisibility(View.VISIBLE);
@@ -568,7 +569,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     return holder.detector.onTouchEvent(event);
                 }
             });
-        }else{
+        } else {
             Log.d(TAG, "setupLikesString: photo is not liked by current user");
             holder.heartWhite.setVisibility(View.VISIBLE);
             holder.heartRed.setVisibility(View.GONE);
@@ -584,9 +585,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     /**
      * Returns a string representing the number of days ago the post was made
+     *
      * @return
      */
-    private String getTimestampDifference(Photo photo){
+    private String getTimestampDifference(Photo photo) {
         Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
 
         String difference = "";
@@ -597,11 +599,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         sdf.format(today);
         Date timestamp;
         final String photoTimestamp = photo.getDate_created();
-        try{
+        try {
             timestamp = sdf.parse(photoTimestamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24 )));
-        }catch (ParseException e){
-            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage() );
+            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+        } catch (ParseException e) {
+            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage());
             difference = "0";
         }
         return difference;
