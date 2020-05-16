@@ -163,5 +163,6 @@ public class Photo implements Parcelable{
         dest.writeString(photo_id);
         dest.writeString(user_id);
         dest.writeString(tags);
+        dest.writeString(location);
     }
 }
