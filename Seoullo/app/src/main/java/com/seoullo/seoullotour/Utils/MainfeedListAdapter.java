@@ -41,7 +41,12 @@ import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
+import com.seoullo.seoullotour.Recommend.RecommendActivity;
+import com.seoullo.seoullotour.Recommend.RecommendFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.nio.file.Path;
@@ -274,6 +279,49 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+        //get location item
+        Query query1 = reference
+                .child("photos")
+                .child(holder.photo.getPhoto_id())
+                .child("location");
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String location="not recognized";
+                String jsonString = dataSnapshot.toString();
+//                try {
+//                    JSONObject jsonObj = new JSONObject(jsonString);
+//                    JSONArray locArray = (JSONArray) jsonObj.get("DataSnapshot");
+//
+//                    for(int i=0;i<locArray.length();++i) {
+//                        JSONObject locObject = (JSONObject) locArray.getJSONObject(i);
+//                        location = locObject.get("value").toString();
+//                        System.out.println("location@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+location);
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+                System.out.println("jsonString :"+ jsonString);
+                String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
+                System.out.println("json :"+value);
+
+                holder.location.setText(value);
+
+                //click listener
+                holder.location.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO:: 값이랑 페이지 넘기기
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("location add","error !!");
             }
         });
 
