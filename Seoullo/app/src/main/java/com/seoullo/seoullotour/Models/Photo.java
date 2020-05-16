@@ -3,9 +3,10 @@ package com.seoullo.seoullotour.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Photo implements Parcelable{
+public class Photo implements Parcelable, Serializable {
 
     private String caption;
     private String date_created;

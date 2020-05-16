@@ -38,7 +38,10 @@ import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GridFragment extends Fragment {
@@ -81,10 +84,11 @@ public class GridFragment extends Fragment {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
-                    .orderByChild(getString(R.string.field_likes_count))
+//                    .orderByChild(getString(R.string.field_likes_count))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+//                            Collections.sort(photos, ComparatorByLikeNum);
                             photos.clear();
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
@@ -110,9 +114,18 @@ public class GridFragment extends Fragment {
                                 }
 
                                 photo.setComments(comments);
+
+                                /*Collections.sort(photos, new Comparator<Photo>() {
+                                    @Override
+                                    public int compare(Photo o1, Photo o2) {
+                                        return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
+                                    }
+                                });*/
+
                                 photos.add(photo);
                                 Log.d(TAG, "포토사이즈" + photos.size());
                             }
+
                             notifyDataSetChanged();
                         }
 
@@ -154,6 +167,22 @@ public class GridFragment extends Fragment {
                     }
                 }
             });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    ((MainActivity)getActivity()).replaceFragment(DetailViewFragment.newInstance(contentDTOs.get(position), position));
+
+                    FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    //transAction animation  ++++
+//                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left,R.anim.exit_to_right);
+                    fragmentTransaction.replace(R.id.viewpager_container, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+
+            });
+//            ((HomeActivity) getActivity()).endOfProgress();
         }
 
         @Override
@@ -191,8 +220,13 @@ public class GridFragment extends Fragment {
             public void onClick(View v) {
 
             }
-
         }
+//        public Comparator<Photo> ComparatorByLikeNum = new Comparator<Photo>() {
+//            @Override
+//            public int compare(Photo o1, Photo o2) {
+//                return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
+//            }
+//        };
     }
 
     private void getPhotos() {
