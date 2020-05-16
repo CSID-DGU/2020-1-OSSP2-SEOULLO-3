@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,6 +64,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         void onLoadMoreItems();
     }
 
+    public RequestManager mRequestManager;
     OnLoadMoreItemsListener mOnLoadMoreItemsListener;
 
     private static final String TAG = "MainfeedListAdapter";
@@ -73,10 +75,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private DatabaseReference mReference;
     private String currentUsername = "";
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects) {
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects ,RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
+        mRequestManager = requestManager;
         this.mContext = context;
         mReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -156,6 +159,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
+
         //set the time it was posted
         String timestampDifference = getTimestampDifference(getItem(position));
         if (!timestampDifference.equals("0")) {
@@ -170,8 +174,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
 
 
+
         //get the profile image and username
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .orderByChild(mContext.getString(R.string.field_user_id))
@@ -179,7 +186,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         query.addValueEventListener(new ValueEventListener() {
 
-            @Override
+                @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
@@ -209,9 +216,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Glide.with(mContext)
-                                            .load(uri)
-                                            .into(holder.mprofileImage);
+                                    mRequestManager.load(uri).into(holder.mprofileImage);
+//                                    Glide.with(mContext)
+////                                            .load(uri)
+////                                            .into(holder.mprofileImage);
+
                                 }
                             });
 //                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(toString(getItem(position).getImage_path()));
@@ -231,9 +240,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Glide.with(mContext)
-                                            .load(uri)
-                                            .into(holder.image);
+                                    mRequestManager.load(uri).into(holder.image);
+//                                    Glide.with(mContext)
+//                                            .load(uri)
+//                                            .into(holder.image);
                                 }
                             });
                     //Glide.with(mContext).load(getItem(position).getImage_path()).into(holder.image);

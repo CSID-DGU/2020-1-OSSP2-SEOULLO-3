@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,6 +37,7 @@ public class GridImageAdapter extends ArrayAdapter<String> {
     private int photosize;
     private ArrayList<String> imgURLs;
     private ArrayList<Photo> photos = new ArrayList<>();
+    public RequestManager mRequestManager;
 
     public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag) {
         super(context, layoutResource, imgURLs);
@@ -47,9 +49,10 @@ public class GridImageAdapter extends ArrayAdapter<String> {
         mAppend = append;
         this.imgURLs = imgURLs;
     }
-    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag,  ArrayList<Photo> photos) {
+    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag,  ArrayList<Photo> photos , RequestManager requestManager) {
         super(context, layoutResource, imgURLs);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mRequestManager =requestManager;
         mContext = context;
         this.gridFlag = flag;
         this.uid = uid;
@@ -99,14 +102,16 @@ public class GridImageAdapter extends ArrayAdapter<String> {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
             //if(holderIndex >= 0) {
-                storageReference.child("photos").child("users").child(uid).child(photos.get(0).getImage_name()).getDownloadUrl()
+                storageReference.child("photos").child("users").child(uid).child(photos.get(position).getImage_name()).getDownloadUrl()
                         .addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                Glide.with(mContext)
-                                        .load(uri)
-                                        .into(holder.image);
+                                mRequestManager.load(uri).into(holder.image);
                                 holder.mProgressBar.setVisibility(View.GONE);
+//                                Glide.with(mContext)
+//                                        .load(uri)
+//                                        .into(holder.image);
+//
                             }
                         });
            // }
