@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,13 +30,20 @@ public class RecommendActivity extends AppCompatActivity {
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
     private LinearLayout mLinearLayout;
+    //get intent
+    private Intent intent;
+    private String getLocation;
 
-    //TODO: link to fragment
+    //TODO: link to fragment -> done
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
+
+        intent = getIntent();
+        getLocation = intent.getStringExtra("");
+
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
@@ -60,7 +68,7 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new RecommendFragment());
+        adapter.addFragment(new RecommendFragment(getLocation));
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){
