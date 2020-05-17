@@ -190,27 +190,27 @@ public class EditProfileFragment extends Fragment implements
         final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
 
 
-        // case1: if user changed to same name.
-        if (!mUserSettings.getUser().getUsername().equals(username)) {
-            checkIfUsernameExists(username);
-        }
-        // case2: if user change their email
-        if (!mUserSettings.getUser().getEmail().equals(email)) {
-            //step1 Re-Auth
-            //      - Confirm password and email
-
-            //주석처리 5.17
-//            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
-////            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
-////            dialog.setTargetFragment(EditProfileFragment.this, 1);
-            //step2 Check if email already exists
-
-
-            //      - 'fetchProvidersForEmail(String email)
-            //step3 change email
-            //      - submit new email to database and authentication
-
-        }
+//        // case1: if user changed to same name.
+//        if (!mUserSettings.getUser().getUsername().equals(username)) {
+//            checkIfUsernameExists(username);
+//        }
+//        // case2: if user change their email
+//        if (!mUserSettings.getUser().getEmail().equals(email)) {
+//            //step1 Re-Auth
+//            //      - Confirm password and email
+//
+//            //주석처리 5.17
+////            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+//////            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+//////            dialog.setTargetFragment(EditProfileFragment.this, 1);
+//            //step2 Check if email already exists
+//
+//
+//            //      - 'fetchProvidersForEmail(String email)
+//            //step3 change email
+//            //      - submit new email to database and authentication
+//
+//        }
 
 
         /**
@@ -271,7 +271,8 @@ public class EditProfileFragment extends Fragment implements
 
 
     private void setProfileWidgets(UserSettings userSettings) {
-        System.out.println(userSettings +"userSettings ::");
+        mUserSettings = userSettings;
+
         User user = userSettings.getUser();
         String userid = user.getUser_id();
 
@@ -321,7 +322,6 @@ public class EditProfileFragment extends Fragment implements
      * Setup the firebase auth object
      */
     private void setupFirebaseAuth(){
-        Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();

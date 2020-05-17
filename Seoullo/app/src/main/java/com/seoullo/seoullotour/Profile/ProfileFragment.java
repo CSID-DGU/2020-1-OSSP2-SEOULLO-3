@@ -154,7 +154,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupGridView(){
-        Log.d(TAG, "setupGridView: Setting up image grid.");
+
 
         final ArrayList<Photo> photos = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
