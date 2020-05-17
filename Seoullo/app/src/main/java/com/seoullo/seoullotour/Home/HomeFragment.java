@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -24,6 +27,7 @@ import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +47,29 @@ public class HomeFragment extends Fragment {
     private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
     private int mResults;
 
+    private static final String ARG_PARAM1 = "param1";
+    private String mParam;
+
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
+    }
+
+    public static Fragment newInstance(Photo clickedPhoto, String photoID) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM1, photoID);
+        bundle.putSerializable("object", clickedPhoto);
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle saveInstanceState) {
+        super.onCreate(saveInstanceState);
+
+        mParam = getArguments().getString(ARG_PARAM1);
+    }
 
     @Nullable
     @Override
@@ -50,20 +77,67 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mListView = (ListView) view.findViewById(R.id.listView);
         mAllUserPosts = new ArrayList<>();
+        Photo photo = new Photo();
         mPhotos = new ArrayList<>();
         mRequestManager = Glide.with(this);
 //        getAllPosts();
         getPhotos();
 
+
+        getPhotos();
         return view;
     }
 
     private void getPhotos() {
         Log.d(TAG, "getPhotos: getting photos");
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_photos))
+                .orderByChild(getString(R.string.field_photo_id))
+//                .equalTo(mParam)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                    Photo photo = new Photo();
+                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                    if(!objectMap.get(getString(R.string.field_photo_id)).toString().equals(mParam))
+                        continue;
+                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                    Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+                    photo.setImage_name(objectMap.get("image_name").toString());
+                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+
+                    ArrayList<Comment> comments = new ArrayList<Comment>();
+                    for (DataSnapshot dSnapshot : singleSnapshot
+                            .child(getString(R.string.field_comments)).getChildren()) {
+                        Comment comment = new Comment();
+                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                        comments.add(comment);
+                    }
+
+                    photo.setComments(comments);
+                    mPhotos.add(photo);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        reference.child(getString(R.string.dbname_photos))
 //                .child(getString(R.string.field_photo_id))
-                .orderByChild(getString(R.string.field_likes_count))
+                .orderByChild(getString(R.string.field_photo_id))
 //                .orderByValue()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -72,6 +146,8 @@ public class HomeFragment extends Fragment {
 
                             Photo photo = new Photo();
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                            if(objectMap.get(getString(R.string.field_photo_id)).toString().equals(mParam))
+                                continue;
                             photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                             photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
                             photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
@@ -80,7 +156,6 @@ public class HomeFragment extends Fragment {
                             photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                             photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                             photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
                             ArrayList<Comment> comments = new ArrayList<Comment>();
                             for (DataSnapshot dSnapshot : singleSnapshot
                                     .child(getString(R.string.field_comments)).getChildren()) {
@@ -90,24 +165,18 @@ public class HomeFragment extends Fragment {
                                 comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
                                 comments.add(comment);
                             }
-
                             photo.setComments(comments);
                             mPhotos.add(photo);
-                            Log.d(TAG, "포토아이디" + photo.getPhoto_id());
                         }
-//                            displayPhotos();
-                        try {
-                            //최신순으로 보여줌.
-//                Collections.sort(mPhotos, new Comparator<Photo>() {
-//                    @Override
-//                    public int compare(Photo o1, Photo o2) {
-//                        return o2.getDate_created().compareTo(o1.getDate_created());
-//                    }
-//                });
 
+                        try {
                             mResults = 10;
                             mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
+                            Log.d(TAG, "mPhotos.get(0): " + mPhotos.get(0).getPhoto_id());
+                            Log.d(TAG, "mPhotos.get(1): " + mPhotos.get(1).getPhoto_id());
+                            Log.d(TAG, "mPhotos.get(2): " + mPhotos.get(2).getPhoto_id());
+                            Log.d(TAG, "mPhotos.get(3): " + mPhotos.get(3).getPhoto_id());
 
                         } catch (NullPointerException e) {
                             Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
@@ -127,14 +196,6 @@ public class HomeFragment extends Fragment {
         mPaginatedPhotos = new ArrayList<>();
         if (mPhotos != null) {
             try {
-                //최신순으로 보여줌.
-//                Collections.sort(mPhotos, new Comparator<Photo>() {
-//                    @Override
-//                    public int compare(Photo o1, Photo o2) {
-//                        return o2.getDate_created().compareTo(o1.getDate_created());
-//                    }
-//                });
-
                 mResults = 10;
                 mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                 mListView.setAdapter(mAdapter);
