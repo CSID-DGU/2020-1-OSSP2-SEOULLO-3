@@ -1,9 +1,13 @@
 package com.seoullo.seoullotour.Recommend;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +41,7 @@ import java.util.List;
 public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
     //variables
+    private static String TAG ="Recommend Fragment";
     //현위치
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -44,6 +49,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private Marker marker = new Marker();
     private MapView mapView;
     public NaverMap nMap;
+    private String NAVER_CLIENT_ID = "";
     //정보가져올 DTO
     private String findLocation;
     public Point point;
@@ -66,6 +72,25 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //        reviewMapFragment.setArguments(bundle);
 //        return reviewMapFragment;
 //    }
+    //naver api key
+    public static String getApiKeyFromManifest(Context context) {
+        String apiKey = null;
+
+        try {
+            String e = context.getPackageName();
+            ApplicationInfo ai = context
+                    .getPackageManager()
+                    .getApplicationInfo(e, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if(bundle != null) {
+                apiKey = bundle.getString("com.naver.maps.map.CLIENT_ID");
+            }
+        } catch (Exception var6) {
+            Log.d(TAG, "Caught non-fatal exception while retrieving apiKey: " + var6);
+        }
+
+        return apiKey;
+    }
 
     //TODO::Firebase연동 + 지도 연동
     @Override
@@ -73,8 +98,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
 
         //네이버지도
+        NAVER_CLIENT_ID = getApiKeyFromManifest(this.getContext());
         NaverMapSdk.getInstance(this.getContext()).setClient(
-                new NaverMapSdk.NaverCloudPlatformClient("@string/NAVER_CLIENT_ID"));
+                new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
 
         //xml layout
         View view = inflater.inflate(R.layout.fragment_recommend, container, false);

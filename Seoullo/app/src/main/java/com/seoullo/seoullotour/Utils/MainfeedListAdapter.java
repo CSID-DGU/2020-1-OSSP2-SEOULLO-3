@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -315,10 +316,19 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                    e.printStackTrace();
 //                }
                 System.out.println("jsonString :"+ jsonString);
-                String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
+                final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
                 System.out.println("json :"+value);
 
                 holder.location.setText(value);
+
+                holder.location.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, RecommendActivity.class);
+                        intent.putExtra("location", value);
+                        mContext.startActivity(intent);
+                    }
+                });
             }
 
             @Override
