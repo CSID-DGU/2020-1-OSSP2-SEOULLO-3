@@ -198,9 +198,11 @@ public class EditProfileFragment extends Fragment implements
         if (!mUserSettings.getUser().getEmail().equals(email)) {
             //step1 Re-Auth
             //      - Confirm password and email
-            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
-            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
-            dialog.setTargetFragment(EditProfileFragment.this, 1);
+
+            //주석처리 5.17
+//            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+////            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+////            dialog.setTargetFragment(EditProfileFragment.this, 1);
             //step2 Check if email already exists
 
 
@@ -269,43 +271,46 @@ public class EditProfileFragment extends Fragment implements
 
 
     private void setProfileWidgets(UserSettings userSettings) {
+        System.out.println(userSettings +"userSettings ::");
+        User user = userSettings.getUser();
+        String userid = user.getUser_id();
 
-        mUserSettings = userSettings;
-        //User user = userSettings.getUser();
-        UserAccountSettings settings = mUserSettings.getSettings();
-        System.out.println(userSettings.getUser().getUser_id()+"<<<<<<<<<");
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-         //프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
-        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
-                .addOnSuccessListener( new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        mRequestManager.load(uri).into(mProfilePhoto);
+        UserAccountSettings settings = userSettings.getSettings();
+
+        if(userid != null) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+            //프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
+            storageReference.child("photos").child("users").child(userid).child("profile_photo").getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            mRequestManager.load(uri).into(mProfilePhoto);
 //                        Glide.with(getActivity())
 //                                .load(uri)
 //                                .into(mProfilePhoto);
-                    }
-                });
-      //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+                        }
+                    });
+            //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
 
-        mDisplayName.setText(settings.getDisplay_name());
-        mUsername.setText(settings.getUsername());
-        mWebsite.setText(settings.getWebsite());
-        mDescription.setText(settings.getDescription());
-        mEmail.setText(userSettings.getUser().getEmail());
-        mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
+            mDisplayName.setText(settings.getDisplay_name());
+            mUsername.setText(settings.getUsername());
+            mWebsite.setText(settings.getWebsite());
+            mDescription.setText(settings.getDescription());
+            mEmail.setText(userSettings.getUser().getEmail());
+            mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
 
-        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: changing profile photo");
-                Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
-                getActivity().startActivity(intent);
-                getActivity().finish();
-            }
-        });
+            mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: changing profile photo");
+                    Intent intent = new Intent(getActivity(), ShareActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+        }
     }
 
     /*
@@ -337,12 +342,18 @@ public class EditProfileFragment extends Fragment implements
                 // ...
             }
         };
-        myRef.addValueEventListener(new ValueEventListener() {
+
+        myRef.child(getString(R.string.dbname_user_account_settings))
+                .orderByChild(getString(R.string.field_user_id))
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve user information from the database
-                UserSettings userSet = mFirebaseMethods.getUserSettings(dataSnapshot);
-                setProfileWidgets(userSet);
+
+                UserSettings userset = mFirebaseMethods.getUserSettings(dataSnapshot);
+                System.out.println(userset + "datachange userset ::");
+                setProfileWidgets(userset);
                 //retrieve images for the user in question
             }
             @Override

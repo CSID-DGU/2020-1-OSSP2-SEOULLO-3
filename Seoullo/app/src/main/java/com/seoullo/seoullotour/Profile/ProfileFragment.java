@@ -299,11 +299,13 @@ public class ProfileFragment extends Fragment {
 
     private void setProfileWidgets(UserSettings userSettings){
 
-        //User user = userSettings.getUser();
+
+        User user = userSettings.getUser();
+        String userid = user.getUser_id();
         UserAccountSettings settings = userSettings.getSettings();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-            storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
+            storageReference.child("photos").child("users").child(userid).child("profile_photo").getDownloadUrl()
                 .addOnSuccessListener( new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -394,8 +396,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve user information from the database
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
+                UserSettings userset = mFirebaseMethods.getUserSettings(dataSnapshot);
+                setProfileWidgets(userset);
                 //retrieve images for the user in question
 
             }
