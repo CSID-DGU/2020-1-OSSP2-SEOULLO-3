@@ -1,5 +1,6 @@
 package com.seoullo.seoullotour.Home;
 
+import android.app.DownloadManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +38,7 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
+    private RequestManager mRequestManager;
     //vars
     private ArrayList<Photo> mPhotos;
     private ArrayList<Photo> mPaginatedPhotos;
@@ -75,6 +79,9 @@ public class HomeFragment extends Fragment {
         mAllUserPosts = new ArrayList<>();
         Photo photo = new Photo();
         mPhotos = new ArrayList<>();
+        mRequestManager = Glide.with(this);
+//        getAllPosts();
+        getPhotos();
 
 
         getPhotos();
@@ -164,7 +171,7 @@ public class HomeFragment extends Fragment {
 
                         try {
                             mResults = 10;
-                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
                             Log.d(TAG, "mPhotos.get(0): " + mPhotos.get(0).getPhoto_id());
                             Log.d(TAG, "mPhotos.get(1): " + mPhotos.get(1).getPhoto_id());
@@ -190,7 +197,7 @@ public class HomeFragment extends Fragment {
         if (mPhotos != null) {
             try {
                 mResults = 10;
-                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
+                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                 mListView.setAdapter(mAdapter);
 
             } catch (NullPointerException e) {
@@ -230,8 +237,8 @@ public class HomeFragment extends Fragment {
             Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
         }
     }
-    //팔로우 하는 사람 게시물만 보여지도록 함 --> 우리는 다 볼 수 있도록 하는게 목적
-    //--> 필요가 없는 것 같음.
+    //�뙏濡쒖슦 �븯�뒗 �궗�엺 寃뚯떆臾쇰쭔 蹂댁뿬吏��룄濡� �븿 --> �슦由щ뒗 �떎 蹂� �닔 �엳�룄濡� �븯�뒗寃� 紐⑹쟻
+    //--> �븘�슂媛� �뾾�뒗 寃� 媛숈쓬.
 /*    private void getAllPosts() {
         Log.d(TAG, "getAllPosts: show all posts");
 

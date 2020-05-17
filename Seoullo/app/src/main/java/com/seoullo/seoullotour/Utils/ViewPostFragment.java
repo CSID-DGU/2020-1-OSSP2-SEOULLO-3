@@ -72,7 +72,7 @@ public class ViewPostFragment extends Fragment {
     //widgets
     private SquareImageView mPostImage;
     private BottomNavigationViewEx bottomNavigationView;
-    private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes, mComments;
+    private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes, mComments, mLocation;
     private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage, mComment;
 
 
@@ -107,6 +107,7 @@ public class ViewPostFragment extends Fragment {
         mLikes = (TextView) view.findViewById(R.id.image_likes);
         mComment = (ImageView) view.findViewById(R.id.speech_bubble);
         mComments = (TextView) view.findViewById(R.id.image_comments_link);
+        mLocation = (TextView) view.findViewById(R.id.show_location);
 
         mHeart = new Heart(mHeartWhite, mHeartRed);
         mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
@@ -142,6 +143,7 @@ public class ViewPostFragment extends Fragment {
                         newPhoto.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                         newPhoto.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                         newPhoto.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                        newPhoto.setLocation(objectMap.get("location").toString());
 
                         List<Comment> commentsList = new ArrayList<Comment>();
                         for (DataSnapshot dSnapshot : singleSnapshot

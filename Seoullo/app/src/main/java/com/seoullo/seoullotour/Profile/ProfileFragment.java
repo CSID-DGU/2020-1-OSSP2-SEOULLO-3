@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,7 +58,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
-
+    public RequestManager mRequestManager;
 
     public interface OnGridImageSelectedListener{
         void onGridImageSelected(Photo photo, int activityNumber);
@@ -111,6 +112,7 @@ public class ProfileFragment extends Fragment {
         profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
+        mRequestManager = Glide.with(this);
         mFirebaseMethods = new FirebaseMethods(getActivity());
         Log.d(TAG, "onCreateView: stared.");
 
@@ -152,7 +154,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupGridView(){
-        Log.d(TAG, "setupGridView: Setting up image grid.");
+
 
         final ArrayList<Photo> photos = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -210,11 +212,8 @@ public class ProfileFragment extends Fragment {
                 for(int i = 0; i < photos.size(); i++){
                     imgUrls.add(photos.get(i).getImage_path());
                 }
-                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
-                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
-                System.out.println("ㄸㄲㅉㄸㄲㅉㄸㄲ" + photos.size());
-                GridImageAdapter adapter = new GridImageAdapter(getActivity(),R.layout.layout_grid_imageview,
-                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos);
+                GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
+                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos,mRequestManager);
                 gridView.setAdapter(adapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -299,21 +298,21 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setProfileWidgets(UserSettings userSettings){
-        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.toString());
-        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getSettings().getUsername());
 
 
-        //User user = userSettings.getUser();
+        User user = userSettings.getUser();
+        String userid = user.getUser_id();
         UserAccountSettings settings = userSettings.getSettings();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-            storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
+            storageReference.child("photos").child("users").child(userid).child("profile_photo").getDownloadUrl()
                 .addOnSuccessListener( new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(getActivity())
-                                .load(uri)
-                                .into(mProfilePhoto);
+                        mRequestManager.load(uri).into(mProfilePhoto);
+//                        Glide.with(getActivity())
+//                                .load(uri)
+//                                .into(mProfilePhoto);
                     }
                 });
 
@@ -396,11 +395,9 @@ public class ProfileFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "여기 실행 되나여");
-
                 //retrieve user information from the database
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
+                UserSettings userset = mFirebaseMethods.getUserSettings(dataSnapshot);
+                setProfileWidgets(userset);
                 //retrieve images for the user in question
 
             }

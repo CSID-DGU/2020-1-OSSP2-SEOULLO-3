@@ -19,6 +19,7 @@
     <color name="theme_camel">#F2B705</color>
     <color name="theme_orange">#F28705</color>
     <color name="theme_brown">#591202</color>
+    <color name="theme_lightblue_opacity_70">#4D591202</color>
 
 
 </resources>

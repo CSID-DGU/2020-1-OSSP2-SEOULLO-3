@@ -13,7 +13,7 @@
     <LinearLayout
         android:id="@+id/group_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="350dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         >

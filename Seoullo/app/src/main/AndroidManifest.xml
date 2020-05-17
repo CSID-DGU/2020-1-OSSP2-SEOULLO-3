@@ -9,6 +9,7 @@
 
 
     <application
+        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -34,8 +35,8 @@
         <activity android:name=".Share.ShareActivity" />
         <activity android:name=".Map.MapActivity"
             android:noHistory="true" />
-        <activity android:name=".Map.RecommendActivity"
-            android:noHistory="true" />
+        <activity android:name=".Recommend.RecommendActivity"/>
+
         <activity android:name=".Profile.AccountSettingsActivity" />
         <activity android:name=".Login.RegisterActivity" />
         <activity android:name=".Share.NextActivity" />

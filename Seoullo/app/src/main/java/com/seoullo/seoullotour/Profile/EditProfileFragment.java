@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -132,7 +133,8 @@ public class EditProfileFragment extends Fragment implements
 
     // vars
     private UserSettings mUserSettings;
-
+    // glide
+    private RequestManager mRequestManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -147,7 +149,7 @@ public class EditProfileFragment extends Fragment implements
         mChangeProfilePhoto = (TextView) view.findViewById(R.id.changeProfilePhoto);
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
-
+        mRequestManager = Glide.with(this);
         //setProfileImage();
         setupFirebaseAuth();
 
@@ -188,25 +190,27 @@ public class EditProfileFragment extends Fragment implements
         final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
 
 
-        // case1: if user changed to same name.
-        if (!mUserSettings.getUser().getUsername().equals(username)) {
-            checkIfUsernameExists(username);
-        }
-        // case2: if user change their email
-        if (!mUserSettings.getUser().getEmail().equals(email)) {
-            //step1 Re-Auth
-            //      - Confirm password and email
-            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
-            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
-            dialog.setTargetFragment(EditProfileFragment.this, 1);
-            //step2 Check if email already exists
-
-
-            //      - 'fetchProvidersForEmail(String email)
-            //step3 change email
-            //      - submit new email to database and authentication
-
-        }
+//        // case1: if user changed to same name.
+//        if (!mUserSettings.getUser().getUsername().equals(username)) {
+//            checkIfUsernameExists(username);
+//        }
+//        // case2: if user change their email
+//        if (!mUserSettings.getUser().getEmail().equals(email)) {
+//            //step1 Re-Auth
+//            //      - Confirm password and email
+//
+//            //주석처리 5.17
+////            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+//////            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+//////            dialog.setTargetFragment(EditProfileFragment.this, 1);
+//            //step2 Check if email already exists
+//
+//
+//            //      - 'fetchProvidersForEmail(String email)
+//            //step3 change email
+//            //      - submit new email to database and authentication
+//
+//        }
 
 
         /**
@@ -267,47 +271,47 @@ public class EditProfileFragment extends Fragment implements
 
 
     private void setProfileWidgets(UserSettings userSettings) {
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.toString());
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getUser().getEmail());
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getUser().getPhone_number());
-
-
         mUserSettings = userSettings;
-        //User user = userSettings.getUser();
+
+        User user = userSettings.getUser();
+        String userid = user.getUser_id();
+
         UserAccountSettings settings = userSettings.getSettings();
 
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-        // 프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
-//        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
-//                .addOnSuccessListener( new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
+        if(userid != null) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+            //프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
+            storageReference.child("photos").child("users").child(userid).child("profile_photo").getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            mRequestManager.load(uri).into(mProfilePhoto);
 //                        Glide.with(getActivity())
 //                                .load(uri)
 //                                .into(mProfilePhoto);
-//
-//                    }
-//                });
-      //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+                        }
+                    });
+            //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
 
-        mDisplayName.setText(settings.getDisplay_name());
-        mUsername.setText(settings.getUsername());
-        mWebsite.setText(settings.getWebsite());
-        mDescription.setText(settings.getDescription());
-        mEmail.setText(userSettings.getUser().getEmail());
-        mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
+            mDisplayName.setText(settings.getDisplay_name());
+            mUsername.setText(settings.getUsername());
+            mWebsite.setText(settings.getWebsite());
+            mDescription.setText(settings.getDescription());
+            mEmail.setText(userSettings.getUser().getEmail());
+            mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
 
-        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: changing profile photo");
-                Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
-                getActivity().startActivity(intent);
-                getActivity().finish();
-            }
-        });
+            mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: changing profile photo");
+                    Intent intent = new Intent(getActivity(), ShareActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+        }
     }
 
     /*
@@ -318,7 +322,6 @@ public class EditProfileFragment extends Fragment implements
      * Setup the firebase auth object
      */
     private void setupFirebaseAuth(){
-        Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -339,11 +342,18 @@ public class EditProfileFragment extends Fragment implements
                 // ...
             }
         };
-        myRef.addValueEventListener(new ValueEventListener() {
+
+        myRef.child(getString(R.string.dbname_user_account_settings))
+                .orderByChild(getString(R.string.field_user_id))
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve user information from the database
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
+
+                UserSettings userset = mFirebaseMethods.getUserSettings(dataSnapshot);
+                System.out.println(userset + "datachange userset ::");
+                setProfileWidgets(userset);
                 //retrieve images for the user in question
             }
             @Override
