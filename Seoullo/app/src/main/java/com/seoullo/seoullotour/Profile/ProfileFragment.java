@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,7 +58,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
-
+    public RequestManager mRequestManager;
 
     public interface OnGridImageSelectedListener{
         void onGridImageSelected(Photo photo, int activityNumber);
@@ -111,6 +112,7 @@ public class ProfileFragment extends Fragment {
         profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
+        mRequestManager = Glide.with(this);
         mFirebaseMethods = new FirebaseMethods(getActivity());
         Log.d(TAG, "onCreateView: stared.");
 
@@ -210,8 +212,8 @@ public class ProfileFragment extends Fragment {
                 for(int i = 0; i < photos.size(); i++){
                     imgUrls.add(photos.get(i).getImage_path());
                 }
-                GridImageAdapter adapter = new GridImageAdapter(getActivity(),R.layout.layout_grid_imageview,
-                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos);
+                GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
+                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos,mRequestManager);
                 gridView.setAdapter(adapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -308,9 +310,10 @@ public class ProfileFragment extends Fragment {
                 .addOnSuccessListener( new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(getActivity())
-                                .load(uri)
-                                .into(mProfilePhoto);
+                        mRequestManager.load(uri).into(mProfilePhoto);
+//                        Glide.with(getActivity())
+//                                .load(uri)
+//                                .into(mProfilePhoto);
                     }
                 });
 
