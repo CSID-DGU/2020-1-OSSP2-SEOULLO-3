@@ -237,8 +237,8 @@ public class HomeFragment extends Fragment {
             Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
         }
     }
-    //�뙏濡쒖슦 �븯�뒗 �궗�엺 寃뚯떆臾쇰쭔 蹂댁뿬吏��룄濡� �븿 --> �슦由щ뒗 �떎 蹂� �닔 �엳�룄濡� �븯�뒗寃� 紐⑹쟻
-    //--> �븘�슂媛� �뾾�뒗 寃� 媛숈쓬.
+    //팔로우 하는 사람 게시물만 보여지도록 함 --> 우리는 다 볼 수 있도록 하는게 목적
+    //--> 필요가 없는 것 같음.
 /*    private void getAllPosts() {
         Log.d(TAG, "getAllPosts: show all posts");
 

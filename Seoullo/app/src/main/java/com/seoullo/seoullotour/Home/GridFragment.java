@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +55,7 @@ public class GridFragment extends Fragment {
     private ListView mListView;
     private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
     private int mResults;
+    public RequestManager mRequestManager;
 
     public static GridFragment newInstance() {
         return new GridFragment();
@@ -69,6 +72,7 @@ public class GridFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.listView);
         mAllUserPosts = new ArrayList<>();
         mPhotos = new ArrayList<>();
+        mRequestManager = Glide.with(this);
 
         return view;
     }
@@ -234,8 +238,8 @@ public class GridFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
-
-    private void getPhotos() {
+}
+ /*   private void getPhotos() {
         Log.d(TAG, "getPhotos: getting photos");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_photos))
@@ -281,9 +285,8 @@ public class GridFragment extends Fragment {
 //                        return o2.getDate_created().compareTo(o1.getDate_created());
 //                    }
 //                });
-
                             mResults = 10;
-                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos);
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos, mRequestManager);
                             mListView.setAdapter(mAdapter);
 
                         } catch (NullPointerException e) {
@@ -300,3 +303,4 @@ public class GridFragment extends Fragment {
                 });
     }
 }
+*/
