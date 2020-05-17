@@ -40,7 +40,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/group_info1"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         >
         <ImageView
             android:layout_width="25dp"
@@ -73,7 +73,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="horizontal"
         android:gravity="center"
-        android:padding="15dp"
+        android:padding="10dp"
         >
     <ImageView
         android:id="@+id/recommend_image"

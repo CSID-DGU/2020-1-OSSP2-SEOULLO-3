@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -23,15 +24,14 @@ import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 public class RecommendActivity extends AppCompatActivity {
 
     private static final String TAG = "RecommendActivity";
-    public static final int ACTIVITY_NUM = 10;
+    public static final int ACTIVITY_NUM = 0;
     private Context mContext = RecommendActivity.this;
     //widget
     private ViewPager mViewPager;
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
-    private LinearLayout mLinearLayout;
+    private ImageButton mImageButton;
     //get intent
-    private Intent intent;
     private String getLocation;
 
     //TODO: link to fragment -> done
@@ -40,19 +40,24 @@ public class RecommendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
+        System.out.println("Recommend Activity onCreate Starting");
 
-        intent = getIntent();
-        getLocation = intent.getStringExtra("");
-
+        Intent intent = getIntent();
+        getLocation = intent.getStringExtra("location");
+        System.out.println("got Intent !");
+        //상단
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
+        mImageButton = (ImageButton) findViewById(R.id.add_post);
+        mImageButton.setVisibility(View.GONE);
+        //중앙
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
-        mRelativeLayout.setVisibility(View.GONE);
-        mLinearLayout = (LinearLayout) findViewById(R.id.bottom_division);
-        mLinearLayout.setVisibility(View.GONE);
+        //TODO: 뷰페이저 vertical scrolling : 뷰페이저를 수직으로 땡길 수 있게끔 해보자 !
 
         setupBottomNavigationView();
+        System.out.println("Navigation bar set up");
         setupViewPager();
+        System.out.println("Viewpager set up");
     }
     /**
      * BottomNavigationView setup
