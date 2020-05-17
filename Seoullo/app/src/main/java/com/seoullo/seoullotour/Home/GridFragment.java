@@ -66,7 +66,6 @@ public class GridFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.gridfragment_recyclerview);
         recyclerView.setAdapter(new GridFragmentRecyclerViewAdatper());
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-
         mListView = (ListView) view.findViewById(R.id.listView);
         mAllUserPosts = new ArrayList<>();
         mPhotos = new ArrayList<>();
@@ -181,7 +180,6 @@ public class GridFragment extends Fragment {
                     fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
-                    getView().setVisibility(View.GONE);
                 }
 
             });

@@ -85,21 +85,14 @@ public class HomeActivity extends AppCompatActivity implements
         });
         setupFirebaseAuth();
 
-    /*    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.relLayout2, GridFragment.newInstance()).commit();
-*/
+
         initImageLoader();
         setupBottomNavigationView();
         setupViewPager();
 
     }
-
-    public void replaceFragment(Fragment fragment) {
-        androidx.fragment.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.relLayout2, fragment).commit();
-    }
-
 
     public void onCommentThreadSelected(Photo photo, String callingActivity){
         Log.d(TAG, "onCommentThreadSelected: selected a coemment thread");
@@ -137,15 +130,6 @@ public class HomeActivity extends AppCompatActivity implements
             showLayout();
         }
     }
-/*    @Override
-    public void onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
-            fm.popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }*/
 
     private void initImageLoader(){
         UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
@@ -156,17 +140,11 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-//        adapter.addFragment(new CameraFragment()); //index 0
-//        adapter.addFragment(new HomeFragment()); //index 1
-        adapter.addFragment(new GridFragment());
-//        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
+
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 //        tabLayout.setupWithViewPager(mViewPager);
-//
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
-//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_instagram_black);
-//        tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
 
 

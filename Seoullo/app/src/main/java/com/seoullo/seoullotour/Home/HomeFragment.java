@@ -43,7 +43,6 @@ public class HomeFragment extends Fragment {
     private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
     private int mResults;
 
-
     private static final String ARG_PARAM1 = "param1";
     private String mParam;
 
@@ -64,6 +63,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+
         mParam = getArguments().getString(ARG_PARAM1);
     }
 
@@ -75,6 +75,8 @@ public class HomeFragment extends Fragment {
         mAllUserPosts = new ArrayList<>();
         Photo photo = new Photo();
         mPhotos = new ArrayList<>();
+
+
         getPhotos();
         return view;
     }
