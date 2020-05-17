@@ -46,7 +46,6 @@ import java.util.Map;
 
 public class GridFragment extends Fragment {
     private static final String TAG = "GridFragment";
-
     //vars
     private ArrayList<Photo> mPhotos;
     private ArrayList<Photo> mPaginatedPhotos;
@@ -54,6 +53,10 @@ public class GridFragment extends Fragment {
     private ListView mListView;
     private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
     private int mResults;
+
+    public static GridFragment newInstance() {
+        return new GridFragment();
+    }
 
     @Nullable
     @Override
@@ -168,17 +171,17 @@ public class GridFragment extends Fragment {
                 }
             });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
-//                    ((MainActivity)getActivity()).replaceFragment(DetailViewFragment.newInstance(contentDTOs.get(position), position));
-
-                    FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     //transAction animation  ++++
 //                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left,R.anim.exit_to_right);
                     fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
+                    getView().setVisibility(View.GONE);
                 }
 
             });
@@ -227,6 +230,11 @@ public class GridFragment extends Fragment {
 //                return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
 //            }
 //        };
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void getPhotos() {

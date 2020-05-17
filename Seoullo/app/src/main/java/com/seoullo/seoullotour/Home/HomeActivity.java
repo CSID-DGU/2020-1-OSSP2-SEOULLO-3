@@ -1,5 +1,6 @@
 package com.seoullo.seoullotour.Home;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
@@ -40,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements
     public void onLoadMoreItems() {
         Log.d(TAG, "onLoadMoreItems: displaying more photos");
         com.seoullo.seoullotour.Home.HomeFragment fragment = (com.seoullo.seoullotour.Home.HomeFragment)getSupportFragmentManager()
-                .findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + mViewPager.getCurrentItem());
+                .findFragmentByTag("android:switcher:" + R.id.relLayout2 + ":" + mViewPager.getCurrentItem());
         if(fragment != null){
             fragment.displayMorePhotos();
         }
@@ -83,12 +85,20 @@ public class HomeActivity extends AppCompatActivity implements
         });
         setupFirebaseAuth();
 
+    /*    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.relLayout2, GridFragment.newInstance()).commit();
+*/
         initImageLoader();
         setupBottomNavigationView();
         setupViewPager();
 
     }
 
+    public void replaceFragment(Fragment fragment) {
+        androidx.fragment.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.relLayout2, fragment).commit();
+    }
 
 
     public void onCommentThreadSelected(Photo photo, String callingActivity){
@@ -127,13 +137,20 @@ public class HomeActivity extends AppCompatActivity implements
             showLayout();
         }
     }
-
+/*    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }*/
 
     private void initImageLoader(){
         UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
         ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
-
     /**
      * Responsible for adding the 3 tabs: Camera, Home, Messages
      */
@@ -144,7 +161,6 @@ public class HomeActivity extends AppCompatActivity implements
         adapter.addFragment(new GridFragment());
 //        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
-
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 //        tabLayout.setupWithViewPager(mViewPager);
 //
@@ -167,8 +183,6 @@ public class HomeActivity extends AppCompatActivity implements
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
     }
-
-
      /*
     ------------------------------------ Firebase ---------------------------------------------
      */

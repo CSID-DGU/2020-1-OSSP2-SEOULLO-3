@@ -10,6 +10,8 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,12 +47,17 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private String mParam;
 
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
+    }
+
     public static Fragment newInstance(Photo clickedPhoto, String photoID) {
         HomeFragment fragment = new HomeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM1, photoID);
         bundle.putSerializable("object", clickedPhoto);
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -68,15 +75,13 @@ public class HomeFragment extends Fragment {
         mAllUserPosts = new ArrayList<>();
         Photo photo = new Photo();
         mPhotos = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
         getPhotos();
-
         return view;
     }
 
     private void getPhotos() {
         Log.d(TAG, "getPhotos: getting photos");
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_photos))
                 .orderByChild(getString(R.string.field_photo_id))
