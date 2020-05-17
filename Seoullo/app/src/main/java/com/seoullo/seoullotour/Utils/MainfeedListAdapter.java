@@ -309,14 +309,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 System.out.println("json :"+value);
 
                 holder.location.setText(value);
-
-                //click listener
-                holder.location.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO:: 값이랑 페이지 넘기기
-                    }
-                });
             }
 
             @Override
