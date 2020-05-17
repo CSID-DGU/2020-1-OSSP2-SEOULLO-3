@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -132,7 +133,8 @@ public class EditProfileFragment extends Fragment implements
 
     // vars
     private UserSettings mUserSettings;
-
+    // glide
+    private RequestManager mRequestManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -147,7 +149,7 @@ public class EditProfileFragment extends Fragment implements
         mChangeProfilePhoto = (TextView) view.findViewById(R.id.changeProfilePhoto);
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
-
+        mRequestManager = Glide.with(this);
         //setProfileImage();
         setupFirebaseAuth();
 
@@ -267,28 +269,24 @@ public class EditProfileFragment extends Fragment implements
 
 
     private void setProfileWidgets(UserSettings userSettings) {
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.toString());
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getUser().getEmail());
-//        Log.d(TAG, "SetProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getUser().getPhone_number());
-
 
         mUserSettings = userSettings;
         //User user = userSettings.getUser();
-        UserAccountSettings settings = userSettings.getSettings();
-
+        UserAccountSettings settings = mUserSettings.getSettings();
+        System.out.println(userSettings.getUser().getUser_id()+"<<<<<<<<<");
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-        // 프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
-//        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
-//                .addOnSuccessListener( new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
+         //프로필이미지가 없는 사용자 처리해줘야함 ! ! ! 2020/05/16
+        storageReference.child("photos").child("users").child(userSettings.getUser().getUser_id()).child("profile_photo").getDownloadUrl()
+                .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        mRequestManager.load(uri).into(mProfilePhoto);
 //                        Glide.with(getActivity())
 //                                .load(uri)
 //                                .into(mProfilePhoto);
-//
-//                    }
-//                });
+                    }
+                });
       //  UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
 
         mDisplayName.setText(settings.getDisplay_name());
@@ -343,7 +341,8 @@ public class EditProfileFragment extends Fragment implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve user information from the database
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
+                UserSettings userSet = mFirebaseMethods.getUserSettings(dataSnapshot);
+                setProfileWidgets(userSet);
                 //retrieve images for the user in question
             }
             @Override
