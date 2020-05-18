@@ -1,5 +1,6 @@
 package com.seoullo.seoullotour.Utils;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -72,6 +75,7 @@ public class ViewCommentsFragment extends Fragment {
     private ListView mListView;
 
     //vars
+    private RequestManager mRequestManager;
     private Photo mPhoto;
     private ArrayList<Comment> mComments;
     private Context mContext;
@@ -86,6 +90,7 @@ public class ViewCommentsFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.listView);
         mComments = new ArrayList<>();
         mContext = getActivity();
+        mRequestManager = Glide.with(this);
 
 
         try{
@@ -105,7 +110,7 @@ public class ViewCommentsFragment extends Fragment {
     private void setupWidgets(){
 
         CommentListAdapter adapter = new CommentListAdapter(mContext,
-                R.layout.layout_comment, mComments);
+                R.layout.layout_comment, mComments,mRequestManager);
         mListView.setAdapter(adapter);
 
         mCheckMark.setOnClickListener(new View.OnClickListener() {

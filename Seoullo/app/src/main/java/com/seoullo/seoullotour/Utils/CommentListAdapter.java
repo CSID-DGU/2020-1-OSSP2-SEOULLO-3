@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +13,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.User;
@@ -38,15 +43,17 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
     private static final String TAG = "CommentListAdapter";
 
+    public RequestManager mRequestManager;
     private LayoutInflater mLayoutInflater;
     private int layoutResource;
     private Context mContext;
 
-    public CommentListAdapter(@NonNull Context context, int resource, @NonNull List<Comment> objects) {
+    public CommentListAdapter(@NonNull Context context, int resource, @NonNull List<Comment> objects , RequestManager requestManager) {
         super(context, resource, objects);
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContext = context;
         layoutResource = resource;
+        mRequestManager = requestManager;
     }
 
     private static class ViewHolder {
@@ -89,6 +96,21 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             holder.timestamp.setText("today");
         }
 
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+        storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        mRequestManager.load(uri).into(holder.profileImage);
+//                                    Glide.with(mContext)
+////                                            .load(uri)
+////                                            .into(holder.mprofileImage);
+
+                    }
+                });
+
+
         //set username and profile image.
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
@@ -101,11 +123,11 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     holder.username.setText(singleSnapshot.getValue(UserAccountSettings.class).getUsername());
 
-                    ImageLoader imageLoader = ImageLoader.getInstance();
-
-                    imageLoader.displayImage(
-                            singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
-                            holder.profileImage);
+//                    ImageLoader imageLoader = ImageLoader.getInstance();
+////
+////                    imageLoader.displayImage(
+////                            singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
+////                            holder.profileImage);
                 }
             }
 
