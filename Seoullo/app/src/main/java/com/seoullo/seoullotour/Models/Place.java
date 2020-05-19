@@ -1,6 +1,5 @@
 package com.seoullo.seoullotour.Models;
 
-//TODO: 구글에서 주는 json의 형태와 다름 다시 리팩토링해줘야함 04/06 -> 응 필요없어~ 04/06 모닝
 public class Place {
     //TODO: 넣기 -> vicinity
     private double latitude;

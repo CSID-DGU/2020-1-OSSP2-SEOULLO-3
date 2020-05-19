@@ -63,15 +63,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     public RecommendFragment(String ref) {
         this.findLocation = ref;
     }
-    //프래그먼트 전환시 사용
-    // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성합니다.
-//    public static RecommendFragment newInstance(Photo photo) {
-//        RecommendFragment reviewMapFragment = new RecommendFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("object", photo);
-//        reviewMapFragment.setArguments(bundle);
-//        return reviewMapFragment;
-//    }
+
     //naver api key
     public static String getApiKeyFromManifest(Context context) {
         String apiKey = null;

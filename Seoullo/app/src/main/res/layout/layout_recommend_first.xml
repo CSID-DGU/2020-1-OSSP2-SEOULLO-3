@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/theme_deepblue"
+    android:background="@color/white"
     >
 
     <TextView
@@ -16,7 +16,7 @@
         
         android:text="TITLE"
         android:textSize="30sp"
-        android:textColor="@color/white"
+        android:textColor="@color/theme_deepblue"
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
@@ -25,7 +25,7 @@
         android:id="@+id/title_division"
         android:layout_width="300dp"
         android:layout_height="1dp"
-        android:background="@color/white"
+        android:background="@color/theme_camel"
 
         app:layout_constraintTop_toBottomOf="@id/recommend_title"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -43,11 +43,11 @@
         android:layout_marginTop="5dp"
         >
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="60dp"
-            android:src="@drawable/location_outline_white"
-
+            android:src="@drawable/location_outline"
+            android:adjustViewBounds="true"
             />
     <TextView
         android:id="@+id/recommend_vicinity"
@@ -58,7 +58,7 @@
 
         android:textSize="15sp"
         android:text="Vicinity"
-        android:textColor="@color/theme_camel"
+        android:textColor="@color/theme_deepblue"
         android:textStyle="italic"
         android:gravity="center_vertical"
         />
@@ -73,14 +73,14 @@
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="horizontal"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="5dp"
         >
     <ImageView
         android:id="@+id/recommend_image"
         android:layout_width="180dp"
         android:layout_height="180dp"
 
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
 
         android:src="@color/theme_orange"
         />
@@ -92,9 +92,9 @@
         android:layout_margin="10dp"
 
         android:text="this is the test case of recommendation script this will be filled with a lot of informations"
-        android:textColor="@color/white"
-        android:gravity="center_vertical"
-        android:textSize="20sp"/>
+        android:textColor="@color/theme_deepblue"
+        android:gravity="top|center"
+        android:textSize="15sp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/group_info2"
@@ -109,12 +109,12 @@
         >
         <TextView
             android:id="@+id/recommend_anotherdesc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="another decriptions will be located here !"
-            android:textColor="@color/white"
+            android:textColor="@color/theme_deepblue"
 
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
