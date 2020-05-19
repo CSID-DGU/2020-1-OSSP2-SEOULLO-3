@@ -108,10 +108,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         User user = new User();
         StringBuilder users;
         String mLikesString;
-        boolean likeByCurrentUser;
+        boolean likeByCurrentUser = false;
         Heart heart;
         GestureDetector detector;
         Photo photo;
+        
     }
 
     @NonNull
@@ -119,6 +120,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
+
 
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
@@ -140,11 +142,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
             holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
+            holder.likeByCurrentUser = false;
 
             convertView.setTag(holder);
 
         } else {
             holder = (ViewHolder) convertView.getTag();
+        }
+        if(FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
+                .child("likes").equals(currentUsername)){
+            holder.likeByCurrentUser = true;
         }
 
         //get the current users username (need for checking likes string)
