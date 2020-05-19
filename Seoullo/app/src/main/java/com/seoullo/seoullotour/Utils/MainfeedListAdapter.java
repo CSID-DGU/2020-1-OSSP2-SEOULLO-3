@@ -700,7 +700,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //        return difference;
 //    }
     private String getTimestampDifference(Photo photo) {
-
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         Date dateTime = new Date();
         try {
@@ -720,12 +720,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String msg = null;
 
-        if (diffTime < SEC) {
-            // sec
-            msg = diffTime + "방금전";
-        } else if ((diffTime /= SEC) < MIN) {
+        if (diffTime < SEC)
+        {
+            // 1분 미만을 모두 "방금전"으로 표기
+            msg = "방금전";
+        }
+        else if ((diffTime /= SEC) < MIN)
+        {
             // min
-
             msg = diffTime + "분전";
         } else if ((diffTime /= MIN) < HOUR) {
             // hour
