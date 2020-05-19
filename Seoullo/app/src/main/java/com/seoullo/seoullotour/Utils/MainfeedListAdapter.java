@@ -70,6 +70,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         void onLoadMoreItems();
     }
 
+    //time var
+    private int SEC = 60;
+    private int MIN = 60;
+    private int HOUR = 24;
+    private int DAY = 30;
+    private int MONTH = 12;
+
     public RequestManager mRequestManager;
     OnLoadMoreItemsListener mOnLoadMoreItemsListener;
 
@@ -81,7 +88,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private DatabaseReference mReference;
     private String currentUsername = "";
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects ,RequestManager requestManager) {
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects, RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
@@ -93,7 +100,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     static class ViewHolder {
         CircleImageView mprofileImage;
         String likesString;
-        TextView username, timeDetla, caption, likes, comments, location;
+        TextView username, timeDetla, caption, likes, comments, location, likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment;
 
@@ -132,6 +139,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
+            holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
 
             convertView.setTag(holder);
 
@@ -151,7 +159,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         //set the comment
         List<Comment> comments = getItem(position).getComments();
-        holder.comments.setText("View all " + comments.size() + " comments");
+
+        holder.likecount.setText("좋아요 " + getItem(position).getLikeCount() + "개");
+
+        holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,17 +179,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         //set the time it was posted
         String timestampDifference = getTimestampDifference(getItem(position));
-        if (!timestampDifference.equals("0")) {
-            holder.timeDetla.setText(timestampDifference + " DAYS AGO");
-        } else {
-            holder.timeDetla.setText("TODAY");
-        }
+        holder.timeDetla.setText(timestampDifference);
 
 
         //set the profile image
 //        final ImageLoader imageLoader = ImageLoader.getInstance();
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
-
 
 
         //get the profile image and username
@@ -192,7 +198,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         query.addValueEventListener(new ValueEventListener() {
 
-                @Override
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
@@ -300,7 +306,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String location="not recognized";
+                String location = "not recognized";
                 String jsonString = dataSnapshot.toString();
 //                try {
 //                    JSONObject jsonObj = new JSONObject(jsonString);
@@ -315,9 +321,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-                System.out.println("jsonString :"+ jsonString);
-                final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
-                System.out.println("json :"+value);
+                final String value = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+
 
                 holder.location.setText(value);
 
@@ -333,7 +338,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("location add","error !!");
+                Log.e("location add", "error !!");
             }
         });
 
@@ -493,6 +498,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .setValue(like);
 
         holder.heart.toggleLike();
+
         getLikesString(holder);
     }
 
@@ -510,7 +516,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                     currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
-                    System.out.println(currentUsername);
+
                 }
 
             }
@@ -521,6 +527,30 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
     }
+
+//    private void getLikeCount(final ViewHolder holder){
+//        try {
+//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//            Query query = reference
+//                    .child(mContext.getString(R.string.dbname_photos))
+//                    .child(holder.photo.getPhoto_id())
+//                    .child(mContext.getString(R.string.field_likes));
+//            query.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }catch (NullPointerException e) {
+//            Log.e(TAG, "getLikeCount: NullPointerException: " + e.getMessage());
+//        }
+//    }
+
 
     private void getLikesString(final ViewHolder holder) {
         Log.d(TAG, "getLikesString: getting likes string");
@@ -551,6 +581,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                     holder.users.append(singleSnapshot.getValue(User.class).getUsername());
                                     holder.users.append(",");
+
                                 }
 
                                 String[] splitUsers = holder.users.toString().split(",");
@@ -586,6 +617,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
                                 //setup likes string
                                 setupLikesString(holder, holder.likesString);
+                                holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                             }
 
                             @Override
@@ -598,6 +630,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
+                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
                     }
                 }
@@ -648,28 +681,66 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
      *
      * @return
      */
+//        Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
+//
+//        String difference = "";
+//        Calendar c = Calendar.getInstance();
+//        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));//google 'android list of timezones'
+//        Date today = c.getTime();
+//        sdf.format(today);
+//        Date timestamp;
+//        final String photoTimestamp = photo.getDate_created();
+//        try {
+//            timestamp = sdf.parse(photoTimestamp);
+//            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+//        } catch (ParseException e) {
+//            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage());
+//            difference = "0";
+//        }
+//        return difference;
+//    }
     private String getTimestampDifference(Photo photo) {
-        Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
 
-        String difference = "";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
-        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));//google 'android list of timezones'
-        Date today = c.getTime();
-        sdf.format(today);
-        Date timestamp;
-        final String photoTimestamp = photo.getDate_created();
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Date dateTime = new Date();
         try {
-            timestamp = sdf.parse(photoTimestamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+            dateTime = transFormat.parse(photo.getDate_created());
         } catch (ParseException e) {
-            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage());
-            difference = "0";
+            e.printStackTrace();
         }
-        return difference;
+
+        return calculateTime(dateTime);
+    }
+
+    public String calculateTime(Date date) {
+
+        long curTime = System.currentTimeMillis();
+        long regTime = date.getTime();
+        long diffTime = (curTime - regTime) / 1000;
+
+        String msg = null;
+
+        if (diffTime < SEC) {
+            // sec
+            msg = diffTime + "방금전";
+        } else if ((diffTime /= SEC) < MIN) {
+            // min
+
+            msg = diffTime + "분전";
+        } else if ((diffTime /= MIN) < HOUR) {
+            // hour
+            msg = (diffTime) + "시간전";
+        } else if ((diffTime /= HOUR) < DAY) {
+            // day
+            msg = (diffTime) + "일전";
+        } else if ((diffTime /= DAY) < MONTH) {
+            // day
+            msg = (diffTime) + "달전";
+        } else {
+            msg = (diffTime) + "년전";
+        }
+
+        return msg;
     }
 
 }
-
-
-

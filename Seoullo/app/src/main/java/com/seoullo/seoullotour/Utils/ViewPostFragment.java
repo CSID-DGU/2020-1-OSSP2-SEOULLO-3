@@ -2,6 +2,7 @@ package com.seoullo.seoullotour.Utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,6 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
@@ -77,6 +83,7 @@ public class ViewPostFragment extends Fragment {
 
 
     //vars
+    private RequestManager mRequestManager;
     private Photo mPhoto;
     private int mActivityNumber = 0;
     private String photoUsername = "";
@@ -109,6 +116,7 @@ public class ViewPostFragment extends Fragment {
         mComments = (TextView) view.findViewById(R.id.image_comments_link);
         mLocation = (TextView) view.findViewById(R.id.show_location);
 
+        mRequestManager = Glide.with(this);
         mHeart = new Heart(mHeartWhite, mHeartRed);
         mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
 
@@ -428,7 +436,22 @@ public class ViewPostFragment extends Fragment {
         }else{
             mTimestamp.setText("TODAY");
         }
-        UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+        storageReference.child("photos").child("users").child(mUserAccountSettings.getUser_id()).child("profile_photo").getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        mRequestManager.load(uri).into(mProfileImage);
+//                                    Glide.with(mContext)
+////                                            .load(uri)
+////                                            .into(holder.mprofileImage);
+
+                    }
+                });
+
+        //UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
         mUsername.setText(mUserAccountSettings.getUsername());
         mLikes.setText(mLikesString);
         mCaption.setText(mPhoto.getCaption());

@@ -28,7 +28,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Comments"
+                    android:text="댓글"
                     android:layout_toRightOf="@+id/backArrow"
                     android:layout_marginRight="15dp"
                     android:textSize="20sp"
