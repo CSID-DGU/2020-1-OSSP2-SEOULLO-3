@@ -1,67 +1,67 @@
 package com.seoullo.seoullotour.Utils;
 
 
-        import android.content.Context;
-        import android.content.Intent;
-        import android.net.Uri;
-        import android.util.Log;
-        import android.view.GestureDetector;
-        import android.view.LayoutInflater;
-        import android.view.MotionEvent;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.ArrayAdapter;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import androidx.annotation.LayoutRes;
-        import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-        import com.bumptech.glide.Glide;
-        import com.bumptech.glide.RequestManager;
-        import com.bumptech.glide.request.RequestOptions;
-        import com.google.android.gms.tasks.OnSuccessListener;
-        import com.google.firebase.auth.FirebaseAuth;
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseError;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.google.firebase.database.Query;
-        import com.google.firebase.database.ValueEventListener;
-        import com.google.firebase.storage.FirebaseStorage;
-        import com.google.firebase.storage.StorageReference;
-        import com.nostra13.universalimageloader.core.ImageLoader;
-        import com.seoullo.seoullotour.Home.HomeActivity;
-        import com.seoullo.seoullotour.Home.HomeFragment;
-        import com.seoullo.seoullotour.Models.Comment;
-        import com.seoullo.seoullotour.Models.Like;
-        import com.seoullo.seoullotour.Profile.ProfileActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.seoullo.seoullotour.Home.HomeActivity;
+import com.seoullo.seoullotour.Home.HomeFragment;
+import com.seoullo.seoullotour.Models.Comment;
+import com.seoullo.seoullotour.Models.Like;
+import com.seoullo.seoullotour.Profile.ProfileActivity;
 
-        import com.google.firebase.database.DatabaseReference;
-        import com.seoullo.seoullotour.R;
-        import com.seoullo.seoullotour.Models.Photo;
-        import com.seoullo.seoullotour.Models.User;
-        import com.seoullo.seoullotour.Models.UserAccountSettings;
-        import com.seoullo.seoullotour.Recommend.RecommendActivity;
-        import com.seoullo.seoullotour.Recommend.RecommendFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.seoullo.seoullotour.R;
+import com.seoullo.seoullotour.Models.Photo;
+import com.seoullo.seoullotour.Models.User;
+import com.seoullo.seoullotour.Models.UserAccountSettings;
+import com.seoullo.seoullotour.Recommend.RecommendActivity;
+import com.seoullo.seoullotour.Recommend.RecommendFragment;
 
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-        import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
-        import java.nio.file.Path;
-        import java.text.ParseException;
-        import java.text.SimpleDateFormat;
-        import java.util.Calendar;
-        import java.util.Date;
-        import java.util.List;
-        import java.util.Locale;
-        import java.util.Objects;
-        import java.util.TimeZone;
+import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
 
-        import de.hdodenhof.circleimageview.CircleImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
@@ -88,7 +88,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private DatabaseReference mReference;
     private String currentUsername = "";
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects ,RequestManager requestManager) {
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects, RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
@@ -100,7 +100,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     static class ViewHolder {
         CircleImageView mprofileImage;
         String likesString;
-        TextView username, timeDetla, caption, likes, comments, location,likecount;
+        TextView username, timeDetla, caption, likes, comments, location, likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment;
 
@@ -139,7 +139,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
-            holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
+            holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
 
             convertView.setTag(holder);
 
@@ -185,7 +185,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the profile image
 //        final ImageLoader imageLoader = ImageLoader.getInstance();
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
-
 
 
         //get the profile image and username
@@ -307,7 +306,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String location="not recognized";
+                String location = "not recognized";
                 String jsonString = dataSnapshot.toString();
 //                try {
 //                    JSONObject jsonObj = new JSONObject(jsonString);
@@ -322,7 +321,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-                final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
+                final String value = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
 
 
                 holder.location.setText(value);
@@ -339,7 +338,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("location add","error !!");
+                Log.e("location add", "error !!");
             }
         });
 
@@ -712,8 +711,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         return calculateTime(dateTime);
     }
-    public String calculateTime(Date date)
-    {
+
+    public String calculateTime(Date date) {
 
         long curTime = System.currentTimeMillis();
         long regTime = date.getTime();
@@ -721,34 +720,23 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String msg = null;
 
-        if (diffTime < SEC)
-        {
+        if (diffTime < SEC) {
             // sec
             msg = diffTime + "방금전";
-        }
-        else if ((diffTime /= SEC) < MIN)
-        {
+        } else if ((diffTime /= SEC) < MIN) {
             // min
 
             msg = diffTime + "분전";
-        }
-        else if ((diffTime /= MIN) <HOUR)
-        {
+        } else if ((diffTime /= MIN) < HOUR) {
             // hour
-            msg = (diffTime ) + "시간전";
-        }
-        else if ((diffTime /= HOUR) < DAY)
-        {
+            msg = (diffTime) + "시간전";
+        } else if ((diffTime /= HOUR) < DAY) {
             // day
-            msg = (diffTime ) + "일전";
-        }
-        else if ((diffTime /= DAY) <MONTH)
-        {
+            msg = (diffTime) + "일전";
+        } else if ((diffTime /= DAY) < MONTH) {
             // day
-            msg = (diffTime ) + "달전";
-        }
-        else
-        {
+            msg = (diffTime) + "달전";
+        } else {
             msg = (diffTime) + "년전";
         }
 
