@@ -322,9 +322,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-                System.out.println("jsonString :"+ jsonString);
                 final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
-                System.out.println("json :"+value);
+
 
                 holder.location.setText(value);
 
@@ -500,6 +499,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .setValue(like);
 
         holder.heart.toggleLike();
+
         getLikesString(holder);
     }
 
@@ -517,7 +517,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                     currentUsername = singleSnapshot.getValue(UserAccountSettings.class).getUsername();
-                    System.out.println(currentUsername);
+
                 }
 
             }
@@ -582,6 +582,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                     holder.users.append(singleSnapshot.getValue(User.class).getUsername());
                                     holder.users.append(",");
+
                                 }
 
                                 String[] splitUsers = holder.users.toString().split(",");
@@ -617,6 +618,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
                                 //setup likes string
                                 setupLikesString(holder, holder.likesString);
+                                holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                             }
 
                             @Override
@@ -629,6 +631,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
+                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
                     }
                 }
@@ -679,22 +682,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
      *
      * @return
      */
-    private String getTimestampDifference(Photo photo) {
 //        Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
 //
 //        String difference = "";
 //        Calendar c = Calendar.getInstance();
-        System.out.println(photo.getDate_created());
-        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Date dateTime = new Date();
-            try {
-            dateTime = transFormat.parse(photo.getDate_created());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-            System.out.println(dateTime+"게시글시간::");
-        return calculateTime(dateTime);
-    }
 //        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));//google 'android list of timezones'
 //        Date today = c.getTime();
 //        sdf.format(today);
@@ -709,7 +700,18 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //        }
 //        return difference;
 //    }
+    private String getTimestampDifference(Photo photo) {
 
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Date dateTime = new Date();
+        try {
+            dateTime = transFormat.parse(photo.getDate_created());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calculateTime(dateTime);
+    }
     public String calculateTime(Date date)
     {
 
@@ -727,7 +729,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         else if ((diffTime /= SEC) < MIN)
         {
             // min
-            System.out.println(diffTime);
 
             msg = diffTime + "분전";
         }

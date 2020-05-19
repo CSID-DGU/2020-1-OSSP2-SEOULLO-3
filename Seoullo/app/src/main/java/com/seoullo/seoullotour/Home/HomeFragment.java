@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
         getPhotos();
 
 
-        getPhotos();
+       // getPhotos();
         return view;
     }
 
@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
                     photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                     photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
                     photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                    Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+                    photo.setLikeCount(Integer.parseInt( objectMap.get("likeCount").toString()));
                     photo.setImage_name(objectMap.get("image_name").toString());
                     photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                     photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
@@ -173,10 +173,6 @@ public class HomeFragment extends Fragment {
                             mResults = 10;
                             mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
-                            Log.d(TAG, "mPhotos.get(0): " + mPhotos.get(0).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(1): " + mPhotos.get(1).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(2): " + mPhotos.get(2).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(3): " + mPhotos.get(3).getPhoto_id());
 
                         } catch (NullPointerException e) {
                             Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());

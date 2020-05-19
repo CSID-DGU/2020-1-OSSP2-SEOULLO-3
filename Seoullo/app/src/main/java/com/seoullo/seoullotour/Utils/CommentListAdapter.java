@@ -25,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Models.Comment;
+import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.R;
@@ -42,6 +43,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CommentListAdapter extends ArrayAdapter<Comment> {
 
     private static final String TAG = "CommentListAdapter";
+
+    //time var
+    private int SEC = 60;
+    private int MIN = 60;
+    private int HOUR = 24;
+    private int DAY = 30;
+    private int MONTH = 12;
 
     public RequestManager mRequestManager;
     private LayoutInflater mLayoutInflater;
@@ -90,11 +98,14 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         //set timestamp difference
         String timestampDifference = getTimestampDifference(getItem(position));
-        if (!timestampDifference.equals("0")) {
-            holder.timestamp.setText(timestampDifference + " d");
-        } else {
-            holder.timestamp.setText("today");
-        }
+        holder.timestamp.setText(timestampDifference);
+//        if (!timestampDifference.equals("0")) {
+//            holder.timestamp.setText(timestampDifference + " d");
+//        } else {
+//            holder.timestamp.setText("today");
+//        }
+
+
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
@@ -154,23 +165,56 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
      * @return
      */
     private String getTimestampDifference(Comment comment) {
-        Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
-
-        String difference = "";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
-        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));//google 'android list of timezones'
-        Date today = c.getTime();
-        sdf.format(today);
-        Date timestamp;
-        final String photoTimestamp = comment.getDate_created();
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Date dateTime = new Date();
         try {
-            timestamp = sdf.parse(photoTimestamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+            dateTime = transFormat.parse(comment.getDate_created());
         } catch (ParseException e) {
-            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage());
-            difference = "0";
+            e.printStackTrace();
         }
-        return difference;
+        return calculateTime(dateTime);
+    }
+    public String calculateTime(Date date)
+    {
+
+        long curTime = System.currentTimeMillis();
+        long regTime = date.getTime();
+        long diffTime = (curTime - regTime) / 1000;
+
+        String msg = null;
+
+        if (diffTime < SEC)
+        {
+            // sec
+            msg = diffTime + "방금전";
+        }
+        else if ((diffTime /= SEC) < MIN)
+        {
+            // min
+            System.out.println(diffTime);
+
+            msg = diffTime + "분전";
+        }
+        else if ((diffTime /= MIN) <HOUR)
+        {
+            // hour
+            msg = (diffTime ) + "시간전";
+        }
+        else if ((diffTime /= HOUR) < DAY)
+        {
+            // day
+            msg = (diffTime ) + "일전";
+        }
+        else if ((diffTime /= DAY) <MONTH)
+        {
+            // day
+            msg = (diffTime ) + "달전";
+        }
+        else
+        {
+            msg = (diffTime) + "년전";
+        }
+
+        return msg;
     }
 }
