@@ -91,7 +91,7 @@ public class ViewCommentsFragment extends Fragment {
         mComments = new ArrayList<>();
         mContext = getActivity();
         mRequestManager = Glide.with(this);
-
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 
         try{
             mPhoto = getPhotoFromBundle();
@@ -181,8 +181,8 @@ public class ViewCommentsFragment extends Fragment {
     }
 
     private String getTimestamp(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
-        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.KOREAN);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         return sdf.format(new Date());
     }
 
