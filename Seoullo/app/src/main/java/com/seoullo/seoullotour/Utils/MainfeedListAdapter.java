@@ -1,67 +1,67 @@
 package com.seoullo.seoullotour.Utils;
 
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.net.Uri;
+        import android.util.Log;
+        import android.view.GestureDetector;
+        import android.view.LayoutInflater;
+        import android.view.MotionEvent;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.ArrayAdapter;
+        import android.widget.ImageView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+        import androidx.annotation.LayoutRes;
+        import androidx.annotation.NonNull;
+        import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.seoullo.seoullotour.Home.HomeActivity;
-import com.seoullo.seoullotour.Home.HomeFragment;
-import com.seoullo.seoullotour.Models.Comment;
-import com.seoullo.seoullotour.Models.Like;
-import com.seoullo.seoullotour.Profile.ProfileActivity;
+        import com.bumptech.glide.Glide;
+        import com.bumptech.glide.RequestManager;
+        import com.bumptech.glide.request.RequestOptions;
+        import com.google.android.gms.tasks.OnSuccessListener;
+        import com.google.firebase.auth.FirebaseAuth;
+        import com.google.firebase.database.DataSnapshot;
+        import com.google.firebase.database.DatabaseError;
+        import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.database.Query;
+        import com.google.firebase.database.ValueEventListener;
+        import com.google.firebase.storage.FirebaseStorage;
+        import com.google.firebase.storage.StorageReference;
+        import com.nostra13.universalimageloader.core.ImageLoader;
+        import com.seoullo.seoullotour.Home.HomeActivity;
+        import com.seoullo.seoullotour.Home.HomeFragment;
+        import com.seoullo.seoullotour.Models.Comment;
+        import com.seoullo.seoullotour.Models.Like;
+        import com.seoullo.seoullotour.Profile.ProfileActivity;
 
-import com.google.firebase.database.DatabaseReference;
-import com.seoullo.seoullotour.R;
-import com.seoullo.seoullotour.Models.Photo;
-import com.seoullo.seoullotour.Models.User;
-import com.seoullo.seoullotour.Models.UserAccountSettings;
-import com.seoullo.seoullotour.Recommend.RecommendActivity;
-import com.seoullo.seoullotour.Recommend.RecommendFragment;
+        import com.google.firebase.database.DatabaseReference;
+        import com.seoullo.seoullotour.R;
+        import com.seoullo.seoullotour.Models.Photo;
+        import com.seoullo.seoullotour.Models.User;
+        import com.seoullo.seoullotour.Models.UserAccountSettings;
+        import com.seoullo.seoullotour.Recommend.RecommendActivity;
+        import com.seoullo.seoullotour.Recommend.RecommendFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
+        import org.w3c.dom.Text;
 
-import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.TimeZone;
+        import java.nio.file.Path;
+        import java.text.ParseException;
+        import java.text.SimpleDateFormat;
+        import java.util.Calendar;
+        import java.util.Date;
+        import java.util.List;
+        import java.util.Locale;
+        import java.util.Objects;
+        import java.util.TimeZone;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+        import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
@@ -108,11 +108,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         User user = new User();
         StringBuilder users;
         String mLikesString;
-        boolean likeByCurrentUser = false;
+        boolean likeByCurrentUser;
         Heart heart;
         GestureDetector detector;
         Photo photo;
-        
     }
 
     @NonNull
@@ -120,7 +119,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
-
 
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
@@ -142,16 +140,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
             holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
-            holder.likeByCurrentUser = false;
 
             convertView.setTag(holder);
 
         } else {
             holder = (ViewHolder) convertView.getTag();
-        }
-        if(FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
-                .child("likes").equals(currentUsername)){
-            holder.likeByCurrentUser = true;
         }
 
         //get the current users username (need for checking likes string)
@@ -206,7 +199,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         query.addValueEventListener(new ValueEventListener() {
 
-                @Override
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
@@ -763,6 +756,3 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
 }
-
-
-
