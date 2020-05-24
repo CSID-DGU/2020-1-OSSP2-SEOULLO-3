@@ -88,7 +88,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private DatabaseReference mReference;
     private String currentUsername = "";
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects, RequestManager requestManager) {
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects ,RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
@@ -100,7 +100,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     static class ViewHolder {
         CircleImageView mprofileImage;
         String likesString;
-        TextView username, timeDetla, caption, likes, comments, location, likecount;
+        TextView username, timeDetla, caption, likes, comments, location,likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment;
 
@@ -108,10 +108,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         User user = new User();
         StringBuilder users;
         String mLikesString;
-        boolean likeByCurrentUser;
+        boolean likeByCurrentUser = false;
         Heart heart;
         GestureDetector detector;
         Photo photo;
+
     }
 
     @NonNull
@@ -119,6 +120,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
+
 
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
@@ -139,12 +141,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
-            holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
+            holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
+            holder.likeByCurrentUser = false;
 
             convertView.setTag(holder);
 
         } else {
             holder = (ViewHolder) convertView.getTag();
+        }
+        if(FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
+                .child("likes").equals(currentUsername)){
+            holder.likeByCurrentUser = true;
         }
 
         //get the current users username (need for checking likes string)
@@ -185,6 +192,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the profile image
 //        final ImageLoader imageLoader = ImageLoader.getInstance();
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
+
 
 
         //get the profile image and username
@@ -306,7 +314,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String location = "not recognized";
+                String location="not recognized";
                 String jsonString = dataSnapshot.toString();
 //                try {
 //                    JSONObject jsonObj = new JSONObject(jsonString);
@@ -321,7 +329,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-                final String value = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+                final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
 
 
                 holder.location.setText(value);
@@ -338,7 +346,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("location add", "error !!");
+                Log.e("location add","error !!");
             }
         });
 
@@ -711,8 +719,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         return calculateTime(dateTime);
     }
-
-    public String calculateTime(Date date) {
+    public String calculateTime(Date date)
+    {
 
         long curTime = System.currentTimeMillis();
         long regTime = date.getTime();
@@ -720,23 +728,34 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String msg = null;
 
-        if (diffTime < SEC) {
+        if (diffTime < SEC)
+        {
             // sec
             msg = diffTime + "방금전";
-        } else if ((diffTime /= SEC) < MIN) {
+        }
+        else if ((diffTime /= SEC) < MIN)
+        {
             // min
 
             msg = diffTime + "분전";
-        } else if ((diffTime /= MIN) < HOUR) {
+        }
+        else if ((diffTime /= MIN) <HOUR)
+        {
             // hour
-            msg = (diffTime) + "시간전";
-        } else if ((diffTime /= HOUR) < DAY) {
+            msg = (diffTime ) + "시간전";
+        }
+        else if ((diffTime /= HOUR) < DAY)
+        {
             // day
-            msg = (diffTime) + "일전";
-        } else if ((diffTime /= DAY) < MONTH) {
+            msg = (diffTime ) + "일전";
+        }
+        else if ((diffTime /= DAY) <MONTH)
+        {
             // day
-            msg = (diffTime) + "달전";
-        } else {
+            msg = (diffTime ) + "달전";
+        }
+        else
+        {
             msg = (diffTime) + "년전";
         }
 
