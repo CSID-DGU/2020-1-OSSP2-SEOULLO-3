@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +36,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.seoullo.seoullotour.Models.Place;
+import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.FirebaseMethods;
 import com.seoullo.seoullotour.Utils.UniversalImageLoader;
@@ -40,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -47,6 +54,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NextActivity extends AppCompatActivity {
 
@@ -74,6 +82,8 @@ public class NextActivity extends AppCompatActivity {
     //place location
     private String location;
     private static String API_KEY = "";
+    private Geocoder geocoder;
+    private ArrayList<Place> placeList = new ArrayList<>();
 
     public NextActivity() {
     }
@@ -118,6 +128,27 @@ public class NextActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to the final share screen");
+                //-------------------------------------------DB에 place올릴 스레드------------------------------------------
+                //http server new thread() : android.os.NetworkOnMainThreadException
+                // Thread로 웹서버에 접속
+                new Thread() {
+                    public void run() {
+                        System.out.println("THREAD RUN");
+                        new Point();
+                        Point pp;
+                        geocoder = new Geocoder(getApplicationContext());
+                        pp = getLatlngFromLocation(mAuto.getText().toString());
+
+                        String json = getNearby(pp);
+
+                        Bundle bun = new Bundle();
+                        bun.putString("json", json);
+                        Message msg = handler.obtainMessage();
+                        msg.setData(bun);
+                        handler.sendMessage(msg);
+                    }
+                }.start();
+                //==============================================place저장중===================================================
                 //upload image to firebase
                 Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
                 String caption = mCaption.getText().toString();
@@ -125,13 +156,12 @@ public class NextActivity extends AppCompatActivity {
                 if (intent.hasExtra(getString(R.string.selected_image))) {
                     imgUrl = intent.getStringExtra(getString(R.string.selected_image));
                     imgName = intent.getStringExtra("image_name");
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null ,location, imgName);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null ,location, imgName, placeList);
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location,imgName);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location,imgName, placeList);
                 }
-
             }
         });
         setImage();
@@ -148,6 +178,7 @@ public class NextActivity extends AppCompatActivity {
          * b) insert into 'photo' node
          * c) insert into 'user_photos' node
          */
+
     }
 
     /**
@@ -337,6 +368,136 @@ public class NextActivity extends AppCompatActivity {
                 }
             };
             return filter;
+        }
+    }
+    //================================================================GEOCODING !=================================================================
+    //geocoding
+    public Point getLatlngFromLocation(String findLocation) {
+
+        Point resultPoint = new Point();
+
+        String str = findLocation;
+        List<Address> addressList = null;
+
+        try {
+            addressList = geocoder.getFromLocationName(
+                    str,
+                    10);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
+        resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
+        resultPoint.location = findLocation;
+
+        return resultPoint;
+    }
+    //TODO: nearby recommended places !! -> 파싱을 고쳐야함 04/06
+    public String getNearby(Point pDTO) {
+        double latitude, longitude;
+        latitude = pDTO.x; longitude = pDTO.y;
+        String jsonText = "";
+
+        String httpURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=" + latitude + "," + longitude +
+                "&radius=1500" +
+                "&type=" + "tourist_attraction" +
+                "&language=" + "ko" +
+                //"&keyword=cruise" +
+                "&key=" + API_KEY;
+        jsonText = httpConnection(httpURL);
+
+        return jsonText;
+    }
+    //get json
+    public String httpConnection(String targetUrl) {
+        URL url = null;
+        HttpURLConnection conn = null;
+        String jsonData = "";
+        BufferedReader br = null;
+        StringBuffer sb = null;
+        String returnText = "";
+
+        try {
+            url = new URL(targetUrl);
+
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            sb = new StringBuffer();
+
+            while ((jsonData = br.readLine()) != null) {
+                sb.append(jsonData);
+            }
+            returnText = sb.toString();
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("end of http request !");
+        return returnText;
+    }
+
+    //handler
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            Bundle bun = msg.getData();
+            String json = bun.getString("json");
+            //json PARSING
+            jsonParsing(json);
+        }
+    };
+
+    //json parsing
+    private void jsonParsing(String json) {
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray placeArray = jsonObject.getJSONArray("results");
+            System.out.println("JSON PARSING !");
+            for(int i=0; i<placeArray.length(); i++)
+            {
+                JSONObject placeJsonObject = placeArray.getJSONObject(i);
+
+                JSONObject geometry = (JSONObject) placeJsonObject.get("geometry");
+                JSONObject location = (JSONObject) geometry.get("location");
+                String lat = location.get("lat").toString();
+                String lng = location.get("lng").toString();
+
+                Place placeDTO = new Place();
+
+                //array
+                JSONArray photoArray = placeJsonObject.getJSONArray("photos");
+                if(photoArray.length() != 0) {
+                    JSONObject photos = photoArray.getJSONObject(0);
+                    //photo : [ { photo_reference } ]
+                    placeDTO.setPhotoReference((String) photos.get("photo_reference"));
+                }
+
+
+                placeDTO.setName(placeJsonObject.get("name").toString());
+                placeDTO.setLatitude(Double.parseDouble(lat));
+                placeDTO.setLongitude(Double.parseDouble(lng));
+                placeDTO.setVicinity(placeJsonObject.get("vicinity").toString());
+
+                System.out.println("Name : " + placeJsonObject.get("name").toString());
+                System.out.println("lat : " + lat);
+                System.out.println("lng : " + lng);
+                System.out.println(placeJsonObject.get("vicinity").toString());
+
+                placeList.add(placeDTO);    //여기서 리스트에 추가!
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
     //google api key

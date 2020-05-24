@@ -12,6 +12,11 @@ import androidx.fragment.app.Fragment;
 import com.seoullo.seoullotour.R;
 
 public class RecommendFirstFragment extends Fragment {
+
+    //init
+    RecommendFirstFragment() {
+
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
