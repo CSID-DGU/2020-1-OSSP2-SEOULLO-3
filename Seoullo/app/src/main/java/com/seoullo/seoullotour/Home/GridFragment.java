@@ -118,15 +118,13 @@ public class GridFragment extends Fragment {
                                     comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
                                     comments.add(comment);
                                 }
-
                                 photo.setComments(comments);
-
-                                /*Collections.sort(photos, new Comparator<Photo>() {
+                                Collections.sort(photos, new Comparator<Photo>() {
                                     @Override
                                     public int compare(Photo o1, Photo o2) {
                                         return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
                                     }
-                                });*/
+                                });
 
                                 photos.add(photo);
                                 Log.d(TAG, "포토사이즈" + photos.size());
