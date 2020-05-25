@@ -326,6 +326,32 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 Log.e("location add", "error !!");
             }
         });
+        //get place array
+        Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
+        placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //15개 중에 3개를 저장할 예정
+                String data = dataSnapshot.toString();
+                //First place
+                for(int i=0;i<3;++i) {
+                    Place place = new Place();
+
+                    place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
+                    place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
+                    place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
+                    place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
+                    place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
+
+                    placeList.add(place);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //get the user object
         Query userQuery = mReference
@@ -346,84 +372,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        //holder.location click event
-        Query query2 = reference
-                .child("photos")
-                .child(holder.photo.getPhoto_id())
-                .child("places");
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                String json = dataSnapshot.toString();
-                String FirstThing = json.substring(json.indexOf("0="), json.indexOf("1=")-2);
-                System.out.println(FirstThing);
-//                if(dataSnapshot.toString().length() != 0) {
-//                    Place place1 = new Place();
-//                    String tempData1 = dataSnapshot.toString().substring(dataSnapshot.toString().indexOf("0="), dataSnapshot.toString().indexOf("1=") - 2);
-//                    System.out.println(tempData1);
-//                    //{0={xxxx=xxx,yyy=yyy,zzz=zzz, . . . }, 1={ xxxx=xxx,yyy=yyy,zzzz=zzz, . . .}, }
-//                    String dataForm = tempData1.substring(tempData1.indexOf("value") + 8, tempData1.length() - 1);
-//                    String FirstIndex1 = dataForm.substring(dataForm.indexOf("0") + 18, dataForm.indexOf("latitude") - 2);
-//                    String latitude1 = dataForm.substring(dataForm.indexOf("latitude") + 9, dataForm.indexOf("name") - 2);
-//                    String name1 = dataForm.substring(dataForm.indexOf("name") + 5, dataForm.indexOf("vicinity") - 2);
-//                    String vicinity1 = dataForm.substring(dataForm.indexOf("vicinity") + 9, dataForm.indexOf("longitude") - 2);
-//                    String longitude1 = dataForm.substring(dataForm.indexOf("longitude") + 10, dataForm.length() - 1);
-//
-//
-//                    place1.setPhotoReference(FirstIndex1);
-//                    place1.setLatitude(Double.parseDouble(latitude1));
-//                    place1.setLongitude(Double.parseDouble(longitude1));
-//                    place1.setName(name1);
-//                    place1.setVicinity(vicinity1);
-//
-//                    placeList.add(place1);
-//
-//                    Place place2 = new Place();
-//                    String tempData2 = dataSnapshot.toString().substring(dataSnapshot.toString().indexOf("2="), dataSnapshot.toString().indexOf("3=") - 2);
-//                    String dataForm2 = tempData2.substring(tempData2.indexOf("value") + 8, tempData2.length() - 1);
-//                    String SecondIndex = dataForm2.substring(dataForm2.indexOf("0=") + 18, dataForm2.indexOf("latitude") - 2);
-//                    String latitude2 = dataForm2.substring(dataForm2.indexOf("latitude") + 9, dataForm2.indexOf("name") - 2);
-//                    String name2 = dataForm2.substring(dataForm2.indexOf("name") + 5, dataForm2.indexOf("vicinity") - 2);
-//                    String vicinity2 = dataForm2.substring(dataForm2.indexOf("vicinity") + 9, dataForm2.indexOf("longitude") - 2);
-//                    String longitude2 = dataForm2.substring(dataForm2.indexOf("longitude") + 10, dataForm2.length() - 1);
-//
-//                    place2.setPhotoReference(SecondIndex);
-//                    place2.setLatitude(Double.parseDouble(latitude2));
-//                    place2.setLongitude(Double.parseDouble(longitude2));
-//                    place2.setName(name2);
-//                    place2.setVicinity(vicinity2);
-//
-//                    placeList.add(place2);
-//
-//                    Place place3 = new Place();
-//                    String tempData3 = dataSnapshot.toString().substring(dataSnapshot.toString().indexOf("3="), dataSnapshot.toString().indexOf("4=") - 2);
-//                    String dataForm3 = tempData3.substring(tempData3.indexOf("value") + 8, tempData3.length() - 1);
-//                    String ThirdIndex = dataForm3.substring(dataForm3.indexOf("0=") + 18, dataForm3.indexOf("latitude") - 2);
-//                    String latitude3 = dataForm3.substring(dataForm3.indexOf("latitude") + 9, dataForm3.indexOf("name") - 2);
-//                    String name3 = dataForm3.substring(dataForm3.indexOf("name") + 5, dataForm3.indexOf("vicinity") - 2);
-//                    String vicinity3 = dataForm3.substring(dataForm3.indexOf("vicinity") + 9, dataForm3.indexOf("longitude") - 2);
-//                    String longitude3 = dataForm3.substring(dataForm3.indexOf("longitude") + 10, dataForm3.length() - 1);
-//
-//                    place3.setPhotoReference(ThirdIndex);
-//                    place3.setLatitude(Double.parseDouble(latitude3));
-//                    place3.setLongitude(Double.parseDouble(longitude3));
-//                    place3.setName(name3);
-//                    place3.setVicinity(vicinity3);
-//
-//                    placeList.add(place3);
-//                }
-//                else {
-//                    Toast.makeText(getContext(), "none !", Toast.LENGTH_LONG).show();
-//                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
