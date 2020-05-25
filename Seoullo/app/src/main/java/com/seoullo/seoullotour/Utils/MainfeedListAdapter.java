@@ -95,13 +95,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     //location and places
     private String mValue;
+    private ArrayList<Photo> photosList;
+
     private ArrayList<Place> placeList = new ArrayList<>();
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects, RequestManager requestManager) {
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Photo> objects, RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
         mRequestManager = requestManager;
+        photosList = objects;
         this.mContext = context;
         mReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -144,7 +147,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.timeDetla = (TextView) convertView.findViewById(R.id.image_time_posted);
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
-            holder.photo = getItem(position);
+            holder.photo = photosList.get(position);
+            System.out.println(holder.photo.getImage_name()+"getview위치");
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
@@ -163,13 +167,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         getLikesString(holder);
 
         //set the caption
-        holder.caption.setText(getItem(position).getCaption());
+        holder.caption.setText(photosList.get(position).getCaption());
 //        holder.username.setText(getItem(position).getUser_id());
 
         //set the comment
-        List<Comment> comments = getItem(position).getComments();
+        List<Comment> comments = photosList.get(position).getComments();
 
-        holder.likecount.setText("좋아요 " + getItem(position).getLikeCount() + "개");
+        holder.likecount.setText("좋아요 " + photosList.get(position).getLikeCount() + "개");
 
         holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +191,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
 
         //set the time it was posted
-        String timestampDifference = getTimestampDifference(getItem(position));
+        String timestampDifference = getTimestampDifference(photosList.get(position));
         holder.timeDetla.setText(timestampDifference);
 
 
@@ -203,7 +207,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .equalTo(photosList.get(position).getUser_id());
 
         query.addValueEventListener(new ValueEventListener() {
 
@@ -233,7 +237,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                     FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
                     StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                    storageReference.child("photos").child("users").child(photosList.get(position).getUser_id()).child("profile_photo").getDownloadUrl()
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -256,7 +260,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                    });
 
 
-                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child(holder.photo.getImage_name())
+                    storageReference.child("photos").child("users").child(photosList.get(position).getUser_id()).child(holder.photo.getImage_name())
                             .getDownloadUrl()
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -364,7 +368,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Query userQuery = mReference
                 .child(mContext.getString(R.string.dbname_users))
                 .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .equalTo(photosList.get(position).getUser_id());
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
