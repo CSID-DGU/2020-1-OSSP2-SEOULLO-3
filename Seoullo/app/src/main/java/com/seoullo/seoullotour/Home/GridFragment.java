@@ -151,7 +151,9 @@ public class GridFragment extends Fragment {
             ImageView imageView = new ImageView(parent.getContext());
             imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, width));
             imageView.setPadding(1, 1, 1, 1);
-            imageView.setCropToPadding(true);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//            imageView.setCropToPadding(true);
+//            imageView.setAdjustViewBounds(true);
 
             return new CustomViewHolder(imageView);
         }
@@ -166,8 +168,9 @@ public class GridFragment extends Fragment {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         // Glide 이용하여 이미지뷰에 로딩
-                        Glide.with(holder.itemView.getContext())
+                        mRequestManager
                                 .load(task.getResult())
+                                .override(getResources().getDisplayMetrics().widthPixels / 3,getResources().getDisplayMetrics().widthPixels / 3)
                                 .into(((CustomViewHolder) holder).imageView);
                     } else {
                     }
