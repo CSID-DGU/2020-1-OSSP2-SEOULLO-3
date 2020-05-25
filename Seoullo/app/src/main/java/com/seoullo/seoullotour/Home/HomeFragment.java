@@ -37,7 +37,6 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
-
     private RequestManager mRequestManager;
     //vars
     private ArrayList<Photo> mPhotos;
@@ -171,6 +170,10 @@ public class HomeFragment extends Fragment {
 
                         try {
                             mResults = 10;
+                            System.out.println(mPhotos.size()+"::포토개수");
+                            for(int i =0; i< mPhotos.size(); i++){
+                                System.out.println(mPhotos.get(i).getUser_id()+"<id와 내용>"+mPhotos.get(i).getImage_name());
+                            }
                             mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
 
@@ -210,7 +213,6 @@ public class HomeFragment extends Fragment {
         try {
 
             if (mPhotos.size() > mResults && mPhotos.size() > 0) {
-
                 int iterations;
                 if (mPhotos.size() > (mResults + 10)) {
                     Log.d(TAG, "displayMorePhotos: there are greater than 10 more photos");
