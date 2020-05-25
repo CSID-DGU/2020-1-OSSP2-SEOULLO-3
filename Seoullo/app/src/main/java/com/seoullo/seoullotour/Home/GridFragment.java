@@ -90,11 +90,9 @@ public class GridFragment extends Fragment {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
-//                    .orderByChild(getString(R.string.field_likes_count))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-//                            Collections.sort(photos, ComparatorByLikeNum);
                             photos.clear();
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
@@ -121,8 +119,6 @@ public class GridFragment extends Fragment {
                                 photo.setComments(comments);
 
                                 photos.add(photo);
-
-                                Log.d(TAG, "포토사이즈" + photos.size());
                             }
                             displayPhotos();
                             notifyDataSetChanged();
@@ -200,8 +196,6 @@ public class GridFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            Log.d(TAG, "포토사이즈" + photos.size());
-
             return photos.size();
         }
 
