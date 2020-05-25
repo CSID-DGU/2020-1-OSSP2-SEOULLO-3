@@ -481,17 +481,19 @@ public class NextActivity extends AppCompatActivity {
                     //photo : [ { photo_reference } ]
                     placeDTO.setPhotoReference((String) photos.get("photo_reference"));
                 }
-
+                JSONArray typeArray = (JSONArray)placeJsonObject.getJSONArray("types");
+                if(typeArray.length() != 0) {
+                    ArrayList<String> temp = new ArrayList<>();
+                    for(int j=0; j<typeArray.length();++j) {
+                        temp.add(typeArray.getString(j));
+                    }
+                    placeDTO.setType(temp);
+                }
 
                 placeDTO.setName(placeJsonObject.get("name").toString());
                 placeDTO.setLatitude(Double.parseDouble(lat));
                 placeDTO.setLongitude(Double.parseDouble(lng));
                 placeDTO.setVicinity(placeJsonObject.get("vicinity").toString());
-
-                System.out.println("Name : " + placeJsonObject.get("name").toString());
-                System.out.println("lat : " + lat);
-                System.out.println("lng : " + lng);
-                System.out.println(placeJsonObject.get("vicinity").toString());
 
                 placeList.add(placeDTO);    //여기서 리스트에 추가!
             }

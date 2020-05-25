@@ -332,9 +332,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //15개 중에 3개를 저장할 예정
-                String data = dataSnapshot.toString();
-                //First place
                 for(int i=0;i<3;++i) {
+                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").child("0").getValue());
+                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount());
+
                     Place place = new Place();
 
                     place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
@@ -342,6 +343,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
                     place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
                     place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
+                    ArrayList<String>temp = new ArrayList<>();
+                    //type
+                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                        temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
+                    }
+                    place.setType(temp);
 
                     placeList.add(place);
                 }
