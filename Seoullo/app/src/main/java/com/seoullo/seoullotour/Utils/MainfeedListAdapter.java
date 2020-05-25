@@ -95,7 +95,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     //location and places
     private String mValue;
-    private ArrayList<Photo> photosList;
+    private ArrayList<Photo> photosList = new ArrayList<>();
 
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -131,8 +131,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
-
-        if (convertView == null) {
+        if (photosList.size() > position) {
+//        if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
             holder = new ViewHolder();
 
@@ -148,7 +148,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
             holder.photo = photosList.get(position);
-            System.out.println(holder.photo.getImage_name()+"getview위치");
+            System.out.println(holder.photo.getImage_name()+"getview위치"+photosList.size()+"사이즈");
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
@@ -406,7 +406,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     private boolean reachedEndOfList(int position) {
-        return position == getCount() - 1;
+        return position == photosList.size() - 1;
     }
 
     private void loadMoreData() {
