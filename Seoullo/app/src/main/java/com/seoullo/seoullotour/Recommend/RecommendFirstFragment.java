@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class RecommendFirstFragment extends Fragment {
 
@@ -85,7 +86,11 @@ public class RecommendFirstFragment extends Fragment {
 
         mTitle.setText(mPlace.getName());
         mVicinity.setText(mPlace.getVicinity());
-        String desc = "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
+        ArrayList<String> mType = new ArrayList<>();
+        mType = (ArrayList<String>) mPlace.getType().clone();
+
+        String desc = "CATEGORY : "+mType.get(0)+" , "+mType.get(1)+" , "+
+                "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
         mDesc.setText(desc);
         mAnotherDecs.setText("this is another part of desc");
         //Image
