@@ -6,11 +6,15 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,6 +44,7 @@ public class RecommendFirstFragment extends Fragment {
     private ImageView mImage;
     private TextView mDesc;
     private TextView mAnotherDecs;
+    private LinearLayout mScrollItems;
 
     //var
     private Place mPlace;
@@ -83,14 +88,23 @@ public class RecommendFirstFragment extends Fragment {
         mImage = (ImageView) view.findViewById(R.id.recommend_image);
         mDesc = (TextView) view.findViewById(R.id.recommend_desc);
         mAnotherDecs = (TextView) view.findViewById(R.id.recommend_anotherdesc);
+        mScrollItems = (LinearLayout) view.findViewById(R.id.scroll_type_item);
 
         mTitle.setText(mPlace.getName());
         mVicinity.setText(mPlace.getVicinity());
         ArrayList<String> mType = new ArrayList<>();
         mType = (ArrayList<String>) mPlace.getType().clone();
 
-        String desc = "CATEGORY : "+mType.get(0)+" , "+mType.get(1)+" , "+
-                "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
+        for(int i=0; i< mType.size(); ++i) {
+            TextView item = new TextView(this.getContext());
+            item.setText(Html.fromHtml(mType.get(i)));
+            item.setTextSize(10);
+            item.setMovementMethod(new ScrollingMovementMethod());
+
+            mScrollItems.addView(item);
+        }
+
+        String desc = "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
         mDesc.setText(desc);
         mAnotherDecs.setText("this is another part of desc");
         //Image
