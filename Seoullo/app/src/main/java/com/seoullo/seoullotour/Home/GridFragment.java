@@ -103,11 +103,11 @@ public class GridFragment extends Fragment {
                                 photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                                 photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
                                 photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                                Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
                                 photo.setImage_name(objectMap.get("image_name").toString());
                                 photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                                photo.setLikeCount(Integer.parseInt( objectMap.get("likeCount").toString()));
 //                                photos.add(singleSnapshot.getValue(Photo.class));
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
@@ -119,17 +119,12 @@ public class GridFragment extends Fragment {
                                     comments.add(comment);
                                 }
                                 photo.setComments(comments);
-                                Collections.sort(photos, new Comparator<Photo>() {
-                                    @Override
-                                    public int compare(Photo o1, Photo o2) {
-                                        return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
-                                    }
-                                });
 
                                 photos.add(photo);
+
                                 Log.d(TAG, "포토사이즈" + photos.size());
                             }
-
+                            displayPhotos();
                             notifyDataSetChanged();
                         }
 
@@ -139,7 +134,22 @@ public class GridFragment extends Fragment {
                         }
                     });
         }
-
+        private void displayPhotos(){
+            if (photos != null){
+                try{
+                    Collections.sort(photos, new Comparator<Photo>() {
+                        @Override
+                        public int compare(Photo photo1, Photo photo2) {
+                            return Integer.valueOf(photo2.getLikeCount()).compareTo(photo1.getLikeCount());
+                        }
+                    });
+                }catch (NullPointerException e){
+                    Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage() );
+                }catch (IndexOutOfBoundsException e){
+                    Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage() );
+                }
+            }
+        }
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

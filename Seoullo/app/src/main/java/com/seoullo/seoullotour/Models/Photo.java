@@ -124,9 +124,9 @@ public class Photo implements Parcelable, Serializable {
         this.likes = likes;
     }
 
-    public int getLikeCount() { return this.likeCount; }
+    public Integer getLikeCount() { return likeCount; }
 
-    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+    public void setLikeCount(Integer likeCount) { this.likeCount = likeCount; }
 
     public int addLikeCount() { return this.likeCount + 1; }
 
