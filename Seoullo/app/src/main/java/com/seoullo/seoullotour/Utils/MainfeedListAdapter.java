@@ -31,11 +31,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
+import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 
 import com.google.firebase.database.DatabaseReference;
@@ -51,18 +54,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
@@ -87,6 +92,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private Context mContext;
     private DatabaseReference mReference;
     private String currentUsername = "";
+
+    //location and places
+    private String mValue;
+    private ArrayList<Place> placeList = new ArrayList<>();
 
     public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects, RequestManager requestManager) {
         super(context, resource, objects);
@@ -308,37 +317,39 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String location = "not recognized";
                 String jsonString = dataSnapshot.toString();
-//                try {
-//                    JSONObject jsonObj = new JSONObject(jsonString);
-//                    JSONArray locArray = (JSONArray) jsonObj.get("DataSnapshot");
-//
-//                    for(int i=0;i<locArray.length();++i) {
-//                        JSONObject locObject = (JSONObject) locArray.getJSONObject(i);
-//                        location = locObject.get("value").toString();
-//                        System.out.println("location@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+location);
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-                final String value = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
-
-
-                holder.location.setText(value);
-
-                holder.location.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(mContext, RecommendActivity.class);
-                        intent.putExtra("location", value);
-                        mContext.startActivity(intent);
-                    }
-                });
+                mValue = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+                holder.location.setText(mValue);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("location add", "error !!");
+            }
+        });
+        //get place array
+        Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
+        placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //15개 중에 3개를 저장할 예정
+                String data = dataSnapshot.toString();
+                //First place
+                for(int i=0;i<3;++i) {
+                    Place place = new Place();
+
+                    place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
+                    place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
+                    place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
+                    place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
+                    place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
+
+                    placeList.add(place);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
@@ -362,6 +373,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        holder.location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"placeList size is : " + placeList.size());
+                Intent intent = new Intent(mContext, RecommendActivity.class);
+                intent.putExtra("location", mValue);
+                intent.putExtra("places", (ArrayList<Place>)placeList);
+                mContext.startActivity(intent);
             }
         });
 
@@ -469,6 +491,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             return true;
         }
     }
+
 
     private void addNewLike(final ViewHolder holder) {
         Log.d(TAG, "addNewLike: adding new like");

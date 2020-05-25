@@ -1,6 +1,8 @@
 package com.seoullo.seoullotour.Models;
 
-public class Place {
+import java.io.Serializable;
+
+public class Place implements Serializable {
     //TODO: 넣기 -> vicinity
     private double latitude;
     private double longitude;
