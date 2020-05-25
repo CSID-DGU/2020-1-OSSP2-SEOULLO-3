@@ -9,13 +9,13 @@
     <TextView
         android:id="@+id/recommend_title"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="30dp"
 
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="5dp"
         
         android:text="TITLE"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@color/theme_deepblue"
         android:textStyle="bold"
         android:textAlignment="center"
@@ -25,7 +25,7 @@
         android:id="@+id/title_division"
         android:layout_width="300dp"
         android:layout_height="1dp"
-        android:background="@color/theme_camel"
+        android:background="@color/theme_deepblue"
 
         app:layout_constraintTop_toBottomOf="@id/recommend_title"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:id="@+id/group_vicinity"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="20dp"
 
         app:layout_constraintTop_toBottomOf="@id/title_division"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -45,14 +45,14 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="40dp"
             android:src="@drawable/location_outline"
             android:adjustViewBounds="true"
             />
     <TextView
         android:id="@+id/recommend_vicinity"
         android:layout_width="250dp"
-        android:layout_height="25dp"
+        android:layout_height="20dp"
 
         android:layout_marginStart="10dp"
 
@@ -93,7 +93,7 @@
 
         android:text="this is the test case of recommendation script this will be filled with a lot of informations"
         android:textColor="@color/theme_deepblue"
-        android:gravity="top|center"
+        android:gravity="top"
         android:textSize="15sp"/>
     </LinearLayout>
     <LinearLayout

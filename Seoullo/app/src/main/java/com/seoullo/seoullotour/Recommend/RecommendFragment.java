@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -60,8 +61,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //기본 생성자
     public RecommendFragment() { }
     //값 받아오기
-    public RecommendFragment(String ref) {
-        this.findLocation = ref;
+    public RecommendFragment(String ref1, ArrayList<Place> ref2) {
+        this.findLocation = ref1;
+        this.placeList = (ArrayList<Place>) ref2.clone();
     }
 
     //naver api key
@@ -109,9 +111,13 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //adapt to viewpager
         com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter viewPagerAdapter =
                 new com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter(getFragmentManager());
-        viewPagerAdapter.addItem(new RecommendFirstFragment());
-        viewPagerAdapter.addItem(new RecommendSecondFragment());
-        viewPagerAdapter.addItem(new RecommendThirdFragment());
+        if(placeList.size() != 0) {
+            viewPagerAdapter.addItem(new RecommendFirstFragment(placeList.get(0)));
+        } else {
+            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
+        }
+        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
+        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
 
         viewPager.setAdapter(viewPagerAdapter);
 
