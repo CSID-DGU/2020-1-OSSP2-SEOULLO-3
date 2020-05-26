@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -45,14 +46,16 @@ public class RecommendFirstFragment extends Fragment {
     private TextView mDesc;
     private TextView mAnotherDecs;
     private LinearLayout mScrollItems;
+    private LinearLayout mViewpager;
 
     //var
     private Place mPlace;
     private String API_KEY;
 
     //init - google place api
-    RecommendFirstFragment(Place ref) {
+    RecommendFirstFragment(Place ref, LinearLayout ll) {
         this.mPlace = ref;
+        this.mViewpager = ll;
     }
 
     public static String getApiKeyFromManifest(Context context) {
@@ -97,10 +100,21 @@ public class RecommendFirstFragment extends Fragment {
 
         for(int i=0; i< mType.size(); ++i) {
             TextView item = new TextView(this.getContext());
-            item.setText(Html.fromHtml(mType.get(i)));
+
+            switch(mType.get(i)) {
+                case "tourist_attraction":
+                    item.setText(Html.fromHtml("#관광지추천장소TOP5"));
+                    break;
+                case "point_of_interest":
+                    item.setText(Html.fromHtml("#관심지역TOP10"));
+                    break;                case "establishment":
+                    item.setText(Html.fromHtml("#설립107주년"));
+                    break;
+            }
+
             item.setTextSize(10);
             item.setMovementMethod(new ScrollingMovementMethod());
-
+            item.setPadding(20,0,20,0);
             mScrollItems.addView(item);
         }
 
@@ -114,7 +128,7 @@ public class RecommendFirstFragment extends Fragment {
                 "&key=" + API_KEY;
         final Bitmap[] bitmap = new Bitmap[1];
 
-        //반드시 메인스레드가 아닌 별도의 스레드를 생성해야함 : GridFragement와 같이
+        //반드시 메인스레드가 아닌 별도의 스레드를 생성해야함 : NextActivity와 같이
         Thread getImage = new Thread() {
             @Override
             public void run() {
@@ -142,6 +156,16 @@ public class RecommendFirstFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+        Button mSlideUpBtn = (Button)view.findViewById(R.id.slideup_btn);
+
+        mSlideUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         return view;
     }
