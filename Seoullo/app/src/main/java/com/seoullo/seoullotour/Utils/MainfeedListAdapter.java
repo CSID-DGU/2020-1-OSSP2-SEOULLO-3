@@ -166,6 +166,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //get likes string
         getLikesString(holder);
 
+
         //set the caption
         holder.caption.setText(photosList.get(position).getCaption());
 //        holder.username.setText(getItem(position).getUser_id());
@@ -173,7 +174,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the comment
         List<Comment> comments = photosList.get(position).getComments();
 
-        holder.likecount.setText("좋아요 " + photosList.get(position).getLikeCount() + "개");
+       //holder.likecount.setText("좋아요 " + photosList.get(position).getLikeCount() + "개");
 
         holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +211,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 .equalTo(photosList.get(position).getUser_id());
 
         query.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -230,8 +230,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             Intent intent = new Intent(mContext, ProfileActivity.class);
                             intent.putExtra(mContext.getString(R.string.calling_activity),
                                     mContext.getString(R.string.home_activity));
+
                             intent.putExtra(mContext.getString(R.string.intent_user), holder.user);
                             mContext.startActivity(intent);
+
                         }
                     });
 
@@ -491,6 +493,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //add new like
                         addNewLike(mHolder);
                     }
+                 //   mHolder.likecount.setText("좋아요 " + mHolder.photo.getLikeCount() + "개");
                 }
 
                 @Override
@@ -599,7 +602,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
+                    holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference
@@ -629,49 +634,59 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 int length = splitUsers.length;
                                 if (length == 1) {
                                     holder.likesString = "Liked by " + splitUsers[0];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 2) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + " and " + splitUsers[1];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 3) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + " and " + splitUsers[2];
-
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
                                             + " and " + splitUsers[3];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length > 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
                                             + " and " + (splitUsers.length - 3) + " others";
+                                    holder.likecount.setText("좋아요 " + length + "개");
+                                }else{
+                                    holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
                                 Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
                                 //setup likes string
                                 setupLikesString(holder, holder.likesString);
-                                holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+
+
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
+                                holder.likeByCurrentUser = true;
                             }
                         });
                     }
+
                     if (!dataSnapshot.exists()) {
                         holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
-                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+                        //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
+                    }else{
+                        //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    holder.likecount.setText("좋아요 " + "0" + "개");
                 }
             });
         } catch (NullPointerException e) {
@@ -693,6 +708,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.heartRed.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+
                     return holder.detector.onTouchEvent(event);
                 }
             });
