@@ -108,7 +108,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         User user = new User();
         StringBuilder users;
         String mLikesString;
-        boolean likeByCurrentUser = false;
+        boolean likeByCurrentUser;
         Heart heart;
         GestureDetector detector;
         Photo photo;
@@ -121,7 +121,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         final ViewHolder holder;
 
-
+        currentUsername = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
             holder = new ViewHolder();
@@ -143,7 +143,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
             holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
             holder.likeByCurrentUser = false;
-
+//            holder.likeByCurrentUser = FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
+//                    .child("likes").equals(currentUsername);
+//            Log.d(TAG, "라이크바이커런트: " + holder.likeByCurrentUser + ", " + currentUsername);
             convertView.setTag(holder);
 
         } else {
@@ -634,13 +636,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             }
                         });
                     }
-//                    if (!dataSnapshot.exists()) {
-//                        holder.likesString = "";
-//                        holder.likeByCurrentUser = false;
-//                        //setup likes string
-//                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
-//                        setupLikesString(holder, holder.likesString);
-//                    }
+                    if (!dataSnapshot.exists()) {
+                        holder.likesString = "";
+                        holder.likeByCurrentUser = false;
+                        //setup likes string
+                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+                        setupLikesString(holder, holder.likesString);
+                    }
                 }
 
                 @Override
@@ -658,7 +660,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     private void setupLikesString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
+        Log.d(TAG, "setupLikesString: likes string: " + holder.likesString);
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");
