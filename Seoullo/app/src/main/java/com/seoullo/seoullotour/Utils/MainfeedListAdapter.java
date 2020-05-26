@@ -622,7 +622,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                             + ", " + splitUsers[2]
                                             + " and " + (splitUsers.length - 3) + " others";
                                 }
-                                Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
+                                Log.d(TAG, "요 " + holder.likesString);
                                 //setup likes string
                                 setupLikesString(holder, holder.likesString);
                                 holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
@@ -634,13 +634,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             }
                         });
                     }
-                    if (!dataSnapshot.exists()) {
-                        holder.likesString = "";
-                        holder.likeByCurrentUser = false;
-                        //setup likes string
-                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
-                        setupLikesString(holder, holder.likesString);
-                    }
+//                    if (!dataSnapshot.exists()) {
+//                        holder.likesString = "";
+//                        holder.likeByCurrentUser = false;
+//                        //setup likes string
+//                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+//                        setupLikesString(holder, holder.likesString);
+//                    }
                 }
 
                 @Override
