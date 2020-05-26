@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -91,6 +92,9 @@ public class ProfileFragment extends Fragment {
     private int mFollowingCount = 0;
     private int mPostsCount = 0;
 
+    //User
+    private User currentUser;
+    private String currentuid;
 
 
 
@@ -114,8 +118,18 @@ public class ProfileFragment extends Fragment {
         mContext = getActivity();
         mRequestManager = Glide.with(this);
         mFirebaseMethods = new FirebaseMethods(getActivity());
-        Log.d(TAG, "onCreateView: stared.");
 
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            currentUser = getUserFromBundle();
+            currentuid = currentUser.getUser_id();
+
+        }else{
+            currentuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+
+        Log.d(TAG, "onCreateView: stared.");
 
         setupBottomNavigationView();
         setupToolbar();
@@ -128,6 +142,9 @@ public class ProfileFragment extends Fragment {
         getPostsCount();
 
         TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
+        if(bundle != null){
+            editProfile.setVisibility(view.GONE);
+        }
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +177,7 @@ public class ProfileFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(currentuid);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -213,7 +230,7 @@ public class ProfileFragment extends Fragment {
                     imgUrls.add(photos.get(i).getImage_path());
                 }
                 GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
-                        "", imgUrls , FirebaseAuth.getInstance().getCurrentUser().getUid(), 1 , photos,mRequestManager);
+                        "", imgUrls , currentuid, 1 , photos,mRequestManager);
                 gridView.setAdapter(adapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -236,7 +253,7 @@ public class ProfileFragment extends Fragment {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_followers))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(currentuid);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -258,7 +275,7 @@ public class ProfileFragment extends Fragment {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_following))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(currentuid);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -280,7 +297,7 @@ public class ProfileFragment extends Fragment {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(currentuid);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -391,7 +408,7 @@ public class ProfileFragment extends Fragment {
 
         myRef.child(getString(R.string.dbname_user_account_settings))
                 .orderByChild(getString(R.string.field_user_id))
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .equalTo(currentuid)
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -423,4 +440,16 @@ public class ProfileFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+    private User getUserFromBundle() {
+        Log.d(TAG, "getUserFromBundle: arguments: " + getArguments());
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            return bundle.getParcelable(getString(R.string.intent_user));
+        } else {
+            return null;
+        }
+    }
+
 }
