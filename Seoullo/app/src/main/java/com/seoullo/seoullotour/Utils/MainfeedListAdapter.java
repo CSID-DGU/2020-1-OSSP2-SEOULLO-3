@@ -31,11 +31,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
+import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 
 import com.google.firebase.database.DatabaseReference;
@@ -51,18 +54,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
@@ -88,11 +93,18 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private DatabaseReference mReference;
     private String currentUsername = "";
 
-    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Photo> objects ,RequestManager requestManager) {
+    //location and places
+    private String mValue;
+    private ArrayList<Photo> photosList = new ArrayList<>();
+
+    private ArrayList<Place> placeList = new ArrayList<>();
+
+    public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Photo> objects, RequestManager requestManager) {
         super(context, resource, objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLayoutResource = resource;
         mRequestManager = requestManager;
+        photosList = objects;
         this.mContext = context;
         mReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -100,7 +112,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     static class ViewHolder {
         CircleImageView mprofileImage;
         String likesString;
-        TextView username, timeDetla, caption, likes, comments, location,likecount;
+        TextView username, timeDetla, caption, likes, comments, location, likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment;
 
@@ -112,7 +124,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Heart heart;
         GestureDetector detector;
         Photo photo;
-
     }
 
     @NonNull
@@ -120,9 +131,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
-
-        currentUsername = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (convertView == null) {
+        if (photosList.size() > position) {
+//        if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
             holder = new ViewHolder();
 
@@ -137,23 +147,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.timeDetla = (TextView) convertView.findViewById(R.id.image_time_posted);
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
-            holder.photo = getItem(position);
+            holder.photo = photosList.get(position);
+            System.out.println(holder.photo.getImage_name()+"getview위치"+photosList.size()+"사이즈");
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
-            holder.likecount =  (TextView) convertView.findViewById(R.id.count_likes);
-            holder.likeByCurrentUser = false;
-//            holder.likeByCurrentUser = FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
-//                    .child("likes").equals(currentUsername);
-//            Log.d(TAG, "라이크바이커런트: " + holder.likeByCurrentUser + ", " + currentUsername);
+            holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
+
             convertView.setTag(holder);
 
         } else {
             holder = (ViewHolder) convertView.getTag();
-        }
-        if(FirebaseDatabase.getInstance().getReference().child("photos").child("field_photo_id")
-                .child("likes").equals(currentUsername)){
-            holder.likeByCurrentUser = true;
         }
 
         //get the current users username (need for checking likes string)
@@ -162,14 +166,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //get likes string
         getLikesString(holder);
 
+
         //set the caption
-        holder.caption.setText(getItem(position).getCaption());
+        holder.caption.setText(photosList.get(position).getCaption());
 //        holder.username.setText(getItem(position).getUser_id());
 
         //set the comment
-        List<Comment> comments = getItem(position).getComments();
+        List<Comment> comments = photosList.get(position).getComments();
 
-        holder.likecount.setText("좋아요 " + getItem(position).getLikeCount() + "개");
+        //holder.likecount.setText("좋아요 " + photosList.get(position).getLikeCount() + "개");
 
         holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -187,14 +192,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
 
         //set the time it was posted
-        String timestampDifference = getTimestampDifference(getItem(position));
+        String timestampDifference = getTimestampDifference(photosList.get(position));
         holder.timeDetla.setText(timestampDifference);
 
 
         //set the profile image
 //        final ImageLoader imageLoader = ImageLoader.getInstance();
 //        imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
-
 
 
         //get the profile image and username
@@ -204,10 +208,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .equalTo(photosList.get(position).getUser_id());
 
         query.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -227,14 +230,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             Intent intent = new Intent(mContext, ProfileActivity.class);
                             intent.putExtra(mContext.getString(R.string.calling_activity),
                                     mContext.getString(R.string.home_activity));
+
                             intent.putExtra(mContext.getString(R.string.intent_user), holder.user);
                             mContext.startActivity(intent);
+
                         }
                     });
 
                     FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
                     StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
-                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                    storageReference.child("photos").child("users").child(photosList.get(position).getUser_id()).child("profile_photo").getDownloadUrl()
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -257,7 +262,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                    });
 
 
-                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child(holder.photo.getImage_name())
+                    storageReference.child("photos").child("users").child(photosList.get(position).getUser_id()).child(holder.photo.getImage_name())
                             .getDownloadUrl()
                             .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -316,39 +321,48 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String location="not recognized";
+                String location = "not recognized";
                 String jsonString = dataSnapshot.toString();
-//                try {
-//                    JSONObject jsonObj = new JSONObject(jsonString);
-//                    JSONArray locArray = (JSONArray) jsonObj.get("DataSnapshot");
-//
-//                    for(int i=0;i<locArray.length();++i) {
-//                        JSONObject locObject = (JSONObject) locArray.getJSONObject(i);
-//                        location = locObject.get("value").toString();
-//                        System.out.println("location@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+location);
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-                final String value = jsonString.substring(jsonString.indexOf("value =")+7,jsonString.length()-1);
-
-
-                holder.location.setText(value);
-
-                holder.location.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(mContext, RecommendActivity.class);
-                        intent.putExtra("location", value);
-                        mContext.startActivity(intent);
-                    }
-                });
+                mValue = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+                holder.location.setText(mValue);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("location add","error !!");
+                Log.e("location add", "error !!");
+            }
+        });
+        //get place array
+        Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
+        placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //15개 중에 3개를 저장할 예정
+                for(int i=0;i<3;++i) {
+                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").child("0").getValue());
+                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount());
+
+                    Place place = new Place();
+
+                    place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
+                    place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
+                    place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
+                    place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
+                    place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
+                    ArrayList<String>temp = new ArrayList<>();
+                    //type
+                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                        temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
+                    }
+//                    place.setType(temp);
+
+                    placeList.add(place);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
@@ -356,7 +370,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Query userQuery = mReference
                 .child(mContext.getString(R.string.dbname_users))
                 .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .equalTo(photosList.get(position).getUser_id());
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -375,6 +389,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
+        holder.location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"placeList size is : " + placeList.size());
+                Intent intent = new Intent(mContext, RecommendActivity.class);
+                intent.putExtra("location", mValue);
+                intent.putExtra("places", (ArrayList<Place>)placeList);
+                mContext.startActivity(intent);
+            }
+        });
+
         if (reachedEndOfList(position)) {
             loadMoreData();
         }
@@ -383,7 +408,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     private boolean reachedEndOfList(int position) {
-        return position == getCount() - 1;
+        return position == photosList.size() - 1;
     }
 
     private void loadMoreData() {
@@ -468,6 +493,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //add new like
                         addNewLike(mHolder);
                     }
+                    //   mHolder.likecount.setText("좋아요 " + mHolder.photo.getLikeCount() + "개");
                 }
 
                 @Override
@@ -479,6 +505,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             return true;
         }
     }
+
 
     private void addNewLike(final ViewHolder holder) {
         Log.d(TAG, "addNewLike: adding new like");
@@ -575,7 +602,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
+                    holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference
@@ -605,49 +634,59 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 int length = splitUsers.length;
                                 if (length == 1) {
                                     holder.likesString = "Liked by " + splitUsers[0];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 2) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + " and " + splitUsers[1];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 3) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + " and " + splitUsers[2];
-
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length == 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
                                             + " and " + splitUsers[3];
+                                    holder.likecount.setText("좋아요 " + length + "개");
                                 } else if (length > 4) {
                                     holder.likesString = "Liked by " + splitUsers[0]
                                             + ", " + splitUsers[1]
                                             + ", " + splitUsers[2]
                                             + " and " + (splitUsers.length - 3) + " others";
+                                    holder.likecount.setText("좋아요 " + length + "개");
+                                }else{
+                                    holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
-                                Log.d(TAG, "요 " + holder.likesString);
+                                Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
                                 //setup likes string
                                 setupLikesString(holder, holder.likesString);
-                                holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+
+
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
+                                holder.likeByCurrentUser = true;
                             }
                         });
                     }
+
                     if (!dataSnapshot.exists()) {
                         holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
-                        holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
+                        //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
+                    }else{
+                        //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    holder.likecount.setText("좋아요 " + "0" + "개");
                 }
             });
         } catch (NullPointerException e) {
@@ -660,7 +699,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     private void setupLikesString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string: " + holder.likesString);
+        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");
@@ -669,6 +708,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.heartRed.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+
                     return holder.detector.onTouchEvent(event);
                 }
             });
@@ -710,7 +750,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //        return difference;
 //    }
     private String getTimestampDifference(Photo photo) {
-
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
         SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         Date dateTime = new Date();
         try {
@@ -721,8 +761,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         return calculateTime(dateTime);
     }
-    public String calculateTime(Date date)
-    {
+
+    public String calculateTime(Date date) {
 
         long curTime = System.currentTimeMillis();
         long regTime = date.getTime();
@@ -732,32 +772,23 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         if (diffTime < SEC)
         {
-            // sec
-            msg = diffTime + "방금전";
+            // 1분 미만을 모두 "방금전"으로 표기
+            msg = "방금전";
         }
         else if ((diffTime /= SEC) < MIN)
         {
             // min
-
             msg = diffTime + "분전";
-        }
-        else if ((diffTime /= MIN) <HOUR)
-        {
+        } else if ((diffTime /= MIN) < HOUR) {
             // hour
-            msg = (diffTime ) + "시간전";
-        }
-        else if ((diffTime /= HOUR) < DAY)
-        {
+            msg = (diffTime) + "시간전";
+        } else if ((diffTime /= HOUR) < DAY) {
             // day
-            msg = (diffTime ) + "일전";
-        }
-        else if ((diffTime /= DAY) <MONTH)
-        {
+            msg = (diffTime) + "일전";
+        } else if ((diffTime /= DAY) < MONTH) {
             // day
-            msg = (diffTime ) + "달전";
-        }
-        else
-        {
+            msg = (diffTime) + "달전";
+        } else {
             msg = (diffTime) + "년전";
         }
 
