@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
+
+import java.util.ArrayList;
 
 public class RecommendActivity extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class RecommendActivity extends AppCompatActivity {
     private ImageButton mImageButton;
     //get intent
     private String getLocation;
+    private ArrayList<Place> mPlaces = new ArrayList<>();
 
     //TODO: link to fragment -> done
     @Override
@@ -44,6 +48,9 @@ public class RecommendActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         getLocation = intent.getStringExtra("location");
+        ArrayList<Place> tempPlace = (ArrayList<Place>) intent.getSerializableExtra("places");
+        if( tempPlace.size() != 0) Log.d(TAG,"tempPlace is not null!\n");
+        this.mPlaces = (ArrayList<Place>) tempPlace.clone();
         System.out.println("got Intent !");
         //상단
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
@@ -73,7 +80,7 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new RecommendFragment(getLocation));
+        adapter.addFragment(new RecommendFragment(getLocation, mPlaces));
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){

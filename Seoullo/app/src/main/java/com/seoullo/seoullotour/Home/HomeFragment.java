@@ -38,7 +38,6 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
-
     private RequestManager mRequestManager;
     //vars
     private ArrayList<Photo> mPhotos;
@@ -182,12 +181,9 @@ public class HomeFragment extends Fragment {
 
                         try {
                             mResults = 10;
-                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos, mRequestManager);
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
-                            Log.d(TAG, "mPhotos.get(0): " + mPhotos.get(0).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(1): " + mPhotos.get(1).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(2): " + mPhotos.get(2).getPhoto_id());
-                            Log.d(TAG, "mPhotos.get(3): " + mPhotos.get(3).getPhoto_id());
+                           
 
                         } catch (NullPointerException e) {
                             Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
@@ -226,7 +222,6 @@ public class HomeFragment extends Fragment {
         try {
 
             if (mPhotos.size() > mResults && mPhotos.size() > 0) {
-
                 int iterations;
                 if (mPhotos.size() > (mResults + 10)) {
                     Log.d(TAG, "displayMorePhotos: there are greater than 10 more photos");

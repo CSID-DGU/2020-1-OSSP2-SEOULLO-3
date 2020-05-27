@@ -12,12 +12,12 @@
             android:padding="20dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/profile_photo"
                 android:layout_marginTop="20dp"
                 app:civ_border_color="@color/black"
-                app:civ_border_width="2dp"
+                app:civ_border_width="1dp"
                 android:layout_centerHorizontal="true"/>
 
             <TextView

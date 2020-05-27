@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Photo implements Parcelable, Serializable {
@@ -19,13 +20,13 @@ public class Photo implements Parcelable, Serializable {
     private int likeCount;
     private List<Comment> comments;
     private String location;    //added 0516 00:16
-    private List<Place> places;
+    private ArrayList<Place> places;
 
     public Photo() {
     }
 
     public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags,
-                 List<Like> likes, int likeCount, List<Comment> comments, String location, List<Place> places) {
+                 List<Like> likes, int likeCount, List<Comment> comments, String location, ArrayList<Place> places) {
         this.image_name = image_name;
         this.caption = caption;
         this.date_created = date_created;
@@ -37,7 +38,7 @@ public class Photo implements Parcelable, Serializable {
         this.likeCount = likeCount;
         this.comments = comments;
         this.location = location;
-        this.places = places;
+        this.places = (ArrayList<Place>)places.clone();
     }
 
     protected Photo(Parcel in) {
@@ -145,9 +146,9 @@ public class Photo implements Parcelable, Serializable {
 
     public String getLocation() { return location; }
 
-    public void setPLaces(List<Place> places) { this.places = places; }
+    public void setPLaces(ArrayList<Place> places) { this.places = (ArrayList<Place>) places.clone(); }
 
-    public List<Place> getPlaces() { return places; }
+    public ArrayList<Place> getPlaces() { return places; }
 
 
     @Override

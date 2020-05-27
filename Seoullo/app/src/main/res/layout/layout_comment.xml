@@ -26,7 +26,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="60dp"
+            android:layout_marginRight="50dp"
             android:layout_marginBottom="20dp">
 
             <TextView
@@ -36,7 +36,7 @@
                 android:id="@+id/comment_username"
                 android:layout_marginLeft="15dp"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -45,7 +45,7 @@
                 android:text="this is a comment"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:layout_toRightOf="@id/comment_username"
                 android:id="@+id/comment"/>
 
@@ -86,15 +86,16 @@
                 android:layout_below="@id/comment"
                 android:layout_toRightOf="@id/comment_likes"/>
 
+
         </RelativeLayout>
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:id="@+id/comment_like"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
             android:src="@drawable/ic_heart_white"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>

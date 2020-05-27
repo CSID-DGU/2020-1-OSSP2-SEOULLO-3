@@ -78,14 +78,14 @@ public class AccountSettingsActivity extends AppCompatActivity {
                     //set the new profile picture
                     FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
                     firebaseMethods.uploadNewPhoto(getString(R.string.profile_photo), null, 0,
-                            intent.getStringExtra(getString(R.string.selected_image)), null ,"","imagenamess");
+                            intent.getStringExtra(getString(R.string.selected_image)), null ,"","imagenamess" ,null);
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     //set the new profile picture
                     FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
                     firebaseMethods.uploadNewPhoto(getString(R.string.profile_photo), null, 0,
 
-                            null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)),"","imagenamess");
+                            null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)),"","imagenamess", null);
 
 
                 }

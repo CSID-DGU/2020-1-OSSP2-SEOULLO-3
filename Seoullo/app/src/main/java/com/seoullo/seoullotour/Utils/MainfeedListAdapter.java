@@ -148,7 +148,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
             holder.photo = photosList.get(position);
-            System.out.println(holder.photo.getImage_name() + "getview위치" + photosList.size() + "사이즈");
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
@@ -173,8 +172,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         //set the comment
         List<Comment> comments = photosList.get(position).getComments();
-
-        //holder.likecount.setText("좋아요 " + photosList.get(position).getLikeCount() + "개");
 
         holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -349,13 +346,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
                     place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
                     place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
-                    ArrayList<String> temp = new ArrayList<>();
+
+                    ArrayList<String>temp = new ArrayList<>();
                     //type
-                    for (int j = 0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
                         temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
                     }
-//                    place.setType(temp);
-
+                    place.setType(temp);
                     placeList.add(place);
                 }
             }
@@ -392,10 +389,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "placeList size is : " + placeList.size());
+
+                Log.d(TAG,"placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
                 intent.putExtra("location", mValue);
-                intent.putExtra("places", (ArrayList<Place>) placeList);
+                intent.putExtra("places", (ArrayList<Place>)placeList);
                 mContext.startActivity(intent);
             }
         });
@@ -495,7 +493,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //add new like
                         addNewLike(mHolder);
                     }
-                    //   mHolder.likecount.setText("좋아요 " + mHolder.photo.getLikeCount() + "개");
                 }
 
                 @Override
@@ -509,6 +506,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     private void subtractLike(final ViewHolder holder, String keyID) {
+
         Log.d(TAG, "addNewLike: adding new like");
 
 //        String newLikeID = mReference.push().getKey();
@@ -689,6 +687,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                             + " and " + (splitUsers.length - 3) + " others";
                                     holder.likecount.setText("좋아요 " + length + "개");
                                 } else {
+
                                     holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
                                 Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
@@ -712,6 +711,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
                     } else {
+
                         //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     }
                 }

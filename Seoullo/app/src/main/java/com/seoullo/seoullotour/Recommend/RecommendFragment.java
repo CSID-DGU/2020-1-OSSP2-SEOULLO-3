@@ -8,9 +8,14 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -56,22 +61,16 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private Geocoder geocoder;
     ArrayList<Place> placeList;
     //뷰페이저
-    private ViewPager viewPager;
+    public ViewPager viewPager;
+    public LinearLayout mLinearLayout;
     //기본 생성자
     public RecommendFragment() { }
     //값 받아오기
-    public RecommendFragment(String ref) {
-        this.findLocation = ref;
+    public RecommendFragment(String ref1, ArrayList<Place> ref2) {
+        this.findLocation = ref1;
+        this.placeList = (ArrayList<Place>) ref2.clone();
     }
-    //프래그먼트 전환시 사용
-    // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성합니다.
-//    public static RecommendFragment newInstance(Photo photo) {
-//        RecommendFragment reviewMapFragment = new RecommendFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("object", photo);
-//        reviewMapFragment.setArguments(bundle);
-//        return reviewMapFragment;
-//    }
+
     //naver api key
     public static String getApiKeyFromManifest(Context context) {
         String apiKey = null;
@@ -93,6 +92,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     }
 
     //TODO::Firebase연동 + 지도 연동
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +104,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
         //xml layout
         View view = inflater.inflate(R.layout.fragment_recommend, container, false);
+        mLinearLayout = view.findViewById(R.id.group_viewPager);
 
         //current location
         locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
@@ -117,9 +118,23 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //adapt to viewpager
         com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter viewPagerAdapter =
                 new com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter(getFragmentManager());
-        viewPagerAdapter.addItem(new RecommendFirstFragment());
-        viewPagerAdapter.addItem(new RecommendSecondFragment());
-        viewPagerAdapter.addItem(new RecommendThirdFragment());
+//        if(placeList.size() != 0) {
+//
+//        } else {
+//            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
+//        }
+        viewPagerAdapter.addItem(new RecommendFirstFragment(placeList.get(0), mLinearLayout));
+        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
+        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
+
+        viewPager.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Toast.makeText(getContext(),"this is view pager"+ event.getY(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
 
         viewPager.setAdapter(viewPagerAdapter);
 

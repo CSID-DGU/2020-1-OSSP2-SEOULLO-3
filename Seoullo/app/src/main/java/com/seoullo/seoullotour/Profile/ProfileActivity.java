@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -96,7 +97,8 @@ public class ProfileActivity extends AppCompatActivity implements
                 User user = intent.getParcelableExtra(getString(R.string.intent_user));
                 if(!user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                     Log.d(TAG, "init: inflating view profile");
-                    ViewProfileFragment fragment = new ViewProfileFragment();
+                    com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
+                    //ViewProfileFragment fragment = new ViewProfileFragment();
                     Bundle args = new Bundle();
                     args.putParcelable(getString(R.string.intent_user),
                             intent.getParcelableExtra(getString(R.string.intent_user)));
@@ -104,7 +106,8 @@ public class ProfileActivity extends AppCompatActivity implements
 
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.container, fragment);
-                    transaction.addToBackStack(getString(R.string.view_profile_fragment));
+                    transaction.addToBackStack(getString(R.string.profile_fragment));
+                    //transaction.addToBackStack(getString(R.string.view_profile_fragment));
                     transaction.commit();
                 }else{
                     Log.d(TAG, "init: inflating Profile");
@@ -126,5 +129,10 @@ public class ProfileActivity extends AppCompatActivity implements
             transaction.addToBackStack(getString(R.string.profile_fragment));
             transaction.commit();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

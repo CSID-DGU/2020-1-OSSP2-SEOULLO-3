@@ -1,13 +1,17 @@
 package com.seoullo.seoullotour.Models;
 
-//TODO: 구글에서 주는 json의 형태와 다름 다시 리팩토링해줘야함 04/06 -> 응 필요없어~ 04/06 모닝
-public class Place {
-    //TODO: 넣기 -> vicinity
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class Place implements Serializable {
+
     private double latitude;
     private double longitude;
     private String name;
     private String vicinity;
     private String photoReference;
+    //added 0526
+    private ArrayList<String> type;
 
     public Place() { }
 
@@ -25,6 +29,8 @@ public class Place {
 
     public String getPhotoReference() { return this.photoReference; }
 
+    public ArrayList<String> getType() { return this.type; }
+
     public void setLatitude(double lat) {
         this.latitude = lat;
     }
@@ -40,4 +46,6 @@ public class Place {
     public void setVicinity(String v) { this.vicinity = v; }
 
     public void setPhotoReference(String p) { this.photoReference = p; }
+
+    public void setType(ArrayList<String> t) { this.type = (ArrayList<String>)t.clone(); }
 }

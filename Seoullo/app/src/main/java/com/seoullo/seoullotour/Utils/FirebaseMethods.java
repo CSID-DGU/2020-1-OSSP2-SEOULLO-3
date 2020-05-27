@@ -25,6 +25,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Models.Photo;
+import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.Models.UserSettings;
@@ -35,7 +36,9 @@ import com.seoullo.seoullotour.Utils.ImageManager;
 import com.seoullo.seoullotour.Utils.StringManipulation;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -68,7 +71,8 @@ public class FirebaseMethods {
     }
 
 
-    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm, final String location, final String imgName){
+    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl,
+                               Bitmap bm, final String location, final String imgName, final ArrayList<Place> places){
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
@@ -100,7 +104,7 @@ public class FirebaseMethods {
 
                     //add the new photo to 'photos' node and 'user_photos' node
 
-                    addPhotoToDatabase(caption, firebaseUrl.toString(), location,imgName);
+                    addPhotoToDatabase(caption, firebaseUrl.toString(), location, imgName, places);
 
                     //navigate to the main feed so the user can see their photo
                     Intent intent = new Intent(mContext, HomeActivity.class);
@@ -198,7 +202,7 @@ public class FirebaseMethods {
     }
 
 
-    private void addPhotoToDatabase(String caption, String url, String location, String imgName) {
+    private void addPhotoToDatabase(String caption, String url, String location, String imgName, ArrayList<Place> places) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);
@@ -212,6 +216,9 @@ public class FirebaseMethods {
         photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
         photo.setPhoto_id(newPhotoKey);
         photo.setLocation(location);    //added location
+        photo.setPLaces(places);        //added places
+
+
 
         //insert into database
         myRef.child(mContext.getString(R.string.dbname_user_photos))
