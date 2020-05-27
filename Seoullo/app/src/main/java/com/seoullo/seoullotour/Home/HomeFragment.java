@@ -107,8 +107,6 @@ public class HomeFragment extends Fragment {
                             photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                             photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
                             photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-
-                            photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
                             photo.setImage_name(objectMap.get("image_name").toString());
                             photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                             photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());

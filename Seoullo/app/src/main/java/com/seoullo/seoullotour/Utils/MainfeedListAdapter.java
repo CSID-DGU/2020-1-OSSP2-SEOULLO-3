@@ -148,7 +148,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
             holder.photo = photosList.get(position);
-            System.out.println(holder.photo.getImage_name()+"getview위치"+photosList.size()+"사이즈");
+            System.out.println(holder.photo.getImage_name() + "getview위치" + photosList.size() + "사이즈");
             holder.detector = new GestureDetector(mContext, new GestureListener(holder));
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
@@ -338,7 +338,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //15개 중에 3개를 저장할 예정
-                for(int i=0;i<3;++i) {
+                for (int i = 0; i < 3; ++i) {
                     System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").child("0").getValue());
                     System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount());
 
@@ -349,9 +349,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
                     place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
                     place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
-                    ArrayList<String>temp = new ArrayList<>();
+                    ArrayList<String> temp = new ArrayList<>();
                     //type
-                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                    for (int j = 0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
                         temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
                     }
 //                    place.setType(temp);
@@ -392,10 +392,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"placeList size is : " + placeList.size());
+                Log.d(TAG, "placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
                 intent.putExtra("location", mValue);
-                intent.putExtra("places", (ArrayList<Place>)placeList);
+                intent.putExtra("places", (ArrayList<Place>) placeList);
                 mContext.startActivity(intent);
             }
         });
@@ -459,18 +459,20 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         if (mHolder.likeByCurrentUser &&
                                 singleSnapshot.getValue(Like.class).getUser_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            mHolder.photo.subtractLikeCount();
+//                            subtractLike(mHolder, keyID);
+//                            break;
+                            int likeCount = mHolder.photo.subtractLikeCount();
 
                             mReference.child(mContext.getString(R.string.dbname_photos))
                                     .child(mHolder.photo.getPhoto_id())
                                     .child(mContext.getString(R.string.field_likes))
                                     .child(keyID)
                                     .removeValue();
-
+                            mHolder.photo.setLikeCount(likeCount);
                             mReference.child(mContext.getString(R.string.dbname_photos))
                                     .child(mHolder.photo.getPhoto_id())
                                     .child(mContext.getString(R.string.field_likes_count))
-                                    .setValue(mHolder.photo.getLikeCount());
+                                    .setValue(likeCount);
 
                             mReference.child(mContext.getString(R.string.dbname_user_photos))
                                     .child(mHolder.photo.getUser_id())
@@ -506,15 +508,45 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
     }
 
-
-    private void addNewLike(final ViewHolder holder) {
+    private void subtractLike(final ViewHolder holder, String keyID) {
         Log.d(TAG, "addNewLike: adding new like");
 
 //        String newLikeID = mReference.push().getKey();
         String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Like like = new Like();
+        int likeCount = holder.photo.subtractLikeCount();
+
+        mReference.child(mContext.getString(R.string.dbname_photos))
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes))
+                .child(keyID)
+                .removeValue();
+
+        mReference.child(mContext.getString(R.string.dbname_photos))
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes_count))
+                .setValue(likeCount);
+
+        mReference.child(mContext.getString(R.string.dbname_user_photos))
+                .child(holder.photo.getUser_id())
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes))
+                .child(newLikeID)
+                .removeValue();
+
+        holder.heart.toggleLike();
+
+        getLikesString(holder);
+    }
+
+    private void addNewLike(final ViewHolder holder) {
+        Log.d(TAG, "addNewLike: adding new like");
+
+        String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Like like = new Like();
         like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
         int likeCount = holder.photo.addLikeCount();
+        holder.photo.setLikeCount(likeCount);
 
         mReference.child(mContext.getString(R.string.dbname_photos))
                 .child(holder.photo.getPhoto_id())
@@ -625,7 +657,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 String[] splitUsers = holder.users.toString().split(",");
 
-                                if (holder.users.toString().contains(currentUsername + ",")) {//mitch, mitchell.tabian
+                                if (holder.users.toString().contains(currentUsername)) {//mitch, mitchell.tabian
                                     holder.likeByCurrentUser = true;
                                 } else {
                                     holder.likeByCurrentUser = false;
@@ -656,7 +688,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                             + ", " + splitUsers[2]
                                             + " and " + (splitUsers.length - 3) + " others";
                                     holder.likecount.setText("좋아요 " + length + "개");
-                                }else{
+                                } else {
                                     holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
                                 Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
@@ -679,7 +711,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //setup likes string
                         //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder, holder.likesString);
-                    }else{
+                    } else {
                         //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     }
                 }
@@ -770,13 +802,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String msg = null;
 
-        if (diffTime < SEC)
-        {
+        if (diffTime < SEC) {
             // 1분 미만을 모두 "방금전"으로 표기
             msg = "방금전";
-        }
-        else if ((diffTime /= SEC) < MIN)
-        {
+        } else if ((diffTime /= SEC) < MIN) {
             // min
             msg = diffTime + "분전";
         } else if ((diffTime /= MIN) < HOUR) {
