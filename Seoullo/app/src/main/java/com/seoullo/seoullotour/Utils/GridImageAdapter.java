@@ -168,7 +168,8 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
 //                    if (holder.mProgressBar != null) {
-//                        holder.mProgressBar.setVisibility(View.VISIBLE);
+//                        //holder.mProgressBar.setVisibility(View.VISIBLE);
+//                    }
                     loadSize++;
 //                    }
 
@@ -183,7 +184,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                     loadSize--;
                     if(loadSize == 0){
                         System.out.println("progress실험중");
-                        profileFragment.goneProgress();
+                        //profileFragment.goneProgress();
                     }
 
                 }
@@ -197,7 +198,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                     loadSize--;
                     if(loadSize == 0){
                         System.out.println("progress실험중");
-                        profileFragment.goneProgress();
+                       // profileFragment.goneProgress();
                     }
 
                 }
@@ -211,7 +212,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                     loadSize--;
                     if(loadSize == 0){
                         System.out.println("progress실험중");
-                        profileFragment.goneProgress();
+                       // profileFragment.goneProgress();
                     }
                 }
             });
