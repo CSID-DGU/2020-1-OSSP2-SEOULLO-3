@@ -3,6 +3,7 @@ package com.seoullo.seoullotour.Recommend;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -20,20 +21,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.annotations.Nullable;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.InfoWindow;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.widget.ZoomControlView;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
@@ -53,7 +60,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //naver map
     private Marker marker = new Marker();
     private MapView mapView;
-    public NaverMap nMap;
+    private NaverMap nMap;
     private String NAVER_CLIENT_ID = "";
     //정보가져올 DTO
     private String findLocation;
@@ -126,16 +133,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         viewPagerAdapter.addItem(new RecommendFirstFragment(placeList.get(0), mLinearLayout));
         viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
         viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
-
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getContext(),"this is view pager"+ event.getY(), Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
-
+        //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
 
         return view;
@@ -148,6 +146,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도 싱크
         mapView = view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
+        //줌 버튼 이동
+        ZoomControlView zoomControlView = view.findViewById(R.id.navermap_zoom_control);
+        zoomControlView.setMap(nMap);
         mapView.getMapAsync(this);
 
         //양옆 미리보기 : 수치는 숫자 조절로
@@ -168,7 +169,34 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onPageSelected(int position) {
-
+                if(placeList.size() >= 3) {
+                    switch (position) {
+                        case 0:
+                            LatLng latlng0 = new LatLng(placeList.get(0).getLatitude(), placeList.get(0).getLongitude());
+                            marker.setPosition(latlng0);
+                            marker.setIconTintColor(Color.GREEN);
+                            marker.setMap(nMap);
+                            CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 17f);
+                            nMap.moveCamera(cameraUpdate0);
+                            break;
+                        case 1:
+                            LatLng latlng1 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
+                            marker.setPosition(latlng1);
+                            marker.setIconTintColor(Color.YELLOW);
+                            marker.setMap(nMap);
+                            CameraUpdate cameraUpdate1 = CameraUpdate.scrollAndZoomTo(latlng1, 17f);
+                            nMap.moveCamera(cameraUpdate1);
+                            break;
+                        case 2:
+                            LatLng latlng2 = new LatLng(placeList.get(2).getLatitude(), placeList.get(2).getLongitude());
+                            marker.setPosition(latlng2);
+                            marker.setIconTintColor(Color.BLUE);
+                            marker.setMap(nMap);
+                            CameraUpdate cameraUpdate2 = CameraUpdate.scrollAndZoomTo(latlng2, 17f);
+                            nMap.moveCamera(cameraUpdate2);
+                            break;
+                    }
+                }
             }
 
             @Override
@@ -236,8 +264,14 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         nMap = naverMap;
-        nMap.getUiSettings()
-                .setZoomControlEnabled(false);
+
+        //ui setting
+        UiSettings ui = nMap.getUiSettings();
+        ui.setLocationButtonEnabled(false);
+        ui.setZoomControlEnabled(false);
+        ui.setLogoGravity(1);
+        ui.setLogoMargin(5,5, 450, 1000);
+
         //click event
         marker.setOnClickListener(new Overlay.OnClickListener() {
             @Override
@@ -249,10 +283,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         });
-        //location
-        nMap.setLocationSource(locationSource);
         //geocoding
         geocoder = new Geocoder(this.getContext());
+        //location
+        nMap.setLocationSource(locationSource);
         point = getLatlngFromLocation(findLocation);
 
         //get to location
