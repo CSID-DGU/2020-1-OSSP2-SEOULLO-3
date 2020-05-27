@@ -124,6 +124,7 @@ public class NextActivity extends AppCompatActivity {
         });
 
         TextView share = (TextView) findViewById(R.id.tvShare);
+        //TODO : 장소검색이 안되는 경우 처리 -> 알림창 !
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +138,7 @@ public class NextActivity extends AppCompatActivity {
                         new Point();
                         Point pp;
                         geocoder = new Geocoder(getApplicationContext());
+                        System.out.println(mAuto.getText().toString());
                         pp = getLatlngFromLocation(mAuto.getText().toString());
 
                         String json = getNearby(pp);
@@ -386,6 +388,7 @@ public class NextActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
         resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
         resultPoint.location = findLocation;
@@ -400,7 +403,7 @@ public class NextActivity extends AppCompatActivity {
 
         String httpURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + latitude + "," + longitude +
-                "&radius=1500" +
+                "&radius=3000" +
                 "&type=" + "tourist_attraction" +
                 "&language=" + "ko" +
                 //"&keyword=cruise" +
