@@ -148,6 +148,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도 싱크
         mapView = view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
+
+        //줌 버튼 이동
+//        ZoomControlView zoomControlView = view.findViewById(R.id.navermap_zoom_control);
+//        zoomControlView.setMap(nMap);
         mapView.getMapAsync(this);
 
         //양옆 미리보기 : 수치는 숫자 조절로
