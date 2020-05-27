@@ -67,7 +67,7 @@ public class RecommendFirstFragment extends Fragment {
                     .getPackageManager()
                     .getApplicationInfo(e, PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
-            if(bundle != null) {
+            if (bundle != null) {
                 apiKey = bundle.getString("com.google.android.geo.API_KEY");
             }
         } catch (Exception var6) {
@@ -76,6 +76,7 @@ public class RecommendFirstFragment extends Fragment {
 
         return apiKey;
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,23 +99,26 @@ public class RecommendFirstFragment extends Fragment {
         ArrayList<String> mType = new ArrayList<>();
         mType = (ArrayList<String>) mPlace.getType().clone();
 
-        for(int i=0; i< mType.size(); ++i) {
+        for (int i = 0; i < mType.size(); ++i) {
             TextView item = new TextView(this.getContext());
 
-            switch(mType.get(i)) {
+            switch (mType.get(i)) {
                 case "tourist_attraction":
                     item.setText(Html.fromHtml("#관광지추천장소TOP5"));
                     break;
                 case "point_of_interest":
                     item.setText(Html.fromHtml("#관심지역TOP10"));
-                    break;                case "establishment":
+                    break;
+                case "establishment":
                     item.setText(Html.fromHtml("#설립107주년"));
                     break;
+                default:
+                    item.setText(Html.fromHtml("#다양한카테고리제공"));
             }
 
             item.setTextSize(10);
             item.setMovementMethod(new ScrollingMovementMethod());
-            item.setPadding(20,0,20,0);
+            item.setPadding(20, 0, 20, 0);
             mScrollItems.addView(item);
         }
 
@@ -123,7 +127,7 @@ public class RecommendFirstFragment extends Fragment {
         mAnotherDecs.setText("this is another part of desc");
         //Image
         final String targetUrl = "https://maps.googleapis.com/maps/api/place/photo?" +
-                "maxwidth=" + 180 +
+                "maxwidth=" + 400 +
                 "&photoreference=" + mPlace.getPhotoReference() +
                 "&key=" + API_KEY;
         final Bitmap[] bitmap = new Bitmap[1];
@@ -153,12 +157,13 @@ public class RecommendFirstFragment extends Fragment {
             // 메인thread는 다른 작업이 끝날때 까지 기다려야한다 반드시!
             getImage.join();
             mImage.setImageBitmap(bitmap[0]);
+            mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
 
-        Button mSlideUpBtn = (Button)view.findViewById(R.id.slideup_btn);
+        Button mSlideUpBtn = (Button) view.findViewById(R.id.slideup_btn);
 
         mSlideUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override

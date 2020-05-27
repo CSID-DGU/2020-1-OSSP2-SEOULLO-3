@@ -130,7 +130,7 @@ public class ProfileFragment extends Fragment {
         }
 
         Log.d(TAG, "onCreateView: stared.");
-
+        mProgressBar.setVisibility(View.VISIBLE);
         setupBottomNavigationView();
         setupToolbar();
 
@@ -230,7 +230,7 @@ public class ProfileFragment extends Fragment {
                     imgUrls.add(photos.get(i).getImage_path());
                 }
                 GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
-                        "", imgUrls , currentuid, 1 , photos,mRequestManager);
+                        "", imgUrls , currentuid, 1 , photos,mRequestManager,ProfileFragment.this);
                 gridView.setAdapter(adapter);
 
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -339,7 +339,7 @@ public class ProfileFragment extends Fragment {
         mUsername.setText(settings.getUsername());
         mWebsite.setText(settings.getWebsite());
         mDescription.setText(settings.getDescription());
-        mProgressBar.setVisibility(View.GONE);
+     //   mProgressBar.setVisibility(View.GONE);
 
     }
 
@@ -382,6 +382,9 @@ public class ProfileFragment extends Fragment {
     /**
      * Setup the firebase auth object
      */
+    public void goneProgress(){
+        mProgressBar.setVisibility(View.GONE);
+    }
     private void setupFirebaseAuth(){
         Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
 

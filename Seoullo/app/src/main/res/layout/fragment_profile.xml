@@ -23,14 +23,14 @@
 
         <include layout="@layout/layout_center_profile" />
 
-    </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/profileProgressBar"
+            style="@android:style/Widget.Holo.Light.ProgressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true" />
 
-    <ProgressBar
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:id="@+id/profileProgressBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"/>
+    </RelativeLayout>
 
     <include layout="@layout/layout_bottom_navigation_view" />
 

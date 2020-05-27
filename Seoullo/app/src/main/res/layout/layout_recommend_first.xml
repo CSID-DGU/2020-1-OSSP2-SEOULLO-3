@@ -87,6 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
 
+        android:gravity="center_vertical"
+
         app:layout_constraintTop_toBottomOf="@id/group_vicinity"
         app:layout_constraintBottom_toTopOf="@id/group_info1"
         android:orientation="horizontal">
@@ -109,11 +111,21 @@
         </HorizontalScrollView>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/info_division"
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:background="@color/theme_deepblue"
+
+        app:layout_constraintTop_toBottomOf="@id/group_type"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal" />
+    <LinearLayout
         android:id="@+id/group_info1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/group_type"
+        app:layout_constraintTop_toBottomOf="@id/info_division"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="horizontal"
@@ -132,7 +144,7 @@
     <TextView
         android:id="@+id/recommend_desc"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 
         android:layout_margin="5dp"
 
