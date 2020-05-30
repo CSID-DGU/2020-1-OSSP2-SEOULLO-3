@@ -140,9 +140,10 @@ public class ProfileFragment extends Fragment {
         setupFirebaseAuth();
         setupGridView();
 
-        getFollowersCount();
-        getFollowingCount();
+//        getFollowersCount();
+//        getFollowingCount();
         getPostsCount();
+        getBookmarkCount();
 
         TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
         if(bundle != null){
@@ -324,6 +325,10 @@ public class ProfileFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    private void getBookmarkCount(){
+
     }
 
     private void setProfileWidgets(UserSettings userSettings){
