@@ -151,9 +151,9 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         // set Invisible for first Comment.
         try {
-//            holder.like.setVisibility(View.GONE);
-//            holder.likes.setVisibility(View.GONE);
-//            holder.reply.setVisibility(View.GONE);
+            holder.like.setVisibility(View.GONE);
+            holder.likes.setVisibility(View.GONE);
+            holder.reply.setVisibility(View.GONE);
         } catch (NullPointerException e) {
             Log.e(TAG, "getView: NullPointerException: " + e.getMessage() );
         }
