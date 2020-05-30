@@ -46,7 +46,6 @@ public class BookmarkActivity extends AppCompatActivity {
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
         mImageButton = (ImageButton) findViewById(R.id.add_post);
-        Log.d(TAG, "북마크크크크크크");
     }
 
     /**
