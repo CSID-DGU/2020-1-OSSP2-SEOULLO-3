@@ -2,6 +2,7 @@ package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,9 @@ public class RecommendActivity extends AppCompatActivity {
     //get intent
     private String getLocation;
     private ArrayList<Place> mPlaces = new ArrayList<>();
+    private String UserId;
+    private String ImageName;
+    private String PhotoId;
 
     //TODO: link to fragment -> done
     @Override
@@ -47,11 +51,19 @@ public class RecommendActivity extends AppCompatActivity {
         System.out.println("Recommend Activity onCreate Starting");
 
         Intent intent = getIntent();
+        //location
         getLocation = intent.getStringExtra("location");
         ArrayList<Place> tempPlace = (ArrayList<Place>) intent.getSerializableExtra("places");
         if( tempPlace.size() != 0) Log.d(TAG,"tempPlace is not null!\n");
         this.mPlaces = (ArrayList<Place>) tempPlace.clone();
+        //firebase info
+        this.UserId = intent.getStringExtra("user_id");
+        this.ImageName = intent.getStringExtra("image_name");
+        this.PhotoId = intent.getStringExtra("photo_id");
+
         System.out.println("got Intent !");
+
+
         //상단
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
@@ -80,7 +92,7 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new RecommendFragment(getLocation, mPlaces));
+        adapter.addFragment(new RecommendFragment(getLocation, mPlaces, UserId, ImageName, PhotoId));
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){

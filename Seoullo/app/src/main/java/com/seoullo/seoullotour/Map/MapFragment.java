@@ -97,6 +97,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setLocationButtonEnabled(true);      //현위치버튼
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
+        uiSettings.setLogoGravity(1);
+        uiSettings.setLogoMargin(5,5, 450, 1000);
 
         LatLng latLng = new LatLng(37.5582,127.0002);
         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
