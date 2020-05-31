@@ -156,6 +156,27 @@ public class RecommendFirstFragment extends Fragment {
             }
         });
 
+        for(int i=0; i<4; ++i) {
+            TextView item = new TextView(this.getContext());
+
+            switch (i) {
+                case 0:
+                    item.setText(Html.fromHtml("#이곳을기준으로3KM"));
+                    break;
+                case 1:
+                    item.setText(Html.fromHtml("#사람들이관심지역으로등록된곳"));
+                    break;
+                case 2:
+                    item.setText(Html.fromHtml("#오른쪽으로넘겨서볼수있답니"));
+                    break;
+                default:
+                    item.setText(Html.fromHtml("#서울로장소추천!"));
+            }
+            item.setTextSize(10);
+            item.setMovementMethod(new ScrollingMovementMethod());
+            item.setPadding(20, 0, 20, 0);
+            mScrollItems.addView(item);
+        }
 
         return view;
     }
