@@ -103,7 +103,7 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintVertical_bias="0.0"
             android:textAlignment="center"
-            android:background="@color/theme_deepblue"/>
+            android:background="@drawable/round_shape_deepblue"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

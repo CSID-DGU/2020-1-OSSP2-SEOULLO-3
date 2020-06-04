@@ -33,7 +33,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/backArrow"
                     android:textSize="20sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/theme_deepblue"
                     android:layout_marginStart="10dp"
                     android:text="mitch.tabian"/>
 

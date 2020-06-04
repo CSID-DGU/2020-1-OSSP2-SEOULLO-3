@@ -108,6 +108,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
         uiSettings.setLogoGravity(1);
         uiSettings.setLogoMargin(5,5, 450, 1000);
+        uiSettings.setZoomGesturesEnabled(true);    //줌 제스처
+
 
         if(mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);

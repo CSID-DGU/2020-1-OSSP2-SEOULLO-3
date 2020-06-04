@@ -1,54 +1,39 @@
 package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.icu.text.IDNA;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.annotations.Nullable;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.InfoWindow;
-import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
-import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.naver.maps.map.widget.ZoomControlView;
-import com.seoullo.seoullotour.Map.MapActivity;
-import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
@@ -147,6 +132,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         viewPagerAdapter.addItem(new RecommendFirstFragment(findLocation, UserId, ImageName, PhotoId));
         viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(0)));
         viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(1)));
+
         //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -160,10 +146,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도 싱크
         mapView = view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
-
-        //줌 버튼 이동
-        ZoomControlView zoomControlView = view.findViewById(R.id.navermap_zoom_control);
-        zoomControlView.setMap(nMap);
         mapView.getMapAsync(this);
 
         //양옆 미리보기 : 수치는 숫자 조절로
@@ -175,7 +157,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         viewPager.setPageMargin((int) ((48 * getResources().getDisplayMetrics().density) / 2));
         //set current position
         viewPager.setCurrentItem(0, false);
-
         //marker bubble info window
         final boolean[] infoEvent = {false};
 
@@ -333,6 +314,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         ui.setZoomControlEnabled(false);
         ui.setLogoGravity(1);
         ui.setLogoMargin(5,5, 450, 1000);
+        ui.setZoomGesturesEnabled(true);
 
         int cnt = 0;
         //only once
