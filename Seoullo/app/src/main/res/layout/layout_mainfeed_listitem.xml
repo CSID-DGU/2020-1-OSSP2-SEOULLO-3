@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -92,7 +93,10 @@
                                     android:id="@+id/image_heart_red"
                                     android:layout_centerInParent="true"
                                     android:layout_marginLeft="20dp"
-                                    android:src="@drawable/ic_heart_red"
+                                    android:src="@drawable/heart_seung"
+                                    android:adjustViewBounds="true"
+                                    android:cropToPadding="true"
+                                    android:foregroundGravity="center"
                                     android:visibility="invisible"/>
 
                                 <ImageView
@@ -101,7 +105,10 @@
                                     android:id="@+id/image_heart"
                                     android:layout_centerInParent="true"
                                     android:layout_marginLeft="20dp"
-                                    android:src="@drawable/ic_heart_white"
+                                    android:src="@drawable/heart_outline_grey"
+                                    android:adjustViewBounds="true"
+                                    android:cropToPadding="true"
+                                    android:foregroundGravity="center"
                                     android:visibility="visible"/>
 
                             </RelativeLayout>
@@ -112,8 +119,11 @@
                                 android:id="@+id/speech_bubble"
                                 android:layout_toRightOf="@+id/heartLayout"
                                 android:layout_marginLeft="10dp"
-                                android:src="@drawable/ic_speech_bubble"
+                                android:src="@drawable/chatbubble_ellipses_outline"
                                 android:visibility="visible"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
                                 android:layout_centerVertical="true"/>
                             <TextView
                                 android:layout_width="wrap_content"
@@ -150,7 +160,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Liked by Mitch, Tom, Mohammed and 30 others"
                                 android:textColor="@color/black"
-                                android:textSize="18sp"
+                                android:textSize="15sp"
                                 android:layout_below="@+id/count_likes"
                                 android:id="@+id/image_likes"/>
 

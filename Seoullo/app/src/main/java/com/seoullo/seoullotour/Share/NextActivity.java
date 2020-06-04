@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +74,7 @@ public class NextActivity extends AppCompatActivity {
     private TextInputEditText mCaption;
     private RecyclerView mAdapter;
     private AutoCompleteTextView mAuto;
+    private ScrollView mScrollView;
     //vars
     private String mAppend = "file:/";
     private int imageCount = 0;
@@ -89,6 +92,7 @@ public class NextActivity extends AppCompatActivity {
     public NextActivity() {
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,19 +100,23 @@ public class NextActivity extends AppCompatActivity {
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         mCaption = (TextInputEditText) findViewById(R.id.caption);
         mAdapter = (RecyclerView) findViewById(R.id.recyclerview_autocomplete);
+        mScrollView = (ScrollView) findViewById(R.id.nextactivity_scroll);
         //API KEY init
         API_KEY = getApiKeyFromManifest(this);
 
         //autocomplete text
         mAuto = findViewById(R.id.places_autocomplete_edit_text);
-        mAuto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         ArrayAdapter arrayAdapter = new GooglePlacesAutocompleteAdapter(getApplicationContext(), R.layout.layout_list_item);
         mAuto.setAdapter(arrayAdapter);
+
+        mAuto.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mScrollView.smoothScrollTo(0,500);
+                return false;
+            }
+        });
+        mAuto.setDropDownVerticalOffset(5);
         mAuto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {

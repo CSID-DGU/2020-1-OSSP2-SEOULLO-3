@@ -6,8 +6,10 @@
     android:background="@color/white">
 
     <ScrollView
+        android:id="@+id/nextactivity_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@id/rel_layout_1"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:gravity="center_vertical"
                 android:text="Add Review"
                 android:textColor="@color/theme_deepblue"
@@ -123,6 +125,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@null"
                         android:hint="장소 입력..."
+                        android:keyboardNavigationCluster="true"
                         android:textColor="@color/theme_deepblue"
                         android:textSize="15sp" />
 

@@ -1,190 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/round_shape_top"
-    >
+    android:padding="10dp">
+
     <LinearLayout
-    android:id="@+id/title_group"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/title_division"
-    android:orientation="vertical"
-    android:gravity="center"
-    >
-    <TextView
-        android:id="@+id/recommend_title"
+        android:id="@+id/title_group"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
 
-        android:layout_margin="5dp"
-        
-        android:text="TITLE"
-        android:textSize="20sp"
-        android:textColor="@color/theme_deepblue"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        />
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/title_division"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/recommend_title"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+
+            android:layout_margin="5dp"
+
+            android:text="TITLE"
+            android:textAlignment="center"
+            android:textColor="@color/theme_deepblue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/title_division"
         android:layout_width="250dp"
         android:layout_height="1dp"
-        android:background="@color/theme_deepblue"
+        android:layout_margin="1dp"
 
-        app:layout_constraintTop_toBottomOf="@id/title_group"
+        android:background="@color/theme_deepblue"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="1dp"
-        android:orientation="horizontal" />
+        app:layout_constraintTop_toBottomOf="@id/title_group" />
+
     <LinearLayout
         android:id="@+id/group_vicinity"
         android:layout_width="match_parent"
         android:layout_height="20dp"
 
-        app:layout_constraintTop_toBottomOf="@id/title_division"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/group_type"
-
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        >
+        android:layout_margin="5dp"
+
+        app:layout_constraintBottom_toTopOf="@id/group_type"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_division">
+
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@drawable/location_outline"
+            android:layout_marginStart="10dp"
             android:adjustViewBounds="true"
 
-            android:layout_marginStart="10dp"
-            />
-    <TextView
-        android:id="@+id/recommend_vicinity"
-        android:layout_width="200dp"
-        android:layout_height="20dp"
+            android:src="@drawable/location_outline" />
 
-        android:textSize="15sp"
-        android:text="Vicinity"
-        android:textColor="@color/theme_deepblue"
-        android:textStyle="italic"
-        android:gravity="center_vertical"
+        <TextView
+            android:id="@+id/recommend_vicinity"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
 
-        android:layout_marginStart="5dp"
-        />
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:text="Vicinity"
+            android:textColor="@color/theme_deepblue"
+            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:textStyle="italic" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/group_type"
         android:layout_width="match_parent"
         android:layout_height="20dp"
 
         android:gravity="center_vertical"
+        android:layout_margin="5dp"
 
-        app:layout_constraintTop_toBottomOf="@id/group_vicinity"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/group_info1"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toBottomOf="@id/group_vicinity">
+
         <HorizontalScrollView
             android:id="@+id/scroll_type"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:fillViewport="true"
             android:layout_margin="0dp"
-            android:scrollbars="none"
-            >
+            android:fillViewport="true"
+            android:scrollbars="none">
+
             <LinearLayout
                 android:id="@+id/scroll_type_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/info_division"
-        android:layout_width="250dp"
-        android:layout_height="1dp"
-        android:background="@color/theme_deepblue"
 
-        app:layout_constraintTop_toBottomOf="@id/group_type"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:orientation="horizontal" />
     <LinearLayout
         android:id="@+id/group_info1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/info_division"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="5dp"
-        >
+        app:layout_constraintTop_toBottomOf="@id/group_type">
+
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_View"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:id="@+id/card_View"
             android:layout_gravity="center"
             app:cardCornerRadius="15dp"
-            app:cardElevation="0dp"
-            >
-    <ImageView
-        android:id="@+id/recommend_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:src="@color/theme_orange"
-        />
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/recommend_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:src="@color/theme_orange" />
         </androidx.cardview.widget.CardView>
-    <TextView
-        android:id="@+id/recommend_desc"
-        android:layout_width="150dp"
-        android:layout_height="match_parent"
 
-        android:layout_margin="5dp"
+        <TextView
+            android:id="@+id/recommend_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
 
-        android:text="this is the test case of recommendation script this will be filled with a lot of informations"
-        android:textColor="@color/theme_deepblue"
-        android:gravity="top"
-        android:textSize="12sp"/>
+            android:layout_margin="5dp"
+
+            android:gravity="top"
+            android:text="this is the test case of recommendation script this will be filled with a lot of informations"
+            android:textColor="@color/theme_deepblue"
+            android:textSize="12sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/group_info2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/group_info1"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
 
-        android:orientation="vertical"
-        >
+        app:layout_constraintTop_toBottomOf="@id/group_info1">
+
         <TextView
             android:id="@+id/recommend_anotherdesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:textSize="15sp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:gravity="top"
+
             android:text="another decriptions will be located here !"
             android:textColor="@color/theme_deepblue"
 
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-
-            android:gravity="top"
-            />
+            android:textSize="15sp" />
 
     </LinearLayout>
-
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
