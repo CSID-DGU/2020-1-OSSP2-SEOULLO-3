@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,6 +117,7 @@ public class RecommendThirdFragment extends Fragment {
             }
 
             item.setTextSize(10);
+            item.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.round_shape));
             item.setMovementMethod(new ScrollingMovementMethod());
             item.setPadding(20, 0, 20, 0);
             mScrollItems.addView(item);
@@ -162,14 +164,6 @@ public class RecommendThirdFragment extends Fragment {
         }
 
 
-        Button mSlideUpBtn = (Button) view.findViewById(R.id.slideup_btn);
-
-        mSlideUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         return view;
     }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_alignParentTop="true"
-    android:background="@color/theme_deepblue"
+    android:background="@color/white"
     android:id="@+id/top_tab">
 
 <!--    <com.google.android.material.appbar.AppBarLayout-->
@@ -33,9 +33,9 @@
         android:layout_height="30dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:background="@color/theme_deepblue"
         android:id="@+id/add_post"
-        android:src="@drawable/camera_outline_white"
+        android:background="@color/white"
+        android:src="@drawable/camera_outline_deepblue"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
@@ -47,7 +47,6 @@
         android:id="@+id/top_division"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/theme_lightblue"
         android:orientation="horizontal"
         android:layout_below="@id/top_tab"/>
 

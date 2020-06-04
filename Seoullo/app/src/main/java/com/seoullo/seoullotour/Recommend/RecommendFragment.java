@@ -230,7 +230,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 if(placeList.size() >= 3) {
                     switch (position) {
                         case 0:
-
                             LatLng latlng0 = new LatLng(point.x, point.y);
                             marker.setPosition(latlng0);
                             marker.setIconTintColor(Color.GREEN);

@@ -22,11 +22,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -119,8 +124,9 @@ public class RecommendFirstFragment extends Fragment {
                     @Override
                     public void onSuccess(Uri uri) {
                         //TODO: request manager 사용하기
-                        Glide.with(getActivity())
-                                .load(uri).into(mImage);
+                        Glide.with(getContext())
+                                .load(uri)
+                                .into(mImage);
                         mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     }
                 });
@@ -173,6 +179,7 @@ public class RecommendFirstFragment extends Fragment {
                     item.setText(Html.fromHtml("#서울로장소추천!"));
             }
             item.setTextSize(10);
+            item.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.round_shape));
             item.setMovementMethod(new ScrollingMovementMethod());
             item.setPadding(20, 0, 20, 0);
             mScrollItems.addView(item);
