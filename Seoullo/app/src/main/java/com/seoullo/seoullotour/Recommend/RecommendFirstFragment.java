@@ -1,10 +1,12 @@
 package com.seoullo.seoullotour.Recommend;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
@@ -20,12 +22,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.R;
 
@@ -46,16 +61,22 @@ public class RecommendFirstFragment extends Fragment {
     private TextView mDesc;
     private TextView mAnotherDecs;
     private LinearLayout mScrollItems;
-    private LinearLayout mViewpager;
 
     //var
-    private Place mPlace;
+    private String mLocation;
     private String API_KEY;
 
+    //firebase
+    private String UserId;
+    private String ImageName;
+    private String PhotoId;
+
     //init - google place api
-    RecommendFirstFragment(Place ref, LinearLayout ll) {
-        this.mPlace = ref;
-        this.mViewpager = ll;
+    RecommendFirstFragment(String ref1, String ref2, String ref3, String ref4) {
+        this.mLocation = ref1;
+        this.UserId = ref2;
+        this.ImageName = ref3;
+        this.PhotoId = ref4;
     }
 
     public static String getApiKeyFromManifest(Context context) {
@@ -94,83 +115,75 @@ public class RecommendFirstFragment extends Fragment {
         mAnotherDecs = (TextView) view.findViewById(R.id.recommend_anotherdesc);
         mScrollItems = (LinearLayout) view.findViewById(R.id.scroll_type_item);
 
-        mTitle.setText(mPlace.getName());
-        mVicinity.setText(mPlace.getVicinity());
-        ArrayList<String> mType = new ArrayList<>();
-        mType = (ArrayList<String>) mPlace.getType().clone();
-
-        for (int i = 0; i < mType.size(); ++i) {
-            TextView item = new TextView(this.getContext());
-
-            switch (mType.get(i)) {
-                case "tourist_attraction":
-                    item.setText(Html.fromHtml("#관광지추천장소TOP5"));
-                    break;
-                case "point_of_interest":
-                    item.setText(Html.fromHtml("#관심지역TOP10"));
-                    break;
-                case "establishment":
-                    item.setText(Html.fromHtml("#설립107주년"));
-                    break;
-                default:
-                    item.setText(Html.fromHtml("#다양한카테고리제공"));
+        //이미지
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+        storageReference.child("photos").child("users").child(UserId).child(ImageName)
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //TODO: request manager 사용하기
+                        Glide.with(getContext())
+                                .load(uri)
+                                .into(mImage);
+                        mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+                });
+        //나머지
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        //vicinity
+        Query vQuery = reference.child("photos").child(PhotoId).child("location");
+        vQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mVicinity.setText(dataSnapshot.getValue().toString());
             }
 
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mVicinity.setText("not loaded!");
+            }
+        });
+        //title
+        mTitle.setText("선택하신 곳");
+        Query dQuery = reference.child("photos").child(PhotoId).child("caption");
+        dQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mDesc.setText(dataSnapshot.getValue().toString());
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mDesc.setText("not loaded!");
+            }
+        });
+
+        for(int i=0; i<4; ++i) {
+            TextView item = new TextView(this.getContext());
+
+            switch (i) {
+                case 0:
+                    item.setText(Html.fromHtml("#이곳을기준으로3KM"));
+                    break;
+                case 1:
+                    item.setText(Html.fromHtml("#사람들이관심지역으로등록된곳"));
+                    break;
+                case 2:
+                    item.setText(Html.fromHtml("#오른쪽으로넘겨서볼수있답니"));
+                    break;
+                default:
+                    item.setText(Html.fromHtml("#서울로장소추천!"));
+            }
             item.setTextSize(10);
+            item.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.round_shape));
             item.setMovementMethod(new ScrollingMovementMethod());
             item.setPadding(20, 0, 20, 0);
             mScrollItems.addView(item);
         }
-
-        String desc = "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
-        mDesc.setText(desc);
-        mAnotherDecs.setText("this is another part of desc");
-        //Image
-        final String targetUrl = "https://maps.googleapis.com/maps/api/place/photo?" +
-                "maxwidth=" + 400 +
-                "&photoreference=" + mPlace.getPhotoReference() +
-                "&key=" + API_KEY;
-        final Bitmap[] bitmap = new Bitmap[1];
-
-        //반드시 메인스레드가 아닌 별도의 스레드를 생성해야함 : NextActivity와 같이
-        Thread getImage = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(targetUrl);
-
-                    //서버로부터 요청을해서 비트맵으로 전환시킬꺼
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);  //get response
-                    conn.connect();
-
-                    InputStream input = conn.getInputStream();
-                    bitmap[0] = BitmapFactory.decodeStream(input);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        getImage.start();
-        try {
-            // 메인thread는 다른 작업이 끝날때 까지 기다려야한다 반드시!
-            getImage.join();
-            mImage.setImageBitmap(bitmap[0]);
-            mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        Button mSlideUpBtn = (Button) view.findViewById(R.id.slideup_btn);
-
-        mSlideUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         return view;
     }

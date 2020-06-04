@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,100 +14,143 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rel_layout_1">
-
-                <!-- toolbar -->
-                <include layout="@layout/snippet_top_next_toolbar"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rel_layout_1"
-                android:id="@id/rel_layout_2"
-                android:background="@drawable/grey_border_bottom">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/imageShare"
-                    android:scaleType="centerCrop"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="40dp"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/imageShare"
-                    android:id="@+id/caption"
-                    android:hint="문구입력..."
-                    android:layout_marginLeft="20dp"
-                    android:layout_centerVertical="true"
-                    android:background="@null"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rel_layout_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rel_layout_2"
-                android:background="@color/white"
-                >
-                <LinearLayout
-                    android:id="@+id/linLayout"
+                android:id="@+id/rel_layout_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/location_outline"
-                        android:adjustViewBounds="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        />
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textview_place"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="위치 추가"
-                    android:textSize="20sp"
-                    android:gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    />
-                 </LinearLayout>
+
+                <!-- toolbar -->
+                <include layout="@layout/snippet_top_next_toolbar" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/rel_layout_1"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:text="Add Review"
+                android:textColor="@color/theme_deepblue"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+
+            <RelativeLayout
+                android:id="@+id/main_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:padding="10dp">
+
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:id="@+id/place_division"
-                    android:layout_below="@id/linLayout"
-                    android:orientation="horizontal"
-                    android:background="@color/grey"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
-                    />
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/places_autocomplete_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/place_division"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textSize="15sp"
-                    android:hint="장소 입력..."
-                    />
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_autocomplete"
+                    android:id="@id/rel_layout_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/places_autocomplete_edit_text"
-                    />
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="40dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:id="@+id/imageShare"
+                            android:layout_width="300dp"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rel_layout_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rel_layout_2"
+                    android:background="@drawable/round_shape"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/linLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/location_outline_deepblue" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/textview_place"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center_vertical"
+                            android:text="Add Location"
+                            android:textColor="@color/theme_deepblue"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <!--                <LinearLayout-->
+                    <!--                    android:layout_width="match_parent"-->
+                    <!--                    android:layout_height="1dp"-->
+                    <!--                    android:id="@+id/place_division"-->
+                    <!--                    android:layout_below="@id/linLayout"-->
+                    <!--                    android:orientation="horizontal"-->
+                    <!--                    android:background="@color/grey"-->
+                    <!--                    android:layout_marginRight="10dp"-->
+                    <!--                    android:layout_marginLeft="10dp"-->
+                    <!--                    />-->
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        android:id="@+id/places_autocomplete_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/linLayout"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@null"
+                        android:hint="장소 입력..."
+                        android:textColor="@color/theme_deepblue"
+                        android:textSize="15sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_autocomplete"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_below="@id/places_autocomplete_edit_text"
+                        android:background="@null" />
+                </RelativeLayout>
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@id/rel_layout_3"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/round_shape"
+                    android:gravity="top"
+                    android:hint="문구입력..."
+                    android:padding="20dp"
+                    android:textColor="@color/theme_deepblue"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
             </RelativeLayout>
         </RelativeLayout>
-
     </ScrollView>
 
 </RelativeLayout>

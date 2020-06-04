@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
@@ -29,6 +31,8 @@ public class MapActivity extends AppCompatActivity {
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
     private LinearLayout mLinearLayout;
+    //var
+    private Point mPoint;
 
     //TODO: link to fragment
     @Override
@@ -36,6 +40,10 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
+
+        Intent intent = getIntent();
+        this.mPoint = (Point) intent.getSerializableExtra("point");
+
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
@@ -60,6 +68,8 @@ public class MapActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        if(mPoint != null)
+            adapter.addFragment(new MapFragment(mPoint));
         adapter.addFragment(new MapFragment());
         mViewPager.setAdapter(adapter);
     }

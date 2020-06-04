@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -11,37 +12,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.annotations.Nullable;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.InfoWindow;
-import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.naver.maps.map.widget.ZoomControlView;
-import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
@@ -62,20 +54,27 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private NaverMap nMap;
     private String NAVER_CLIENT_ID = "";
+    private InfoWindow infoWindow = new InfoWindow();
     //정보가져올 DTO
     private String findLocation;
     public Point point;
     private Geocoder geocoder;
     ArrayList<Place> placeList;
+    private String UserId;
+    private String ImageName;
+    private String PhotoId;
     //뷰페이저
     public ViewPager viewPager;
     public LinearLayout mLinearLayout;
     //기본 생성자
     public RecommendFragment() { }
     //값 받아오기
-    public RecommendFragment(String ref1, ArrayList<Place> ref2) {
+    public RecommendFragment(String ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
         this.findLocation = ref1;
         this.placeList = (ArrayList<Place>) ref2.clone();
+        this.UserId = ref3;
+        this.ImageName = ref4;
+        this.PhotoId = ref5;
     }
 
     //naver api key
@@ -130,9 +129,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //        } else {
 //            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
 //        }
-        viewPagerAdapter.addItem(new RecommendFirstFragment(placeList.get(0), mLinearLayout));
-        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
-        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
+        viewPagerAdapter.addItem(new RecommendFirstFragment(findLocation, UserId, ImageName, PhotoId));
+        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(0)));
+        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(1)));
+
         //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -146,10 +146,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도 싱크
         mapView = view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
-
-        //줌 버튼 이동
-        ZoomControlView zoomControlView = view.findViewById(R.id.navermap_zoom_control);
-        zoomControlView.setMap(nMap);
         mapView.getMapAsync(this);
 
         //양옆 미리보기 : 수치는 숫자 조절로
@@ -161,40 +157,86 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         viewPager.setPageMargin((int) ((48 * getResources().getDisplayMetrics().density) / 2));
         //set current position
         viewPager.setCurrentItem(0, false);
+        //marker bubble info window
+        final boolean[] infoEvent = {false};
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(final int position) {
+
+                infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                    @NonNull
+                    @Override
+                    public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                        switch (position) {
+                            case 0:
+                                return "선택하신 곳 : \n" + findLocation;
+                            case 1:
+                                return placeList.get(0).getName();
+                            case 2:
+                                return placeList.get(1).getName();
+                            default:
+                                return "장소 추천";
+                        }
+                    }
+                });
+                //click event
+                marker.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        if(infoEvent[0] == false) {
+                            infoWindow.open(marker);
+                            infoEvent[0] = true;
+                        }
+                        else {
+                            infoWindow.close();
+                            infoEvent[0] = false;
+                        }
+                        return true;
+                    }
+                });
+                nMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                        infoWindow.close();
+                    }
+                });
+
                 if(placeList.size() >= 3) {
                     switch (position) {
                         case 0:
-                            LatLng latlng0 = new LatLng(placeList.get(0).getLatitude(), placeList.get(0).getLongitude());
+                            LatLng latlng0 = new LatLng(point.x, point.y);
                             marker.setPosition(latlng0);
                             marker.setIconTintColor(Color.GREEN);
                             marker.setMap(nMap);
-                            CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 17f);
+                            CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 16f);
                             nMap.moveCamera(cameraUpdate0);
                             break;
                         case 1:
-                            LatLng latlng1 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
+
+                            LatLng latlng1 = new LatLng(placeList.get(0).getLatitude(), placeList.get(0).getLongitude());
                             marker.setPosition(latlng1);
                             marker.setIconTintColor(Color.YELLOW);
                             marker.setMap(nMap);
-                            CameraUpdate cameraUpdate1 = CameraUpdate.scrollAndZoomTo(latlng1, 17f);
+                            CameraUpdate cameraUpdate1 = CameraUpdate.scrollAndZoomTo(latlng1, 16f);
                             nMap.moveCamera(cameraUpdate1);
+
                             break;
                         case 2:
-                            LatLng latlng2 = new LatLng(placeList.get(2).getLatitude(), placeList.get(2).getLongitude());
+
+                            LatLng latlng2 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
                             marker.setPosition(latlng2);
                             marker.setIconTintColor(Color.BLUE);
                             marker.setMap(nMap);
-                            CameraUpdate cameraUpdate2 = CameraUpdate.scrollAndZoomTo(latlng2, 17f);
+                            CameraUpdate cameraUpdate2 = CameraUpdate.scrollAndZoomTo(latlng2, 16f);
                             nMap.moveCamera(cameraUpdate2);
+
                             break;
                     }
                 }
@@ -202,7 +244,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                infoWindow.setMap(null);
             }
         });
 
@@ -272,18 +314,50 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         ui.setZoomControlEnabled(false);
         ui.setLogoGravity(1);
         ui.setLogoMargin(5,5, 450, 1000);
+        ui.setZoomGesturesEnabled(true);
 
-        //click event
-        marker.setOnClickListener(new Overlay.OnClickListener() {
+        int cnt = 0;
+        //only once
+        if(cnt == 0) {
+            //default
+            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+//                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+//                        @Override
+//                        public boolean onClick(@NonNull Overlay overlay) {
+//
+//                            Intent intent = new Intent(getActivity(), MapActivity.class);
+//                            intent.putExtra("point", point);
+//                            startActivity(intent);
+//
+//                            return false;
+//                        }
+//                    });
+                    return "선택하신 곳 : \n" + findLocation;
+                }
+            });
+
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    infoWindow.open(marker);
+                    return false;
+                }
+            });
+            cnt = -1;
+        }
+        if(marker.getInfoWindow() != null) {
+            infoWindow.close();
+        }
+        nMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
             @Override
-            public boolean onClick(@NonNull Overlay overlay) {
-
-                InfoWindow infoWindow = new InfoWindow();
-                infoWindow.open(marker);
-
-                return false;
+            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                infoWindow.close();
             }
         });
+
         //geocoding
         geocoder = new Geocoder(this.getContext());
         //location
@@ -295,7 +369,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //Marker marker = new Marker();
         marker.setPosition(latLng);
         marker.setMap(nMap);
-        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,17f));
+        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
     }
     //geocoding
     public Point getLatlngFromLocation(String findLocation) {

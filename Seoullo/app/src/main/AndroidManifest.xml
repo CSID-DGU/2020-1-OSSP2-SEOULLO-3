@@ -39,7 +39,7 @@
 
         <activity android:name=".Profile.AccountSettingsActivity" />
         <activity android:name=".Login.RegisterActivity" />
-        <activity android:name=".Share.NextActivity" />
+        <activity android:name=".Share.NextActivity" android:windowSoftInputMode="adjustResize"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/NAVER_CLIENT_ID"/>

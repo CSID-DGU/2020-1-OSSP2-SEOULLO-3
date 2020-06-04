@@ -4,6 +4,7 @@ package com.seoullo.seoullotour.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -394,6 +395,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 Intent intent = new Intent(mContext, RecommendActivity.class);
                 intent.putExtra("location", mValue);
                 intent.putExtra("places", (ArrayList<Place>)placeList);
+                intent.putExtra("user_id",photosList.get(position).getUser_id());
+                intent.putExtra("image_name",holder.photo.getImage_name());
+                intent.putExtra("photo_id", holder.photo.getPhoto_id());
+
                 mContext.startActivity(intent);
             }
         });

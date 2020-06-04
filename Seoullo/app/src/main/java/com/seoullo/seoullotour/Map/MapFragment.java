@@ -24,6 +24,7 @@ import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -36,6 +37,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //현위치
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
+    //got from recommend
+    private Point mPoint;
+
+    MapFragment() { }
+
+    MapFragment(Point ref1) {
+        this.mPoint = ref1;
+    }
 
     //naver api key
     public static String getApiKeyFromManifest(Context context) {
@@ -97,7 +106,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setLocationButtonEnabled(true);      //현위치버튼
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
+        uiSettings.setLogoGravity(1);
+        uiSettings.setLogoMargin(5,5, 450, 1000);
+        uiSettings.setZoomGesturesEnabled(true);    //줌 제스처
 
+
+        if(mPoint != null) {
+            LatLng latLng = new LatLng(mPoint.x, mPoint.y);
+            nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
+        }
         LatLng latLng = new LatLng(37.5582,127.0002);
         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
     }
