@@ -100,10 +100,15 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/gridView"
                     android:numColumns="3"
-                    android:verticalSpacing="0.1dp"
-                    android:horizontalSpacing="0.1dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="0.5dp"
+                    android:paddingRight="0.5dp"
+                    android:paddingTop="-1dp"
+                    android:horizontalSpacing="0.5dp"
+                    android:verticalSpacing="0.5dp"
                     android:stretchMode="columnWidth"
-                    android:gravity="center">
+                    android:gravity="center"
+                    >
                 </GridView>
 
             </RelativeLayout>
