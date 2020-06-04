@@ -242,6 +242,7 @@ public class ProfileFragment extends Fragment {
 
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.addToBackStack(null);
                         //transAction animation  ++++
 //                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left,R.anim.exit_to_right);
                         fragmentTransaction.replace(R.id.rel_layout_2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
