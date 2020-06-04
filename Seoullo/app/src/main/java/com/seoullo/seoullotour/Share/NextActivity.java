@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -68,7 +69,7 @@ public class NextActivity extends AppCompatActivity {
     private FirebaseMethods mFirebaseMethods;
 
     //widgets
-    private EditText mCaption;
+    private TextInputEditText mCaption;
     private RecyclerView mAdapter;
     private AutoCompleteTextView mAuto;
     //vars
@@ -93,13 +94,19 @@ public class NextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next);
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
-        mCaption = (EditText) findViewById(R.id.caption);
+        mCaption = (TextInputEditText) findViewById(R.id.caption);
         mAdapter = (RecyclerView) findViewById(R.id.recyclerview_autocomplete);
         //API KEY init
         API_KEY = getApiKeyFromManifest(this);
 
         //autocomplete text
         mAuto = findViewById(R.id.places_autocomplete_edit_text);
+        mAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         ArrayAdapter arrayAdapter = new GooglePlacesAutocompleteAdapter(getApplicationContext(), R.layout.layout_list_item);
         mAuto.setAdapter(arrayAdapter);
         mAuto.setOnItemClickListener(new AdapterView.OnItemClickListener() {

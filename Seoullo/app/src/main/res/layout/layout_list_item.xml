@@ -2,8 +2,8 @@
 
 <TextView
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:background="@color/white"
+    android:layout_height="match_parent"
+    android:background="@null"
     android:layout_marginTop="3dp"
     android:layout_marginBottom="3dp"
     android:textSize="15sp"
