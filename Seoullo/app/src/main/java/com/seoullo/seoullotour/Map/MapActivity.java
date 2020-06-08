@@ -70,7 +70,8 @@ public class MapActivity extends AppCompatActivity {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         if(mPoint != null)
             adapter.addFragment(new MapFragment(mPoint));
-        adapter.addFragment(new MapFragment());
+        else
+            adapter.addFragment(new MapFragment());
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){
