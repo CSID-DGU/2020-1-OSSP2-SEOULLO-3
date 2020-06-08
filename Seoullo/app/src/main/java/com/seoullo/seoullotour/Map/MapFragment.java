@@ -1,41 +1,77 @@
 package com.seoullo.seoullotour.Map;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.annotations.Nullable;
+import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.internal.NaverMapAccessor;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.overlay.PathOverlay;
+import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.nostra13.universalimageloader.utils.L;
+import com.seoullo.seoullotour.Directions.DirectionActivity;
+import com.seoullo.seoullotour.Directions.DirectionFragment;
 import com.seoullo.seoullotour.Models.Point;
+import com.seoullo.seoullotour.Models.Route;
 import com.seoullo.seoullotour.R;
+import com.seoullo.seoullotour.Utils.SharedRoute;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import com.seoullo.seoullotour.Utils.SharedRoute;
+
+import cz.msebera.android.httpclient.client.utils.CloneUtils;
 
 //TODO : 북마크 지도에 표시하기
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -44,6 +80,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //naver map
     private MapView mapView;
     private NaverMap nMap;
+    private Marker nMarker = new Marker();
+    private InfoWindow mInfoWindow = new InfoWindow();
     private String NAVER_CLIENT_ID = "";
     private String NAVER_CLIENT_SECRET_ID = "";
     //현위치
@@ -51,8 +89,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationSource locationSource;
     //got from recommend
     private Point mPoint;
+    //save direction routes
+    private Route mRoute;
+    private List<LatLng> mPathList = new ArrayList<>();
 
-    MapFragment() { }
+    MapFragment() {
+    }
 
     MapFragment(Point ref1) {
         this.mPoint = ref1;
@@ -68,7 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     .getPackageManager()
                     .getApplicationInfo(e, PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
-            if(bundle != null) {
+            if (bundle != null) {
                 apiKey = bundle.getString("com.naver.maps.map.CLIENT_ID");
             }
         } catch (Exception var6) {
@@ -77,6 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return apiKey;
     }
+
     public static String getApiKeyFromManifestSecret(Context context) {
         String apiKey = null;
 
@@ -86,7 +129,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     .getPackageManager()
                     .getApplicationInfo(e, PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
-            if(bundle != null) {
+            if (bundle != null) {
                 apiKey = bundle.getString("com.naver.maps.map.CLIENT_SECRET_ID");
             }
         } catch (Exception var6) {
@@ -116,6 +159,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return view;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -124,7 +168,60 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView = view.findViewById(R.id.naver_map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+            @NonNull
+            @Override
+            public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        System.out.println("click event");
+                        new Thread() {
+                            public void run() {
+                                System.out.println("THREAD RUN");
+                                String isSettedNow = "";
+                                try {
+                                    HttpConnection();
+                                    isSettedNow = "true";
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Bundle bun = new Bundle();
+                                bun.putString("setted", isSettedNow);
+                                Message msg = handler.obtainMessage();
+                                msg.setData(bun);
+                                handler.sendMessage(msg);
+                            }
+                        }.start();
+                        System.out.println("thread finished");
+                        return false;
+                    }
+                });
+                return mPoint.location;
+            }
+        });
     }
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @SuppressLint("ResourceType")
+        public void handleMessage(Message msg) {
+            Bundle bun = msg.getData();
+            String set = bun.getString("setted");
+            if(set.equals("true")) {
+                System.out.println("draw path !");
+
+//                Intent intent = new Intent(getActivity(), DirectionActivity.class);
+//                intent.putExtra("path", (Serializable) mRoute);
+//                startActivity(intent);
+            }
+        }
+    };
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -138,40 +235,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
         uiSettings.setLogoGravity(1);
-        uiSettings.setLogoMargin(5,5, 450, 1000);
+        uiSettings.setLogoMargin(5, 5, 450, 1000);
         uiSettings.setZoomGesturesEnabled(true);    //줌 제스처
 
-
-        if(mPoint != null) {
+        if (mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);
-            final Marker marker = new Marker();
-            marker.setPosition(latLng);
-            final InfoWindow mInfoWindow = new InfoWindow();
-            mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                @NonNull
-                @Override
-                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                   infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                       @Override
-                       public boolean onClick(@NonNull Overlay overlay) {
-                           try {
-                               HttpConnection();
-                           } catch (IOException e) {
-                               e.printStackTrace();
-                           }
-                           return false;
-                       }
-                   });
 
-                    return mPoint.location;
-                }
-            });
             final boolean[] isInfoWindowOpen = {false};
-            marker.setOnClickListener(new Overlay.OnClickListener() {
+            nMarker.setOnClickListener(new Overlay.OnClickListener() {
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
-                    if(!isInfoWindowOpen[0]) {
-                        mInfoWindow.open(marker);
+                    if (!isInfoWindowOpen[0]) {
+                        mInfoWindow.open(nMarker);
                         isInfoWindowOpen[0] = true;
                     } else {
                         mInfoWindow.close();
@@ -180,7 +255,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     return false;
                 }
             });
-            marker.setMap(nMap);
+            nMarker.setPosition(latLng);
+            nMarker.setMap(nMap);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
         else {
@@ -236,7 +312,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //location permission method
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,  @NonNull int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (locationSource.onRequestPermissionsResult(
                 requestCode, permissions, grantResults)) {
             return;
@@ -245,64 +321,97 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 requestCode, permissions, grantResults);
     }
 
-    protected void HttpConnection() throws IOException {
+    protected void HttpConnection() throws IOException, CloneNotSupportedException, JSONException {
 
-        String url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
-                     "?start=37.5582, 127.0002" +
-                     "&goal=" + mPoint.x + "," + mPoint.y
-                    ;
+        String result = null;
 
-        new RestAPITask(url, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET_ID).execute();
+        String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
+                "?start=127.0002,37.5582" +
+                "&goal=" + mPoint.y + "," + mPoint.x;
+        // Open the connection
+        URL url = new URL(mURL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", NAVER_CLIENT_ID);
+        conn.setRequestProperty("X-NCP-APIGW-API-KEY", NAVER_CLIENT_SECRET_ID);
+        InputStream is = conn.getInputStream();
 
-    }
-    // Rest API calling task
-    public static class RestAPITask extends AsyncTask<Integer, Void, Void> {
-        // Variable to store url
-        protected String mURL;
-        private String NAVER_CLIENT_ID;
-        private String NAVER_CLIENT_SECRET_ID;
+        System.out.println("RESPONSE CODE : " + conn.getResponseMessage());
 
-        // Constructor
-        public RestAPITask(String url, String id, String secretId) {
-            mURL = url;
-            NAVER_CLIENT_ID = id;
-            NAVER_CLIENT_SECRET_ID = secretId;
+        // Get the stream
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
         }
 
-        // Background work
-        protected Void doInBackground(Integer... params) {
-            String result = null;
+        // Set the result
+        conn.disconnect();
+        result = builder.toString();
+        //save in json
+        jsonParsing(result);
+    }
 
-            try {
-                // Open the connection
-                URL url = new URL(mURL);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID",NAVER_CLIENT_ID);
-                conn.setRequestProperty("X-NCP-APIGW-API-KEY",NAVER_CLIENT_SECRET_ID);
-                InputStream is = conn.getInputStream();
+    private void jsonParsing(String jsonString) throws JSONException, CloneNotSupportedException {
 
-                System.out.println("RESPONSE CODE : " + conn.getResponseMessage() );
+        Route resultRoute = new Route();
+        ArrayList<String> mPathArray = new ArrayList<>();
+        ArrayList<String> mGuideArray = new ArrayList<>();
 
-                // Get the stream
-                StringBuilder builder = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
+        JSONObject jsonObject = new JSONObject(jsonString);
+        JSONObject routeObject = jsonObject.getJSONObject("route");
+        JSONArray traoptimalArray = routeObject.getJSONArray("traoptimal");
 
-                // Set the result
-                conn.disconnect();
-                result = builder.toString();
-                System.out.println(result);
-            }
-            catch (Exception e) {
-                // Error calling the rest api
-                Log.e("REST_API", "GET method failed: " + e.getMessage());
-                e.printStackTrace();
-            }
-            return null;
+        JSONObject resultObject = traoptimalArray.getJSONObject(0);
+        //summary : {     }
+        JSONObject summaryObject = (JSONObject) resultObject.get("summary");
+        int mDistance = (int) summaryObject.get("distance");
+        int mDuration = (int) summaryObject.get("duration");
+        String mDepartureTime = summaryObject.get("departureTime").toString();
+        //path : [      ]
+        JSONArray pathArray = resultObject.getJSONArray("path");
+        for (int i = 0; i < pathArray.length(); ++i) {
+            String tempPath = "";
+            tempPath = pathArray.get(i).toString();
+            mPathArray.add(tempPath);
+        }
+        JSONArray guideArray = resultObject.getJSONArray("guide");
+        for (int i = 0; i < guideArray.length(); ++i) {
+            String tempInstructions = "";
+            JSONObject guideObject = (JSONObject) guideArray.get(i);
+            tempInstructions = guideObject.get("instructions").toString();
+            mGuideArray.add(tempInstructions);
+        }
+
+        //set Route model
+        resultRoute.setDepartureTime(mDepartureTime);
+        resultRoute.setDistance(mDistance);
+        resultRoute.setDuration(mDuration);
+        resultRoute.setPathArray(mPathArray);
+        resultRoute.setGuideArray(mGuideArray);
+
+        mRoute =  (Route) CloneUtils.clone(resultRoute);
+
+        System.out.println(mDepartureTime);
+        System.out.println(mDistance);
+        System.out.println(mDuration);
+        for (int i = 0; i < resultRoute.getPathArray().size(); ++i)
+            System.out.println(resultRoute.getPathArray().get(i));
+        for (int i = 0; i < resultRoute.getGuideArray().size(); ++i)
+            System.out.println(resultRoute.getGuideArray().get(i));
+    }
+    private void setPath() {
+        ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
+
+        for(int i=0; i<mPath.size(); ++i) {
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
+
+            System.out.println("added : " + lat + "," + lng);
+
+            LatLng latLng = new LatLng(Double.parseDouble(lat),Double.parseDouble(lng));
+            mPathList.add(latLng);
         }
     }
 }

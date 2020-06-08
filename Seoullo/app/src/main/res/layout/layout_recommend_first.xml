@@ -141,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
 
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
 
             android:gravity="top"
             android:text="this is the test case of recommendation script this will be filled with a lot of informations"
