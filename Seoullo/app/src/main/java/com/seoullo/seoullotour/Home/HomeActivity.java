@@ -85,15 +85,16 @@ public class HomeActivity extends AppCompatActivity implements
         });
         setupFirebaseAuth();
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance());
-        fragmentTransaction.commit();
+        //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//
+//        fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance());
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
 
         //fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance()).commit();
 
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.add(R.id.relLayout2, GridFragment.newInstance()).commit();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance()).addToBackStack(null).commit();
 
         initImageLoader();
         setupBottomNavigationView();
