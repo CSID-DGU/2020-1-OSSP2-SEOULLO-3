@@ -86,7 +86,14 @@ public class HomeActivity extends AppCompatActivity implements
         setupFirebaseAuth();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.relLayout2, GridFragment.newInstance()).commit();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance());
+        fragmentTransaction.commit();
+
+        //fragmentTransaction.replace(R.id.relLayout2, GridFragment.newInstance()).commit();
+
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.add(R.id.relLayout2, GridFragment.newInstance()).commit();
 
         initImageLoader();
         setupBottomNavigationView();
@@ -222,6 +229,22 @@ public class HomeActivity extends AppCompatActivity implements
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+    public void onDestroy() {
+        super.onDestroy();
     }
 
 

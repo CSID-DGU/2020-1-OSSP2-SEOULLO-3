@@ -135,4 +135,24 @@ public class ProfileActivity extends AppCompatActivity implements
         super.onBackPressed();
         finish();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
