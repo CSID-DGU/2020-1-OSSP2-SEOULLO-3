@@ -27,8 +27,7 @@
 
         <activity android:name=".Likes.LikesActivity"
             android:noHistory="true" />
-        <activity android:name=".Profile.ProfileActivity"
-            android:noHistory="true" />
+        <activity android:name=".Profile.ProfileActivity"/>
         <activity android:name=".Search.SearchActivity"
             android:windowSoftInputMode="adjustNothing"
             android:noHistory="true" />

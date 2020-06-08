@@ -244,7 +244,7 @@ public class ProfileFragment extends Fragment {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         //transAction animation  ++++
 //                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,R.anim.enter_from_left,R.anim.exit_to_right);
-                        fragmentTransaction.replace(R.id.container, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
+                        fragmentTransaction.replace(R.id.rel_layout_2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         //mOnGridImageSelectedListener.onGridImageSelected(photos.get(position), ACTIVITY_NUM);
