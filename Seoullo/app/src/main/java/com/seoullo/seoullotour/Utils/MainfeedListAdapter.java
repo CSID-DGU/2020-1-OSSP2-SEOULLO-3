@@ -400,6 +400,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 intent.putExtra("photo_id", holder.photo.getPhoto_id());
 
                 mContext.startActivity(intent);
+
             }
         });
 
