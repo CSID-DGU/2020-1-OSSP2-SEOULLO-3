@@ -23,10 +23,14 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.InfoWindow;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
-
+//TODO : 북마크 지도에 표시하기
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static String TAG = "MapFragment";
@@ -113,10 +117,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if(mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);
+            final Marker marker = new Marker();
+            marker.setPosition(latLng);
+            final InfoWindow mInfoWindow = new InfoWindow();
+            mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                    return mPoint.location;
+                }
+            });
+            final boolean[] isInfoWindowOpen = {false};
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    if(!isInfoWindowOpen[0]) {
+                        mInfoWindow.open(marker);
+                        isInfoWindowOpen[0] = true;
+                    } else {
+                        mInfoWindow.close();
+                        isInfoWindowOpen[0] = false;
+                    }
+                    return false;
+                }
+            });
+            marker.setMap(nMap);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
-        LatLng latLng = new LatLng(37.5582,127.0002);
-        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
+        else {
+            LatLng latLng = new LatLng(37.5582, 127.0002);
+            nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
+        }
     }
 
     //view life cycle

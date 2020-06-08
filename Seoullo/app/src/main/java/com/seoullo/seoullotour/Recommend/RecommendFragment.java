@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.seoullo.seoullotour.Map.MapActivity;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
@@ -63,6 +65,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private String UserId;
     private String ImageName;
     private String PhotoId;
+    private int cnt = 0;
     //뷰페이저
     public ViewPager viewPager;
     public LinearLayout mLinearLayout;
@@ -174,6 +177,25 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                     @NonNull
                     @Override
                     public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                        infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                            @Override
+                            public boolean onClick(@NonNull Overlay overlay) {
+
+                                Intent intent = new Intent(getActivity(), MapActivity.class);
+                                if(position == 0)
+                                    intent.putExtra("point", point);
+                                else {
+                                    Point point1 = new Point();
+                                    point1.location = placeList.get(position - 1).getVicinity();
+                                    point1.x = placeList.get(position - 1).getLatitude();
+                                    point1.y = placeList.get(position - 1).getLongitude();
+                                    intent.putExtra("point", point1);
+                                }
+                                startActivity(intent);
+
+                                return false;
+                            }
+                        });
                         switch (position) {
                             case 0:
                                 return "선택하신 곳 : \n" + findLocation;
@@ -316,7 +338,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         ui.setLogoMargin(5,5, 450, 1000);
         ui.setZoomGesturesEnabled(true);
 
-        int cnt = 0;
+        final boolean[] infoEvent = {false};
         //only once
         if(cnt == 0) {
             //default
@@ -324,26 +346,34 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 @NonNull
                 @Override
                 public CharSequence getText(@NonNull InfoWindow infoWindow) {
-//                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-//                        @Override
-//                        public boolean onClick(@NonNull Overlay overlay) {
-//
-//                            Intent intent = new Intent(getActivity(), MapActivity.class);
-//                            intent.putExtra("point", point);
-//                            startActivity(intent);
-//
-//                            return false;
-//                        }
-//                    });
+                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+
+                            Intent intent = new Intent(getActivity(), MapActivity.class);
+                            intent.putExtra("point", point);
+                            startActivity(intent);
+
+                            return false;
+                        }
+                    });
                     return "선택하신 곳 : \n" + findLocation;
                 }
             });
 
+            //click event
             marker.setOnClickListener(new Overlay.OnClickListener() {
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
-                    infoWindow.open(marker);
-                    return false;
+                    if(infoEvent[0] == false) {
+                        infoWindow.open(marker);
+                        infoEvent[0] = true;
+                    }
+                    else {
+                        infoWindow.close();
+                        infoEvent[0] = false;
+                    }
+                    return true;
                 }
             });
             cnt = -1;
