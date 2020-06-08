@@ -192,7 +192,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                                     intent.putExtra("point", point1);
                                 }
                                 startActivity(intent);
-
+                                getActivity().finish();
                                 return false;
                             }
                         });
