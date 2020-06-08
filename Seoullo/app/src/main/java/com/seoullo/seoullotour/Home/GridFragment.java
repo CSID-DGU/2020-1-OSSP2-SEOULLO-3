@@ -188,8 +188,7 @@ public class GridFragment extends Fragment {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     //transAction animation  ++++
 //                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left,R.anim.exit_to_right);
-                    fragmentTransaction.add(R.id.relLayout2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
-
+                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }

@@ -93,8 +93,10 @@ public class ProfileActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         if(intent.hasExtra(getString(R.string.calling_activity))){
             Log.d(TAG, "init: searching for user object attached as intent extra");
+            //게시글에서 사용자 프로필을 접근할 때
             if(intent.hasExtra(getString(R.string.intent_user))){
                 User user = intent.getParcelableExtra(getString(R.string.intent_user));
+                //다른 사용자의 프로필을 접근
                 if(!user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                     Log.d(TAG, "init: inflating view profile");
                     com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
@@ -110,6 +112,7 @@ public class ProfileActivity extends AppCompatActivity implements
                     //transaction.addToBackStack(getString(R.string.view_profile_fragment));
                     transaction.commit();
                 }else{
+                    //본인의 계정 접근
                     Log.d(TAG, "init: inflating Profile");
                     com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
@@ -126,7 +129,8 @@ public class ProfileActivity extends AppCompatActivity implements
             com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
             FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.container, fragment);
-            transaction.addToBackStack(getString(R.string.profile_fragment));
+            //transaction.addToBackStack(null);
+            //transaction.addToBackStack(getString(R.string.profile_fragment));
             transaction.commit();
         }
     }
