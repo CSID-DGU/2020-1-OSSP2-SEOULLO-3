@@ -107,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity implements
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
+                    transaction.add(R.id.container, fragment);
                     transaction.addToBackStack(getString(R.string.profile_fragment));
                     //transaction.addToBackStack(getString(R.string.view_profile_fragment));
                     transaction.commit();
@@ -116,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity implements
                     Log.d(TAG, "init: inflating Profile");
                     com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
+                    transaction.add(R.id.container, fragment);
                     transaction.addToBackStack(getString(R.string.profile_fragment));
                     transaction.commit();
                 }
@@ -128,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity implements
             Log.d(TAG, "init: inflating Profile");
             com.seoullo.seoullotour.Profile.ProfileFragment fragment = new com.seoullo.seoullotour.Profile.ProfileFragment();
             FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.container, fragment);
+            transaction.add(R.id.container, fragment);
             //transaction.addToBackStack(null);
             //transaction.addToBackStack(getString(R.string.profile_fragment));
             transaction.commit();
