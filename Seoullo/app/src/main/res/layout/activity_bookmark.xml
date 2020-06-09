@@ -22,11 +22,9 @@
             android:id="@+id/rel_layout_3"
             android:layout_below="@id/rel_layout_2"
             android:layout_marginBottom="50dp">
-            <include layout="@layout/fragment_bookmark"/>
+<!--            <include layout="@layout/fragment_bookmark"/>-->
 
         </RelativeLayout>
         <include layout="@layout/layout_bottom_navigation_view"/>
-
     </RelativeLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

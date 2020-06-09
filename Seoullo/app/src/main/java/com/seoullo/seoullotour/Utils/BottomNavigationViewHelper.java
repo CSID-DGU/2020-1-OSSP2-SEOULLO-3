@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import com.seoullo.seoullotour.Bookmark.BookmarkActivity;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Likes.LikesActivity;
 import com.seoullo.seoullotour.Map.MapActivity;
@@ -65,7 +66,7 @@ public class BottomNavigationViewHelper {
                         break;
 
                     case R.id.ic_bookmark:
-                        Intent intent4 = new Intent(context, LikesActivity.class);//ACTIVITY_NUM = 3
+                        Intent intent4 = new Intent(context, BookmarkActivity.class);//ACTIVITY_NUM = 3
                         context.startActivity(intent4);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;

@@ -43,7 +43,7 @@ public class BookmarkActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
-        Log.d(TAG, "onCreate: starting.");
+        Log.d(TAG, "onCreate: bookmark starting.");
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
