@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -16,11 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.seoullo.seoullotour.Models.Comment;
+import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
@@ -46,18 +52,60 @@ public class BookmarkFragment extends Fragment {
 
     private class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private ArrayList<String> bookmarkList;
+        private ArrayList<Photo> bookmarkList;
 
         BookmarkRecyclerViewAdapter() {
+            bookmarkList = new ArrayList<>();
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            reference.child(getString(R.string.dbname_photos))
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            bookmarkList.clear();
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                                Photo photo = new Photo();
+                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                photo.setImage_name(objectMap.get("image_name").toString());
+                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                                photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                                photo.setLikeCount(Integer.parseInt( objectMap.get("likeCount").toString()));
+                                ArrayList<Comment> comments = new ArrayList<Comment>();
+                                for (DataSnapshot dSnapshot : singleSnapshot
+                                        .child(getString(R.string.field_comments)).getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+                                }
+                                photo.setComments(comments);
+
+                                bookmarkList.add(photo);
+                            }
+                            notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+
+                    });
 
         }
 
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_bookmark, parent, false);
+            ImageView imageView = new ImageView(parent.getContext());
 
-            return new CustomViewHolder(view);
+            return new CustomViewHolder(imageView);
         }
 
         @Override
@@ -72,11 +120,32 @@ public class BookmarkFragment extends Fragment {
             return 0;
         }
 
-        private class CustomViewHolder extends RecyclerView.ViewHolder {
+        private class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            public ImageView imageView;
 
+            public CustomViewHolder(ImageView imageView) {
+                super(imageView);
+                this.imageView = imageView;
 
-            public CustomViewHolder(@NonNull View itemView) {
-                super(itemView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("Recyclerview", "position = " + getAdapterPosition());
+                    }
+                });
+                imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Log.d("Recyclerview", "position = " + getAdapterPosition());
+                        return false;
+                    }
+                });
+
+            }
+
+            @Override
+            public void onClick(View v) {
+
             }
         }
     }
