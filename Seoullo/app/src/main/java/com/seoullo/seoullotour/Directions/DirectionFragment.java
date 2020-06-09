@@ -185,8 +185,8 @@ public class DirectionFragment extends Fragment implements OnMapReadyCallback {
         ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
 
         for(int i=0; i<mPath.size(); ++i) {
-            String lat = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
-            String lng = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
 
             System.out.println("added : " + lat + "," + lng);
 

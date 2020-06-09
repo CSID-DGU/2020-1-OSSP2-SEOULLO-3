@@ -157,18 +157,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //current location
         locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
 
-        return view;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mapView = view.findViewById(R.id.naver_map);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
-
         mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
             @NonNull
             @Override
@@ -206,6 +194,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 return mPoint.location;
             }
         });
+
+        return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mapView = view.findViewById(R.id.naver_map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
     }
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
@@ -216,6 +217,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if(set.equals("true")) {
                 System.out.println("draw path !");
 
+                PathOverlay path = new PathOverlay();
+                path.setCoords(mPathList);
+                path.setColor(Color.RED);
+                path.setMap(nMap);
 //                Intent intent = new Intent(getActivity(), DirectionActivity.class);
 //                intent.putExtra("path", (Serializable) mRoute);
 //                startActivity(intent);
@@ -351,6 +356,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         result = builder.toString();
         //save in json
         jsonParsing(result);
+        //save in list
+        setPath();
     }
 
     private void jsonParsing(String jsonString) throws JSONException, CloneNotSupportedException {
@@ -405,8 +412,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
 
         for(int i=0; i<mPath.size(); ++i) {
-            String lat = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
-            String lng = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
 
             System.out.println("added : " + lat + "," + lng);
 

@@ -46,7 +46,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.mRoute = (Route) intent.getSerializableExtra("path");
-
+        System.out.println("Direction Activity : " + mRoute.getGuideArray().size());
 
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
