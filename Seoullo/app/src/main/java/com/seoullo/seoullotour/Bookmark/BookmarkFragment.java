@@ -1,5 +1,6 @@
 package com.seoullo.seoullotour.Bookmark;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,15 +12,27 @@ import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.seoullo.seoullotour.Home.GridFragment;
+import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.R;
@@ -31,6 +44,8 @@ import java.util.Map;
 public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
     ScrollView scrollView;
+    public RequestManager mRequestManager;
+
 
     public static BookmarkFragment newInstance() {
         return new BookmarkFragment();
@@ -42,6 +57,7 @@ public class BookmarkFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
 //        scrollView = view.findViewById(R.id.horizontal_scrollView);
 //        scrollView.setHorizontalScrollBarEnabled(true);
+        mRequestManager = Glide.with(this);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -74,7 +90,7 @@ public class BookmarkFragment extends Fragment {
                                 photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                                photo.setLikeCount(Integer.parseInt( objectMap.get("likeCount").toString()));
+                                photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
                                         .child(getString(R.string.field_comments)).getChildren()) {
@@ -97,27 +113,59 @@ public class BookmarkFragment extends Fragment {
                         }
 
                     });
-
         }
 
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            int width = getResources().getDisplayMetrics().widthPixels;
+
             ImageView imageView = new ImageView(parent.getContext());
+            imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, width));
+            imageView.setPadding(1, 1, 1, 1);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
             return new CustomViewHolder(imageView);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final int finalPosition = position;
 
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference()
+                    .child("photos").child("users").child(bookmarkList.get(position).getUser_id())
+                    .child(bookmarkList.get(position).getImage_name());
+            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        // Glide 이용하여 이미지뷰에 로딩
+                        mRequestManager
+                                .load(task.getResult())
+                                .override(getResources().getDisplayMetrics().widthPixels,getResources().getDisplayMetrics().widthPixels / 3)
+                                .into(((BookmarkFragment.BookmarkRecyclerViewAdapter.CustomViewHolder) holder).imageView);
+                    } else {
+                    }
+                }
+            });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
 
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(bookmarkList.get(position), bookmarkList.get(position).getPhoto_id()));
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+
+            });
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return bookmarkList.size();
         }
 
         private class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
