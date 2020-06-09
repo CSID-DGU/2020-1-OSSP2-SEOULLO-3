@@ -21,12 +21,13 @@ public class Photo implements Parcelable, Serializable {
     private List<Comment> comments;
     private String location;    //added 0516 00:16
     private ArrayList<Place> places;
+    private List<Bookmark> bookmarks;
 
     public Photo() {
     }
 
     public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags,
-                 List<Like> likes, int likeCount, List<Comment> comments, String location, ArrayList<Place> places) {
+                 List<Like> likes, int likeCount, List<Comment> comments,List<Bookmark> bookmarks, String location, ArrayList<Place> places) {
         this.image_name = image_name;
         this.caption = caption;
         this.date_created = date_created;
@@ -37,6 +38,7 @@ public class Photo implements Parcelable, Serializable {
         this.likes = likes;
         this.likeCount = likeCount;
         this.comments = comments;
+        this.bookmarks = bookmarks;
         this.location = location;
         this.places = (ArrayList<Place>)places.clone();
     }
@@ -124,6 +126,10 @@ public class Photo implements Parcelable, Serializable {
     public void setLikes(List<Like> likes) {
         this.likes = likes;
     }
+
+    public List<Bookmark> getBookmarks() { return bookmarks; }
+
+    public void setBookmarks(List<Bookmark> bookmarks) { this.bookmarks = bookmarks; }
 
     public Integer getLikeCount() { return likeCount; }
 

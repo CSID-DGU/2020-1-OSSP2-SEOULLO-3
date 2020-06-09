@@ -126,16 +126,32 @@
                                 android:cropToPadding="true"
                                 android:foregroundGravity="center"
                                 android:layout_centerVertical="true"/>
+
                             <TextView
+                                android:id="@+id/image_time_posted"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="15dp"
+                                android:layout_marginRight="70dp"
                                 android:text="3 DAYS AGO"
                                 android:textColor="@color/grey"
-                                android:textSize="16sp"
-                                android:layout_marginRight="20dp"
-                                android:layout_alignParentRight="true"
-                                android:id="@+id/image_time_posted"
-                                android:layout_marginTop="15dp"/>
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/bookmark_button"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_alignRight="@+id/image_time_posted"
+                                android:layout_centerVertical="true"
+
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="-50dp"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
+                                android:src="@drawable/bookmark_outline"
+                                android:visibility="visible" />
 
                         </RelativeLayout>
 

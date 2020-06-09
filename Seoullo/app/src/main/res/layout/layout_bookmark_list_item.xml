@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -31,48 +31,16 @@
                 android:textSize="15sp" />
         </RelativeLayout>
 
+
         <include
             android:id="@+id/horizontal_scrollView"
-            layout="@layout/recycler_bookmark_item"
+            layout="@layout/fragment_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/group_location" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/group_location"
+            />
 
-        <RelativeLayout
-            android:id="@+id/relLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/horizontal_scrollView">
-
-            <RelativeLayout
-                android:id="@+id/heartLayout"
-                android:layout_width="60dp"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/image_heart_red"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="20dp"
-                    android:adjustViewBounds="true"
-                    android:cropToPadding="true"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/heart_seung"
-                    android:visibility="invisible" />
-
-                <ImageView
-                    android:id="@+id/image_heart"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="20dp"
-                    android:adjustViewBounds="true"
-                    android:cropToPadding="true"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/heart_outline_grey"
-                    android:visibility="visible" />
-            </RelativeLayout>
-        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

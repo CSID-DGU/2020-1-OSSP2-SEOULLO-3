@@ -40,6 +40,8 @@ import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +59,7 @@ public class BookmarkFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
+        View view = inflater.inflate(R.layout.layout_bookmark_list_item, container, false);
 //        scrollView = view.findViewById(R.id.horizontal_scrollView);
 //        scrollView.setHorizontalScrollBarEnabled(true);
         mRequestManager = Glide.with(this);
@@ -66,7 +68,7 @@ public class BookmarkFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, true));
 
         Log.d(TAG, "bookmark ing");
         return view;
@@ -80,6 +82,7 @@ public class BookmarkFragment extends Fragment {
             // Your holder should contain a member variable
             // for any view that will be set as you render a row
             public ImageView imageView;
+            public TextView textView;
 
             // We also create a constructor that accepts the entire item row
             // and does the view lookups to find each subview
@@ -88,6 +91,7 @@ public class BookmarkFragment extends Fragment {
                 // to access the context from any ViewHolder instance.
                 super(itemView);
                 imageView = (ImageView) itemView.findViewById(R.id.bookmark_image);
+                textView = (TextView) itemView.findViewById(R.id.bookmark_location);
             }
         }
 
@@ -159,7 +163,7 @@ public class BookmarkFragment extends Fragment {
 
 
 
-
+            TextView textView = viewHolder.textView;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
@@ -179,23 +183,27 @@ public class BookmarkFragment extends Fragment {
                     }
                 }
             });
+
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;
-
             imageView.setEnabled(true);
+            textView.setText(mBookmarkList.get(position).getLocation());
 
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            textView.setEnabled(true);
 
-                @Override
-                public void onClick(View v) {
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(mBookmarkList.get(position),
-                            mBookmarkList.get(position).getPhoto_id()));
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
-            });
+            //TODO: 클릭하면 게시물로 이동하도록 해야 함
+//            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(mBookmarkList.get(position),
+//                            mBookmarkList.get(position).getPhoto_id()));
+//                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.commit();
+//                }
+//            });
         }
 
         // Returns the total count of items in the list
