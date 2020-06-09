@@ -9,18 +9,40 @@
         android:layout_height="wrap_content"
         android:background="@drawable/round_shape">
 
-
-        <com.seoullo.seoullotour.Utils.SquareImageView
-            android:id="@+id/post_image"
+        <RelativeLayout
+            android:id="@+id/group_location"
             android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/location_outline" />
+
+            <TextView
+                android:id="@+id/show_location"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:text="LOCATION"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/horizontal_scrollView"
+            layout="@layout/recycler_bookmark_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop" />
+            android:layout_below="@+id/group_location" />
 
         <RelativeLayout
             android:id="@+id/relLayout2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@+id/post_image">
+            android:layout_below="@+id/horizontal_scrollView">
 
             <RelativeLayout
                 android:id="@+id/heartLayout"

@@ -59,5 +59,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     //google place autocomplete
     implementation 'com.google.android.libraries.places:places:2.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
 }
