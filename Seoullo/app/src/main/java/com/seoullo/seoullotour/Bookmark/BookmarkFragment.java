@@ -79,8 +79,6 @@ public class BookmarkFragment extends Fragment {
         public class ViewHolder extends RecyclerView.ViewHolder {
             // Your holder should contain a member variable
             // for any view that will be set as you render a row
-            public TextView nameTextView;
-            public Button messageButton;
             public ImageView imageView;
 
             // We also create a constructor that accepts the entire item row
@@ -90,8 +88,6 @@ public class BookmarkFragment extends Fragment {
                 // to access the context from any ViewHolder instance.
                 super(itemView);
                 imageView = (ImageView) itemView.findViewById(R.id.bookmark_image);
-                nameTextView = (TextView) itemView.findViewById(R.id.text2);
-                messageButton = (Button) itemView.findViewById(R.id.button);
             }
         }
 
@@ -184,10 +180,8 @@ public class BookmarkFragment extends Fragment {
                 }
             });
             // Set item views based on your views and data model
-            TextView textView = viewHolder.nameTextView;
             ImageView imageView = viewHolder.imageView;
-            Button button = viewHolder.messageButton;
-            button.setEnabled(true);
+
             imageView.setEnabled(true);
 
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -201,76 +195,14 @@ public class BookmarkFragment extends Fragment {
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
-
             });
         }
-
 
         // Returns the total count of items in the list
         @Override
         public int getItemCount() {
             return mBookmarkList.size();
         }
-
-
-//
-//
-//
-//
-//        @NonNull
-//        @Override
-//        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//            int width = getResources().getDisplayMetrics().widthPixels;
-//
-//            ImageView imageView = new ImageView(parent.getContext());
-//            imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, width));
-//            imageView.setPadding(1, 1, 1, 1);
-//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//
-//            return new CustomViewHolder(imageView);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull BookmarkRecyclerViewAdapter.ViewHolder holder, int position) {
-//
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-//            final int finalPosition = position;
-//
-//            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-//            StorageReference storageReference = firebaseStorage.getReference()
-//                    .child("photos").child("users").child(mBookmarkList.get(position).getUser_id())
-//                    .child(mBookmarkList.get(position).getImage_name());
-//            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Uri> task) {
-//                    if (task.isSuccessful()) {
-//                        // Glide 이용하여 이미지뷰에 로딩
-//                        mRequestManager
-//                                .load(task.getResult())
-//                                .override(getResources().getDisplayMetrics().widthPixels,getResources().getDisplayMetrics().widthPixels / 3)
-//                                .into(((BookmarkFragment.BookmarkRecyclerViewAdapter.CustomViewHolder) holder).imageView);
-//                    } else {
-//                    }
-//                }
-//            });
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(mBookmarkList.get(position), mBookmarkList.get(position).getPhoto_id()));
-//                    fragmentTransaction.addToBackStack(null);
-//                    fragmentTransaction.commit();
-//                }
-//
-//            });
-//        }
-//
-
 
         private class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public ImageView imageView;
@@ -301,5 +233,5 @@ public class BookmarkFragment extends Fragment {
             }
         }
     }
-    
+
 }
