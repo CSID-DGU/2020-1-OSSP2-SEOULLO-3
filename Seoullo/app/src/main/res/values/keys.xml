@@ -2,5 +2,6 @@
 <resources>
     <!-- KEYS -->
     <string name="NAVER_CLIENT_ID">8bw2ryp9g4</string>
+    <string name="NAVER_CLIENT_SECRET_ID">awuzD81qS8o7Ppp6yy6MiPok8Qud1mTnsO1YQ2cC</string>
     <string name="GOOGLE_CLIENT_ID">AIzaSyCWJmhcRuCnJ1rcGWtW9fW_sLo2_ADD0jY</string>
 </resources>

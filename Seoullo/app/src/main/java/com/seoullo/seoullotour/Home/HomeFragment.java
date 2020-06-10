@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.seoullo.seoullotour.Models.Bookmark;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
@@ -65,7 +66,15 @@ public class HomeFragment extends Fragment {
 
         return fragment;
     }
+    public static Fragment newInstance(Bookmark clickedPhoto, String photoID) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM1, photoID);
+        bundle.putSerializable("object", clickedPhoto);
+        fragment.setArguments(bundle);
 
+        return fragment;
+    }
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);

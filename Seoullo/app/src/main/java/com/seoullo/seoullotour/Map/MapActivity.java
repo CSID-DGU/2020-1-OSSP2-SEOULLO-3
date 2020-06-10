@@ -70,7 +70,8 @@ public class MapActivity extends AppCompatActivity {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         if(mPoint != null)
             adapter.addFragment(new MapFragment(mPoint));
-        adapter.addFragment(new MapFragment());
+        else
+            adapter.addFragment(new MapFragment());
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){
@@ -92,5 +93,25 @@ public class MapActivity extends AppCompatActivity {
         if(mFrameLayout.getVisibility() == View.VISIBLE){
             showLayout();
         }
+        finish();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

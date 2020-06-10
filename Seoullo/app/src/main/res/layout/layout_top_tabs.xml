@@ -24,7 +24,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/seoullo_yellow"
+        android:src="@drawable/seoullo"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         />

@@ -97,6 +97,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         int holderIndex = photos.size()-1-position;
+        //holder 생성
         if(convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
@@ -111,6 +112,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
         String imgURL = getItem(position);
        // String photo_name = "photo" + Integer.toString(position + 1);
 
+        //gridFlag == 1 , 프로필 화면에서의 그리드뷰
         if(gridFlag == 1) {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
@@ -131,7 +133,6 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
 
                                         loadSize--;
                                         if(loadSize == 0){
-                                            System.out.println("progress실험중");
                                             profileFragment.goneProgress();
                                         }
                                         return false;
@@ -143,7 +144,6 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
 
                                         loadSize--;
                                         if(loadSize == 0){
-                                            System.out.println("progress실험중");
                                             profileFragment.goneProgress();
                                         }
                                         return false;
@@ -161,6 +161,8 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                         });
            // }
         }
+
+        //gridFlag == 2 , 게시글 선택 또는 프로필 사진 변경에서의 그리드 뷰
         else if(gridFlag == 2) {
 
             ImageLoader imageLoader = ImageLoader.getInstance();

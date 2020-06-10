@@ -2,11 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_shape"
+        >
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -18,8 +21,6 @@
                                 android:layout_height="30dp"
                                 android:id="@+id/profile_photo"
                                 android:layout_marginTop="20dp"
-                                app:civ_border_color="@color/black"
-                                app:civ_border_width="0.5dp"
                                 android:layout_marginLeft="25dp"
                                 android:layout_centerVertical="true"/>
 
@@ -66,25 +67,26 @@
                 android:text="LOCATION"
                 />
         </RelativeLayout>
-                        <com.seoullo.seoullotour.Utils.SquareImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/post_image"
-                            android:layout_below="@id/group_location"
-                            android:scaleType="centerCrop"/>
+
+        <com.seoullo.seoullotour.Utils.SquareImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/group_location"
+            android:scaleType="centerCrop" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:id="@+id/relLayout2"
                             android:layout_below="@+id/post_image"
-                            android:background="@color/white">
+                            >
 
                             <RelativeLayout
                                 android:layout_width="60dp"
                                 android:layout_height="match_parent"
                                 android:id="@+id/heartLayout"
-                                android:background="@color/white">
+                               >
 
                                 <ImageView
                                     android:layout_width="35dp"
@@ -92,7 +94,10 @@
                                     android:id="@+id/image_heart_red"
                                     android:layout_centerInParent="true"
                                     android:layout_marginLeft="20dp"
-                                    android:src="@drawable/ic_heart_red"
+                                    android:src="@drawable/heart_seung"
+                                    android:adjustViewBounds="true"
+                                    android:cropToPadding="true"
+                                    android:foregroundGravity="center"
                                     android:visibility="invisible"/>
 
                                 <ImageView
@@ -101,7 +106,10 @@
                                     android:id="@+id/image_heart"
                                     android:layout_centerInParent="true"
                                     android:layout_marginLeft="20dp"
-                                    android:src="@drawable/ic_heart_white"
+                                    android:src="@drawable/heart_outline_grey"
+                                    android:adjustViewBounds="true"
+                                    android:cropToPadding="true"
+                                    android:foregroundGravity="center"
                                     android:visibility="visible"/>
 
                             </RelativeLayout>
@@ -112,30 +120,64 @@
                                 android:id="@+id/speech_bubble"
                                 android:layout_toRightOf="@+id/heartLayout"
                                 android:layout_marginLeft="10dp"
-                                android:src="@drawable/ic_speech_bubble"
+                                android:src="@drawable/chatbubble_ellipses_outline"
                                 android:visibility="visible"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
                                 android:layout_centerVertical="true"/>
+
                             <TextView
+                                android:id="@+id/image_time_posted"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="15dp"
+                                android:layout_marginRight="70dp"
                                 android:text="3 DAYS AGO"
                                 android:textColor="@color/grey"
-                                android:textSize="16sp"
-                                android:layout_marginRight="20dp"
-                                android:layout_alignParentRight="true"
-                                android:id="@+id/image_time_posted"
-                                android:layout_marginTop="15dp"/>
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/image_bookmark_black"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_alignRight="@+id/image_time_posted"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="-50dp"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
+                                android:src="@drawable/bookmark_outline"
+                                android:visibility="visible" />
+
+                            <ImageView
+                                android:id="@+id/image_bookmark_white"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_alignRight="@+id/image_time_posted"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="-50dp"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
+                                android:src="@drawable/bookmark_outline"
+                                android:visibility="visible" />
+
+
 
                         </RelativeLayout>
 
                         <RelativeLayout
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/relLayout3"
                             android:layout_below="@+id/relLayout2"
                             android:padding="20dp"
-                            android:layout_marginBottom="50dp"
-                            android:background="@color/white">
+                            >
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -150,7 +192,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Liked by Mitch, Tom, Mohammed and 30 others"
                                 android:textColor="@color/black"
-                                android:textSize="18sp"
+                                android:textSize="15sp"
                                 android:layout_below="@+id/count_likes"
                                 android:id="@+id/image_likes"/>
 

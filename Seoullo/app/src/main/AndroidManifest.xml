@@ -18,17 +18,15 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Home.HomeActivity" />
         <activity android:name=".Login.LoginActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+               <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
         </activity>
-
-        <activity android:name=".Likes.LikesActivity"
+        <activity android:name=".Bookmark.BookmarkActivity"
             android:noHistory="true" />
-        <activity android:name=".Profile.ProfileActivity"
-            android:noHistory="true" />
+        <activity android:name=".Profile.ProfileActivity"/>
         <activity android:name=".Search.SearchActivity"
             android:windowSoftInputMode="adjustNothing"
             android:noHistory="true" />
@@ -39,10 +37,13 @@
 
         <activity android:name=".Profile.AccountSettingsActivity" />
         <activity android:name=".Login.RegisterActivity" />
-        <activity android:name=".Share.NextActivity" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".Share.NextActivity"/>
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/NAVER_CLIENT_ID"/>
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_SECRET_ID"
+            android:value="@string/NAVER_CLIENT_SECRET_ID"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLE_CLIENT_ID"/>

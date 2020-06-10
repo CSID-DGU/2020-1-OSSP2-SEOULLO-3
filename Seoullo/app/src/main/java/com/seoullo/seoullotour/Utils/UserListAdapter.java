@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +13,16 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
@@ -31,17 +36,18 @@ public class UserListAdapter extends ArrayAdapter<User>{
 
     private static final String TAG = "UserListAdapter";
 
-
+    public RequestManager mRequestManager;
     private LayoutInflater mInflater;
     private List<User> mUsers = null;
     private int layoutResource;
     private Context mContext;
 
-    public UserListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<User> objects) {
+    public UserListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<User> objects,RequestManager requestManager) {
         super(context, resource, objects);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutResource = resource;
+        mRequestManager = requestManager;
         this.mUsers = objects;
     }
 
@@ -53,7 +59,7 @@ public class UserListAdapter extends ArrayAdapter<User>{
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
 
         final ViewHolder holder;
@@ -85,10 +91,23 @@ public class UserListAdapter extends ArrayAdapter<User>{
                 for(DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
                     Log.d(TAG, "onDataChange: found user: " +
                             singleSnapshot.getValue(UserAccountSettings.class).toString());
+                    //Glide 프로필 사진 로드
+                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                    StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+                    storageReference.child("photos").child("users").child(getItem(position).getUser_id()).child("profile_photo").getDownloadUrl()
+                            .addOnSuccessListener( new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    mRequestManager.load(uri).into(holder.profileImage);
+//                        Glide.with(getActivity())
+//                                .load(uri)
+//                                .into(mProfilePhoto);
+                                }
+                            });
 
+
+                    //이전이미지로드
                     ImageLoader imageLoader = ImageLoader.getInstance();
-
-
                     imageLoader.displayImage(singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
                             holder.profileImage);
                 }

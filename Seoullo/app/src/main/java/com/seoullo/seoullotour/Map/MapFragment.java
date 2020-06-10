@@ -1,9 +1,9 @@
 package com.seoullo.seoullotour.Map;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +23,21 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.InfoWindow;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+//TODO : 북마크 지도에 표시하기
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static String TAG = "MapFragment";
@@ -34,6 +45,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private NaverMap nMap;
     private String NAVER_CLIENT_ID = "";
+    private String NAVER_CLIENT_SECRET_ID = "";
     //현위치
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -65,6 +77,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return apiKey;
     }
+    public static String getApiKeyFromManifestSecret(Context context) {
+        String apiKey = null;
+
+        try {
+            String e = context.getPackageName();
+            ApplicationInfo ai = context
+                    .getPackageManager()
+                    .getApplicationInfo(e, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if(bundle != null) {
+                apiKey = bundle.getString("com.naver.maps.map.CLIENT_SECRET_ID");
+            }
+        } catch (Exception var6) {
+            Log.d(TAG, "Caught non-fatal exception while retrieving apiKey: " + var6);
+        }
+
+        return apiKey;
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -72,6 +102,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //API KEY init
         NAVER_CLIENT_ID = getApiKeyFromManifest(this.getContext());
+        NAVER_CLIENT_SECRET_ID = getApiKeyFromManifestSecret(this.getContext());
 
         //네이버지도
         NaverMapSdk.getInstance(this.getContext()).setClient(
@@ -113,10 +144,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if(mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);
+            final Marker marker = new Marker();
+            marker.setPosition(latLng);
+            final InfoWindow mInfoWindow = new InfoWindow();
+            mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                   infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                       @Override
+                       public boolean onClick(@NonNull Overlay overlay) {
+                           try {
+                               HttpConnection();
+                           } catch (IOException e) {
+                               e.printStackTrace();
+                           }
+                           return false;
+                       }
+                   });
+
+                    return mPoint.location;
+                }
+            });
+            final boolean[] isInfoWindowOpen = {false};
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    if(!isInfoWindowOpen[0]) {
+                        mInfoWindow.open(marker);
+                        isInfoWindowOpen[0] = true;
+                    } else {
+                        mInfoWindow.close();
+                        isInfoWindowOpen[0] = false;
+                    }
+                    return false;
+                }
+            });
+            marker.setMap(nMap);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
-        LatLng latLng = new LatLng(37.5582,127.0002);
-        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
+        else {
+            LatLng latLng = new LatLng(37.5582, 127.0002);
+            nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
+        }
     }
 
     //view life cycle
@@ -175,4 +245,64 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 requestCode, permissions, grantResults);
     }
 
+    protected void HttpConnection() throws IOException {
+
+        String url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
+                     "?start=37.5582, 127.0002" +
+                     "&goal=" + mPoint.x + "," + mPoint.y
+                    ;
+
+        new RestAPITask(url, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET_ID).execute();
+
+    }
+    // Rest API calling task
+    public static class RestAPITask extends AsyncTask<Integer, Void, Void> {
+        // Variable to store url
+        protected String mURL;
+        private String NAVER_CLIENT_ID;
+        private String NAVER_CLIENT_SECRET_ID;
+
+        // Constructor
+        public RestAPITask(String url, String id, String secretId) {
+            mURL = url;
+            NAVER_CLIENT_ID = id;
+            NAVER_CLIENT_SECRET_ID = secretId;
+        }
+
+        // Background work
+        protected Void doInBackground(Integer... params) {
+            String result = null;
+
+            try {
+                // Open the connection
+                URL url = new URL(mURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID",NAVER_CLIENT_ID);
+                conn.setRequestProperty("X-NCP-APIGW-API-KEY",NAVER_CLIENT_SECRET_ID);
+                InputStream is = conn.getInputStream();
+
+                System.out.println("RESPONSE CODE : " + conn.getResponseMessage() );
+
+                // Get the stream
+                StringBuilder builder = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+
+                // Set the result
+                conn.disconnect();
+                result = builder.toString();
+                System.out.println(result);
+            }
+            catch (Exception e) {
+                // Error calling the rest api
+                Log.e("REST_API", "GET method failed: " + e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

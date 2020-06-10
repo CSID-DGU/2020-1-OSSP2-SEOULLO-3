@@ -166,7 +166,8 @@ public class GridFragment extends Fragment {
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
-                    .child("photos").child("users").child(photos.get(position).getUser_id()).child(photos.get(position).getImage_name());
+                    .child("photos").child("users")
+                    .child(photos.get(position).getUser_id()).child(photos.get(position).getImage_name());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {

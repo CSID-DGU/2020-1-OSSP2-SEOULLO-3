@@ -17,6 +17,8 @@ import android.widget.ListView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +41,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 1;
 
     private Context mContext = SearchActivity.this;
-
+    public RequestManager mRequestManager;
     //widgets
     private EditText mSearchParam;
     private ListView mListView;
@@ -55,7 +57,7 @@ public class SearchActivity extends AppCompatActivity {
         mSearchParam = (EditText) findViewById(R.id.search);
         mListView = (ListView) findViewById(R.id.listView);
         Log.d(TAG, "onCreate: started.");
-
+        mRequestManager = Glide.with(this);
         hideSoftKeyboard();
         setupBottomNavigationView();
         initTextListener();
@@ -119,7 +121,7 @@ public class SearchActivity extends AppCompatActivity {
     private void updateUsersList(){
         Log.d(TAG, "updateUsersList: updating users list");
 
-        mAdapter = new UserListAdapter(SearchActivity.this, R.layout.layout_user_listitem, mUserList);
+        mAdapter = new UserListAdapter(SearchActivity.this, R.layout.layout_user_listitem, mUserList,mRequestManager);
 
         mListView.setAdapter(mAdapter);
 

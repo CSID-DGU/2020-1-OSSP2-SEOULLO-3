@@ -114,5 +114,25 @@ public class RecommendActivity extends AppCompatActivity {
         if(mFrameLayout.getVisibility() == View.VISIBLE){
             showLayout();
         }
+        finish();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

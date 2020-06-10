@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
 import com.seoullo.seoullotour.Models.Photo;
@@ -137,9 +140,10 @@ public class ProfileFragment extends Fragment {
         setupFirebaseAuth();
         setupGridView();
 
-        getFollowersCount();
-        getFollowingCount();
+//        getFollowersCount();
+//        getFollowingCount();
         getPostsCount();
+        getBookmarkCount();
 
         TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
         if(bundle != null){
@@ -236,7 +240,16 @@ public class ProfileFragment extends Fragment {
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(position), ACTIVITY_NUM);
+
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        //transAction animation  ++++
+//                    fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,R.anim.enter_from_left,R.anim.exit_to_right);
+                        fragmentTransaction.replace(R.id.profile_center_containers, HomeFragment.newInstance(photos.get(position), photos.get(position).getPhoto_id()));
+                        fragmentTransaction.addToBackStack(null);
+                       // view.findViewById(R.id.profile_center_container).setVisibility(View.GONE);
+                        fragmentTransaction.commit();
+                        //mOnGridImageSelectedListener.onGridImageSelected(photos.get(position), ACTIVITY_NUM);
                     }
                 });
             }
@@ -312,6 +325,10 @@ public class ProfileFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    private void getBookmarkCount(){
+
     }
 
     private void setProfileWidgets(UserSettings userSettings){
@@ -442,6 +459,12 @@ public class ProfileFragment extends Fragment {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     private User getUserFromBundle() {

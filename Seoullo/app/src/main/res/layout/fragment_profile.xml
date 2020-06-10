@@ -21,14 +21,20 @@
         android:layout_below="@id/rel_layout_1"
         android:layout_marginTop="1dp">
 
-        <include layout="@layout/layout_center_profile" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_center_containers">
 
+        <include layout="@layout/layout_center_profile" />
+        </FrameLayout>
         <ProgressBar
             android:id="@+id/profileProgressBar"
             style="@android:style/Widget.Holo.Light.ProgressBar"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true" />
+
 
     </RelativeLayout>
 
