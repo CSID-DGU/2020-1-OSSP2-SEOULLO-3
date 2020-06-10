@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -248,5 +250,27 @@ public class HomeActivity extends AppCompatActivity implements
         super.onDestroy();
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu,
+                                    View v,
+                                    ContextMenu.ContextMenuInfo menuInfo)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.hello, menu);
+    }
 
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.menu_cancel:
+                return true;
+            case R.id.menu_delete_photo:
+                return true;
+            case R.id.menu_singo:
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
+    }
 }
