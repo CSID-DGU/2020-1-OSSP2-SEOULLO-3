@@ -23,12 +23,12 @@ public class Mark {
     }
 
     public void toggleBookmark() {
-        Log.d(TAG, "toggleLike: toggling heart.");
+        Log.d(TAG, "toggleLike: toggling bookmark.");
 
         AnimatorSet animatorSet = new AnimatorSet();
 
         if (bookmarkBlack.getVisibility() == View.VISIBLE) {
-            Log.d(TAG, "toggleLike: toggling red heart off.");
+            Log.d(TAG, "toggleLike: toggling black bookmark off.");
             bookmarkBlack.setScaleX(0.1f);
             bookmarkBlack.setScaleY(0.1f);
 
@@ -46,7 +46,7 @@ public class Mark {
             animatorSet.playTogether(scaleDownY, scaleDownX);
 
         } else if (bookmarkBlack.getVisibility() == View.GONE) {
-            Log.d(TAG, "toggleLike: toggling red heart on.");
+            Log.d(TAG, "toggleLike: toggling black bookmark on.");
             bookmarkBlack.setScaleX(0.1f);
             bookmarkBlack.setScaleY(0.1f);
 

@@ -113,7 +113,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     static class ViewHolder {
         CircleImageView mprofileImage;
-        String likesString, bookmarksString;
+        String likesString;
         TextView username, timeDetla, caption, likes, comments, location, likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment, bookmarkBlack, bookmarkWhite;
@@ -306,7 +306,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             ((HomeActivity) mContext).hideLayout();
                         }
                     });
-
+                    getBookmarkCurrentUser(holder);
+                    Log.d(TAG, "true?" + holder.bookmarkByCurrentUser);
                     bookmarkClickEvent(holder);
                 }
 
@@ -472,7 +473,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 mHolder.bookmark.toggleBookmark();
                             }
                             //case2: The user has not liked the photo
-                            else if (!mHolder.likeByCurrentUser) {
+                            else if (!mHolder.bookmarkByCurrentUser) {
                                 //add new like
                                 addNewBookmark(mHolder);
                                 break;
@@ -597,6 +598,80 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.bookmark.toggleBookmark();
     }
 
+    private void getBookmarkCurrentUser(final ViewHolder holder) {
+        Log.d(TAG, "getBookmarkCurrentUser");
+
+        try {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            reference.child(mContext.getString(R.string.dbname_photos))
+                    .child(holder.photo.getPhoto_id())
+                    .child(mContext.getString(R.string.field_bookmarks))
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    holder.users = new StringBuilder();
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                        Query query = reference
+                                .child(mContext.getString(R.string.dbname_users))
+                                .orderByChild(mContext.getString(R.string.field_user_id))
+                                .equalTo(singleSnapshot.getValue(Bookmark.class).getUser_id());
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    Log.d(TAG, "onDataChange: found bookmark: " +
+                                            singleSnapshot.getValue(User.class).getUsername());
+
+                                    holder.users.append(singleSnapshot.getValue(User.class).getUsername());
+                                    holder.users.append(",");
+                                }
+
+                                String[] splitUsers = holder.users.toString().split(",");
+                                Log.d(TAG, "HOLDER.user: " + holder.users.toString());
+                                Log.d(TAG, "Currentuser: " + currentUsername);
+
+                                if (holder.users.toString().contains(currentUsername)) {
+                                    Log.d(TAG, "holder.bookmarkByCurrentUser = true");
+                                    holder.bookmarkByCurrentUser = true;
+                                    holder.bookmarkBlack.setEnabled(true);
+                                    holder.bookmarkWhite.setEnabled(false);
+                                } else {
+                                    Log.d(TAG, "holder.bookmarkByCurrentUser = false");
+                                    holder.bookmarkByCurrentUser = false;
+                                    holder.bookmarkBlack.setEnabled(false);
+                                    holder.bookmarkWhite.setEnabled(true);
+
+
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                holder.bookmarkByCurrentUser = true;
+                            }
+                        });
+                    }
+
+                    if (!dataSnapshot.exists()) {
+                        holder.bookmarkByCurrentUser = false;
+                    } else {
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    holder.likecount.setText("좋아요 " + "0" + "개");
+                }
+            });
+        } catch (NullPointerException e) {
+            Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
+            holder.likesString = "";
+            holder.likeByCurrentUser = false;
+            //setup likes string
+            setupLikesString(holder, holder.likesString);
+        }
+    }
+
     private void addNewLike(final ViewHolder holder) {
         Log.d(TAG, "addNewLike: adding new like");
 
@@ -653,29 +728,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
     }
-
-//    private void getLikeCount(final ViewHolder holder){
-//        try {
-//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//            Query query = reference
-//                    .child(mContext.getString(R.string.dbname_photos))
-//                    .child(holder.photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.field_likes));
-//            query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//        }catch (NullPointerException e) {
-//            Log.e(TAG, "getLikeCount: NullPointerException: " + e.getMessage());
-//        }
-//    }
 
 
     private void getLikesString(final ViewHolder holder) {
