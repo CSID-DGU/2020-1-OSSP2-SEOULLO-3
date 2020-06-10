@@ -1,56 +1,40 @@
 package com.seoullo.seoullotour.Map;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.annotations.Nullable;
-import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.internal.NaverMapAccessor;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PathOverlay;
-import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.nostra13.universalimageloader.utils.L;
-import com.seoullo.seoullotour.Directions.DirectionActivity;
-import com.seoullo.seoullotour.Directions.DirectionFragment;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.Models.Route;
 import com.seoullo.seoullotour.R;
-import com.seoullo.seoullotour.Utils.SharedRoute;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,6 +76,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //save direction routes
     private Route mRoute;
     private List<LatLng> mPathList = new ArrayList<>();
+    //widget
+    private TextView mGuide;
 
     MapFragment() {
     }
@@ -153,6 +139,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         //xml layout
         View view = inflater.inflate(R.layout.activity_map, container, false);
+        mGuide = (TextView) view.findViewById(R.id.navermap_guide);
 
         //current location
         locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
@@ -210,20 +197,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
-        @SuppressLint("ResourceType")
+        @SuppressLint({"ResourceType", "SetTextI18n"})
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
             String set = bun.getString("setted");
             if(set.equals("true")) {
                 System.out.println("draw path !");
 
+                //draw path here
                 PathOverlay path = new PathOverlay();
                 path.setCoords(mPathList);
-                path.setColor(Color.RED);
+                path.setColor(R.color.theme_lightblue);
                 path.setMap(nMap);
-//                Intent intent = new Intent(getActivity(), DirectionActivity.class);
-//                intent.putExtra("path", (Serializable) mRoute);
-//                startActivity(intent);
+
+                //draw text view
+                int durationMilliesecond = mRoute.getDuration();
+                double durationMinute = durationMilliesecond * ( 0.16666666666667 ) * 0.0001;
+
+                String departureTime = mRoute.getDepartureTime().substring(
+                        mRoute.getDepartureTime().indexOf("T")+1,
+                        mRoute.getDepartureTime().length()-3
+                );
+                System.out.println(departureTime);
+                String[] time = departureTime.split(":");
+
+                String HH = time[0];
+                String MM = time[1];
+
+                int Hrs = Integer.parseInt(HH);
+                int Min = Integer.parseInt(MM);
+
+                System.out.println("HH : " + Hrs + "MM : " + Min + "지연 : " + durationMinute);
+
+                if(Min + (int)durationMinute > 60) {
+                   int toHrs = (Min + (int)durationMinute) / 60;
+                   Min = (Min + (int)durationMinute) % 60;
+                   Hrs = Hrs + toHrs;
+                } else {
+                    Min += (int)durationMinute;
+                }
+
+                mGuide.setText("도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
             }
         }
     };
