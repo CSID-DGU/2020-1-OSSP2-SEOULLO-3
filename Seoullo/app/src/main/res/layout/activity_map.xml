@@ -9,5 +9,14 @@
         android:layout_height="match_parent"
         app:navermap_locationButtonEnabled="true"
         android:layout_margin="2dp"
-        />
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/navermap_guide"
+            android:background="@drawable/round_shape"
+            />
+
+    </com.naver.maps.map.MapView>
 </androidx.constraintlayout.widget.ConstraintLayout>
