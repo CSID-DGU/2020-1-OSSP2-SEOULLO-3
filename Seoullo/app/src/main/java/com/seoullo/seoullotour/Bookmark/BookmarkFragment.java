@@ -112,16 +112,13 @@ public class BookmarkFragment extends Fragment {
                             mBookmarkList.clear();
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Bookmark bookmark = new Bookmark();
-                                Log.d(TAG, "스냅샷: "+ singleSnapshot);
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                                Log.d(TAG, "스냅샷22: "+ objectMap.get(getString(R.string.field_user_id)).toString());
 
                                 bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
                                 bookmark.setImage_name(objectMap.get("image_name").toString());
                                 bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 //                                bookmark.setLocation(objectMap.get("location").toString());
                                 mBookmarkList.add(bookmark);
-                                Log.d(TAG, "출력 " + mBookmarkList.get(0).getPhoto_id());
                             }
                             notifyDataSetChanged();
                         }
@@ -164,7 +161,6 @@ public class BookmarkFragment extends Fragment {
                                     photo.setComments(comments);
 
                                     mBookmarkPhotos.add(photo);
-                                    Log.d(TAG, "북마크 주세요 " + mBookmarkPhotos.get(0).getPhoto_id());
                                 }
                                 notifyDataSetChanged();
                             }
@@ -227,20 +223,19 @@ public class BookmarkFragment extends Fragment {
 //            textView.setText(mBookmarkPhotos.get(position).getLocation());
 
             textView.setEnabled(true);
-
             //TODO: 클릭하면 게시물로 이동하도록 해야 함
-//            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.relLayout2, HomeFragment.newInstance(mBookmarkList.get(position),
-//                            mBookmarkList.get(position).getPhoto_id()));
-//                    fragmentTransaction.addToBackStack(null);
-//                    fragmentTransaction.commit();
-//                }
-//            });
+            viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.rel_layout_3, HomeFragment.newInstance(mBookmarkList.get(position),
+                            mBookmarkList.get(position).getPhoto_id()));
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+            });
         }
 
         // Returns the total count of items in the list

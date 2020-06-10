@@ -1,6 +1,11 @@
 package com.seoullo.seoullotour.Models;
 
-public class Bookmark {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Bookmark implements Parcelable, Serializable {
 
     private String user_id;
     private String photo_id;
@@ -38,5 +43,20 @@ public class Bookmark {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(image_name);
+
+        dest.writeString(photo_id);
+        dest.writeString(user_id);
+//        dest.writeString(location);
     }
 }
