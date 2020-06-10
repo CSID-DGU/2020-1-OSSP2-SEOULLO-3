@@ -2,7 +2,10 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layout_margin="5dp"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,11 +21,16 @@
         android:layout_height="match_parent"
         android:id="@+id/rel_layout_2"
         android:layout_below="@+id/rel_layout_1"
-        android:layout_marginBottom="60dp">
+        android:layout_marginBottom="60dp"
+        android:background="#FAFAFA"
+        android:padding="2dp"
+        >
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="3dp"
             android:id="@+id/listView">
 
         </ListView>
@@ -34,7 +42,7 @@
         android:layout_height="60dp"
         android:id="@+id/rel_layout_3"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/white_grey_border_top">
+        android:background="@drawable/round_shape_top">
 
         <EditText
             android:layout_width="match_parent"
@@ -49,10 +57,12 @@
             android:id="@+id/comment"/>
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_checkmark"
+            android:src="@drawable/chatbubble_outline"
+            android:cropToPadding="true"
+            android:adjustViewBounds="true"
             android:id="@+id/ivPostComment"
             android:layout_alignParentRight="true"
             />

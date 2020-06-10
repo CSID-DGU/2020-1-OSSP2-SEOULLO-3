@@ -4,7 +4,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/white_grey_border_bottom"
+        android:background="@drawable/round_shape_top"
         >
 
         <androidx.appcompat.widget.Toolbar
@@ -17,8 +17,8 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginEnd="20dp"
                     android:layout_centerVertical="true"
                     android:id="@+id/backArrow"
@@ -28,6 +28,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:text="댓글"
                     android:layout_toRightOf="@+id/backArrow"
                     android:layout_marginRight="15dp"
