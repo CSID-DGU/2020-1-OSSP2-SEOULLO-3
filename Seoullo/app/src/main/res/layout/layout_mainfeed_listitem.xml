@@ -65,6 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="40dp"
+
+                android:background="@drawable/textview_clicked"
                 android:text="LOCATION"
                 android:textSize="15sp" />
         </RelativeLayout>

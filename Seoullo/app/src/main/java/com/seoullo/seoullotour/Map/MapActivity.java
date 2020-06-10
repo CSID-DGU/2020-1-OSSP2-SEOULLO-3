@@ -93,7 +93,6 @@ public class MapActivity extends AppCompatActivity {
         if(mFrameLayout.getVisibility() == View.VISIBLE){
             showLayout();
         }
-        finish();
     }
     @Override
     public void onResume() {

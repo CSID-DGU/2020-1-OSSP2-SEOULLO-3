@@ -10,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -21,6 +23,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
+import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class RecommendActivity extends AppCompatActivity {
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
     private ImageButton mImageButton;
+
     //get intent
     private String getLocation;
     private ArrayList<Place> mPlaces = new ArrayList<>();
@@ -46,9 +50,15 @@ public class RecommendActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Log.d(TAG, "onCreate: starting.");
-        System.out.println("Recommend Activity onCreate Starting");
+        setContentView(R.layout.activity_recommend);
+        System.out.println("==================================Recommend Activity");
+        //상단
+        mFrameLayout = (FrameLayout) findViewById(R.id.container);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
+        mImageButton = (ImageButton) findViewById(R.id.add_post);
+        mImageButton.setVisibility(View.GONE);
+        //중앙
+        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
 
         Intent intent = getIntent();
         //location
@@ -63,20 +73,10 @@ public class RecommendActivity extends AppCompatActivity {
 
         System.out.println("got Intent !");
 
-
-        //상단
-        mFrameLayout = (FrameLayout) findViewById(R.id.container);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
-        mImageButton = (ImageButton) findViewById(R.id.add_post);
-        mImageButton.setVisibility(View.GONE);
-        //중앙
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         //TODO: 뷰페이저 vertical scrolling : 뷰페이저를 수직으로 땡길 수 있게끔 해보자 !
 
         setupBottomNavigationView();
-        System.out.println("Navigation bar set up");
         setupViewPager();
-        System.out.println("Viewpager set up");
     }
     /**
      * BottomNavigationView setup
@@ -114,7 +114,6 @@ public class RecommendActivity extends AppCompatActivity {
         if(mFrameLayout.getVisibility() == View.VISIBLE){
             showLayout();
         }
-        finish();
     }
     @Override
     public void onResume() {

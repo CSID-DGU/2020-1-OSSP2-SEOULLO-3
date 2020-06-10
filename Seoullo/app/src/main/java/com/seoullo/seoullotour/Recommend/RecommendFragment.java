@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -105,6 +106,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("==================================Recommend Fragment");
 
         //네이버지도
         NAVER_CLIENT_ID = getApiKeyFromManifest(this.getContext());
@@ -114,6 +116,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         //xml layout
         View view = inflater.inflate(R.layout.fragment_recommend, container, false);
         mLinearLayout = view.findViewById(R.id.group_viewPager);
+
 
         //current location
         locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
@@ -146,6 +149,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull final View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         //네이버지도 싱크
         mapView = view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
@@ -269,7 +273,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 infoWindow.setMap(null);
             }
         });
-
     }
     @Override
     public void onStart() {

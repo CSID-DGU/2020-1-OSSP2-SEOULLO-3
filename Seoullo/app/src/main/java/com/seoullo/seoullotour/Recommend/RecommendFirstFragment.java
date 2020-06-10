@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -43,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.R;
+import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,6 +105,8 @@ public class RecommendFirstFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        System.out.println("==================================Recommend 1st Fragment");
+
         View view;
 
         API_KEY = getApiKeyFromManifest(this.getContext());
@@ -153,6 +157,9 @@ public class RecommendFirstFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mDesc.setText(dataSnapshot.getValue().toString());
+                //progress bar end
+                ProgressBar pg = getActivity().findViewById(R.id.progress_mainfeed_to_recommend);
+                pg.setVisibility(View.GONE);
             }
 
             @SuppressLint("SetTextI18n")
@@ -184,7 +191,6 @@ public class RecommendFirstFragment extends Fragment {
             item.setPadding(20, 0, 20, 0);
             mScrollItems.addView(item);
         }
-
         return view;
     }
 }
