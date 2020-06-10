@@ -5,6 +5,8 @@ public class Bookmark {
     private String user_id;
     private String photo_id;
     private String image_name;
+    private String location;
+
 
     public Bookmark() {
     }
@@ -28,6 +30,11 @@ public class Bookmark {
     public String getImage_name() { return image_name; }
 
     public void setImage_name(String image_name) { this.image_name = image_name; }
+
+    public String getLocation() { return location; }
+
+    public void setLocation(String location) { this.location = location; }
+
     @Override
     public String toString() {
         return super.toString();

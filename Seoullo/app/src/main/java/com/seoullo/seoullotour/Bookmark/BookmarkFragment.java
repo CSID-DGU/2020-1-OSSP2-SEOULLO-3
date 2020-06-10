@@ -117,6 +117,9 @@ public class BookmarkFragment extends Fragment {
                                 Log.d(TAG, "스냅샷22: "+ objectMap.get(getString(R.string.field_user_id)).toString());
 
                                 bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                bookmark.setImage_name(objectMap.get("image_name").toString());
+                                bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+//                                bookmark.setLocation(objectMap.get("location").toString());
                                 mBookmarkList.add(bookmark);
                                 Log.d(TAG, "출력 " + mBookmarkList.get(0).getPhoto_id());
                             }
@@ -194,11 +197,13 @@ public class BookmarkFragment extends Fragment {
             // Get the data model based on position
 
             TextView textView = viewHolder.textView;
+            Log.d(TAG, "북마크리스트 이미지 이름 "+ mBookmarkList.get(position).getImage_name());
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
-                    .child(getString(R.string.dbname_bookmarks))
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                    .child(getString(R.string.dbname_bookmarks))
+//                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("photos").child("users")
                     .child(mBookmarkList.get(position).getUser_id())
                     .child(mBookmarkList.get(position).getImage_name());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -219,7 +224,7 @@ public class BookmarkFragment extends Fragment {
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;
             imageView.setEnabled(true);
-            textView.setText(mBookmarkPhotos.get(position).getLocation());
+//            textView.setText(mBookmarkPhotos.get(position).getLocation());
 
             textView.setEnabled(true);
 
