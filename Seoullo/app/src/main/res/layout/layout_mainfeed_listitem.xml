@@ -139,12 +139,11 @@
                                 android:textSize="16sp" />
 
                             <ImageView
-                                android:id="@+id/bookmark_button"
+                                android:id="@+id/image_bookmark_black"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:layout_alignRight="@+id/image_time_posted"
                                 android:layout_centerVertical="true"
-
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="-50dp"
                                 android:adjustViewBounds="true"
@@ -152,6 +151,22 @@
                                 android:foregroundGravity="center"
                                 android:src="@drawable/bookmark_outline"
                                 android:visibility="visible" />
+
+                            <ImageView
+                                android:id="@+id/image_bookmark_white"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_alignRight="@+id/image_time_posted"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="-50dp"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:foregroundGravity="center"
+                                android:src="@drawable/bookmark_outline"
+                                android:visibility="visible" />
+
+
 
                         </RelativeLayout>
 

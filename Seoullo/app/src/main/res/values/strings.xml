@@ -33,6 +33,7 @@
     <string name="field_user_id">user_id</string>
     <string name="field_likes">likes</string>
     <string name="field_likes_count">likeCount</string>
+    <string name="field_bookmarks">bookmarks</string>
     <string name="field_caption">caption</string>
     <string name="field_date_created">date_created</string>
     <string name="field_photo_id">photo_id</string>
