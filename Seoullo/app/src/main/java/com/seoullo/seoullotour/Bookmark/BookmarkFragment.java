@@ -27,6 +27,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.seoullo.seoullotour.Home.GridFragment;
 import com.seoullo.seoullotour.Home.HomeFragment;
+import com.seoullo.seoullotour.Models.Bookmark;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.R;
@@ -75,8 +77,8 @@ public class BookmarkFragment extends Fragment {
     }
 
     private class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRecyclerViewAdapter.ViewHolder> {
-
-        private ArrayList<Photo> mBookmarkList;
+        private ArrayList<Bookmark> mBookmarkList;
+        private ArrayList<Photo> mBookmarkPhotos;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             // Your holder should contain a member variable
@@ -95,41 +97,25 @@ public class BookmarkFragment extends Fragment {
             }
         }
 
-//        public BookmarkRecyclerViewAdapter(ArrayList<Photo> bookmark) {
+        //        public BookmarkRecyclerViewAdapter(ArrayList<Photo> bookmark) {
         public BookmarkRecyclerViewAdapter(ArrayList<Photo> bookmark) {
 
-        mBookmarkList = new ArrayList<>();
+            mBookmarkList = new ArrayList<>();
 
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            reference.child(getString(R.string.dbname_photos))
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            reference.child(getString(R.string.dbname_bookmarks))
+//                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                    .orderByChild(getString(R.string.field_photo_id))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             mBookmarkList.clear();
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                                Photo photo = new Photo();
+                                Bookmark bookmark = new Bookmark();
+                                Log.d(TAG, "스냅샷: "+ singleSnapshot);
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                                photo.setImage_name(objectMap.get("image_name").toString());
-                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                                photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                                photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
-                                ArrayList<Comment> comments = new ArrayList<Comment>();
-                                for (DataSnapshot dSnapshot : singleSnapshot
-                                        .child(getString(R.string.field_comments)).getChildren()) {
-                                    Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                    comments.add(comment);
-                                }
-                                photo.setComments(comments);
-
-                                mBookmarkList.add(photo);
+                                bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                mBookmarkList.add(bookmark);
                             }
                             notifyDataSetChanged();
                         }
@@ -140,6 +126,48 @@ public class BookmarkFragment extends Fragment {
                         }
 
                     });
+            for(int i=0;i<mBookmarkList.size();i++) {
+                reference.child(getString(R.string.dbname_photos))
+                        .equalTo(mBookmarkList.get(i).getPhoto_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                mBookmarkPhotos.clear();
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    Photo photo = new Photo();
+                                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                    photo.setImage_name(objectMap.get("image_name").toString());
+                                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                                    photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
+                                    ArrayList<Comment> comments = new ArrayList<Comment>();
+                                    for (DataSnapshot dSnapshot : singleSnapshot
+                                            .child(getString(R.string.field_comments)).getChildren()) {
+                                        Comment comment = new Comment();
+                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                        comments.add(comment);
+                                    }
+                                    photo.setComments(comments);
+
+                                    mBookmarkPhotos.add(photo);
+                                }
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+
+                        });
+            }
         }
 
         @Override
@@ -159,16 +187,14 @@ public class BookmarkFragment extends Fragment {
         @Override
         public void onBindViewHolder(final BookmarkRecyclerViewAdapter.ViewHolder viewHolder, final int position) {
             // Get the data model based on position
-            Photo photo = mBookmarkList.get(position);
-
-
+            Photo photo = mBookmarkPhotos.get(position);
 
             TextView textView = viewHolder.textView;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
-                    .child("photos").child("users").child(mBookmarkList.get(position).getUser_id())
-                    .child(mBookmarkList.get(position).getImage_name());
+                    .child("photos").child("users").child(mBookmarkPhotos.get(position).getUser_id())
+                    .child(mBookmarkPhotos.get(position).getImage_name());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
@@ -176,7 +202,7 @@ public class BookmarkFragment extends Fragment {
                         // Glide 이용하여 이미지뷰에 로딩
                         mRequestManager
                                 .load(task.getResult())
-                                .override(getResources().getDisplayMetrics().widthPixels,getResources().getDisplayMetrics().widthPixels / 3)
+                                .override(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().widthPixels / 3)
                                 .into(viewHolder.imageView);
 
                     } else {
@@ -187,7 +213,7 @@ public class BookmarkFragment extends Fragment {
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;
             imageView.setEnabled(true);
-            textView.setText(mBookmarkList.get(position).getLocation());
+            textView.setText(mBookmarkPhotos.get(position).getLocation());
 
             textView.setEnabled(true);
 

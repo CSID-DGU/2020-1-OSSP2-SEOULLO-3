@@ -444,9 +444,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
                 Query query = reference
-                        .child(mContext.getString(R.string.dbname_photos))
-                        .child(mHolder.photo.getPhoto_id())
-                        .child(mContext.getString(R.string.field_bookmarks));
+                        .child(mContext.getString(R.string.dbname_bookmarks))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(mHolder.photo.getPhoto_id());
 
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -458,18 +458,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     singleSnapshot.getValue(Bookmark.class).getUser_id()
                                             .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                                mReference.child(mContext.getString(R.string.dbname_photos))
-                                        .child(mHolder.photo.getPhoto_id())
-                                        .child(mContext.getString(R.string.field_bookmarks))
+                                mReference.child(mContext.getString(R.string.dbname_bookmarks))
                                         .child(keyID)
+                                        .child(mHolder.photo.getPhoto_id())
                                         .removeValue();
 
-                                mReference.child(mContext.getString(R.string.dbname_user_photos))
-                                        .child(mHolder.photo.getUser_id())
-                                        .child(mHolder.photo.getPhoto_id())
-                                        .child(mContext.getString(R.string.field_bookmarks))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .removeValue();
+//                                mReference.child(mContext.getString(R.string.dbname_user_photos))
+//                                        .child(mHolder.photo.getUser_id())
+//                                        .child(mHolder.photo.getPhoto_id())
+//                                        .child(mContext.getString(R.string.field_bookmarks))
+//                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                        .removeValue();
                                 mHolder.bookmark.toggleBookmark();
                             }
                             //case2: The user has not liked the photo
@@ -582,18 +581,19 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Bookmark bookmark = new Bookmark();
         bookmark.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+//        mReference.child(mContext.getString(R.string.dbname_photos))
+//                .child(holder.photo.getPhoto_id())
         mReference.child(mContext.getString(R.string.dbname_photos))
-                .child(holder.photo.getPhoto_id())
-                .child(mContext.getString(R.string.field_bookmarks))
                 .child(newLikeID)
+                .child(holder.photo.getPhoto_id())
                 .setValue(bookmark);
 
-        mReference.child(mContext.getString(R.string.dbname_user_photos))
-                .child(holder.photo.getUser_id())
-                .child(holder.photo.getPhoto_id())
-                .child(mContext.getString(R.string.field_bookmarks))
-                .child(newLikeID)
-                .setValue(bookmark);
+//        mReference.child(mContext.getString(R.string.dbname_user_photos))
+//                .child(holder.photo.getUser_id())
+//                .child(holder.photo.getPhoto_id())
+//                .child(mContext.getString(R.string.field_bookmarks))
+//                .child(newLikeID)
+//                .setValue(bookmark);
 
         holder.bookmark.toggleBookmark();
     }
@@ -603,9 +603,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         try {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            reference.child(mContext.getString(R.string.dbname_photos))
+//            reference.child(mContext.getString(R.string.dbname_photos))
+//                    .child(holder.photo.getPhoto_id())
+            reference.child(mContext.getString(R.string.dbname_bookmarks))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child(holder.photo.getPhoto_id())
-                    .child(mContext.getString(R.string.field_bookmarks))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
