@@ -240,6 +240,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                        ((ProfileActivity) getActivity()).gridClick();
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         //transAction animation  ++++
@@ -456,15 +457,21 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public void onPause() {
         super.onPause();
 
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((ProfileActivity) getActivity()).backFeed();
+    }
 
     private User getUserFromBundle() {
         Log.d(TAG, "getUserFromBundle: arguments: " + getArguments());
-
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             return bundle.getParcelable(getString(R.string.intent_user));

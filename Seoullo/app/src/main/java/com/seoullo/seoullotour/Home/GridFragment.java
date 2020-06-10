@@ -174,7 +174,7 @@ public class GridFragment extends Fragment {
                         // Glide 이용하여 이미지뷰에 로딩
                         mRequestManager
                                 .load(task.getResult())
-                                .override(getResources().getDisplayMetrics().widthPixels / 3,getResources().getDisplayMetrics().widthPixels / 3)
+                                //.override(getResources().getDisplayMetrics().widthPixels / 3,getResources().getDisplayMetrics().widthPixels / 3)
                                 .into(((CustomViewHolder) holder).imageView);
                     } else {
                     }

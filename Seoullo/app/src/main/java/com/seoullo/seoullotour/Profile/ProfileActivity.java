@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements
     private static final int NUM_GRID_COLUMNS = 3;
 
     private Context mContext = ProfileActivity.this;
-
+    public int fragmentCount =0;
     private ProgressBar mProgressBar;
     private ImageView profilePhoto;
 
@@ -86,7 +86,12 @@ public class ProfileActivity extends AppCompatActivity implements
 
 
     }
-
+    public void gridClick(){
+        fragmentCount = 1;
+    }
+    public void backFeed(){
+        fragmentCount = 0;
+    }
     private void init(){
         Log.d(TAG, "init: inflating " + getString(R.string.profile_fragment));
 
@@ -137,6 +142,9 @@ public class ProfileActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(fragmentCount == 0) {
+            finish();
+        }
     }
 
     @Override
