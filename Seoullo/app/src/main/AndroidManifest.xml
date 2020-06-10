@@ -18,14 +18,13 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Home.HomeActivity" />
         <activity android:name=".Login.LoginActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+               <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
         </activity>
-
-        <activity android:name=".Likes.LikesActivity"
+        <activity android:name=".Bookmark.BookmarkActivity"
             android:noHistory="true" />
         <activity android:name=".Profile.ProfileActivity"/>
         <activity android:name=".Search.SearchActivity"
