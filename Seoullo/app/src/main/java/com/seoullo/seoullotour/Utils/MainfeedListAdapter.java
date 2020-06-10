@@ -4,10 +4,10 @@ package com.seoullo.seoullotour.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +19,9 @@ import android.widget.Toast;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +31,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Home.HomeFragment;
 import com.seoullo.seoullotour.Models.Comment;
@@ -75,7 +71,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public interface OnLoadMoreItemsListener {
         void onLoadMoreItems();
     }
-
     //time var
     private int SEC = 60;
     private int MIN = 60;
@@ -115,7 +110,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         String likesString;
         TextView username, timeDetla, caption, likes, comments, location, likecount;
         com.seoullo.seoullotour.Utils.SquareImageView image;
-        ImageView heartRed, heartWhite, comment;
+        ImageView heartRed, heartWhite, comment, options;
 
         UserAccountSettings settings = new UserAccountSettings();
         User user = new User();
@@ -129,14 +124,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
 
         final ViewHolder holder;
         if (photosList.size() > position) {
 //        if (convertView == null) {
             convertView = mInflater.inflate(mLayoutResource, parent, false);
             holder = new ViewHolder();
-
+            holder.options = (ImageView) convertView.findViewById(R.id.btnShow);
             holder.username = (TextView) convertView.findViewById(R.id.username);
             holder.image = (com.seoullo.seoullotour.Utils.SquareImageView) convertView.findViewById(R.id.post_image);
             holder.heartRed = (ImageView) convertView.findViewById(R.id.image_heart_red);
@@ -185,6 +180,30 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 //going to need to do something else?
                 ((HomeActivity) mContext).hideLayout();
 
+            }
+        });
+
+        //옵션 버튼 클릭
+        final View finalConvertView = convertView;
+        holder.options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.hello, popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getTitle().equals("삭제")) {
+                            Toast.makeText(parent.getContext(), "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        else  if (item.getTitle().equals("신고")) {
+                            Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        return false;
+
+                    }
+                });
             }
         });
 
@@ -829,5 +848,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         return msg;
     }
+
 
 }

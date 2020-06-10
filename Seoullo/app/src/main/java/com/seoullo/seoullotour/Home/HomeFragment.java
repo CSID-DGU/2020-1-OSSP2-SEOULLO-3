@@ -6,10 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -183,6 +186,22 @@ public class HomeFragment extends Fragment {
                             mResults = 10;
                             mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
                             mListView.setAdapter(mAdapter);
+
+//                            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//                                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                                    int pos = parent.getPositionForView(v);
+//                                    System.out.println("11111"+pos+"**");
+//                                    System.out.println("22222"+v.getId()+"**");
+//                                    if(id == 222220) {
+//                                        PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), v);
+//                                        popup.getMenuInflater().inflate(R.menu.hello, popup.getMenu());
+//                                        //
+//                                        popup.show();
+//                                    }
+//                                }
+//
+//                            });
                            
 
                         } catch (NullPointerException e) {
