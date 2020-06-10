@@ -1,8 +1,11 @@
 package com.seoullo.seoullotour.Utils;
 
 
+import android.animation.Animator;
+import android.animation.StateListAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.util.Log;
@@ -11,18 +14,23 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.transition.ViewPropertyTransition;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -387,6 +395,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
+
         holder.location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -400,7 +409,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 intent.putExtra("photo_id", holder.photo.getPhoto_id());
 
                 mContext.startActivity(intent);
-
             }
         });
 
