@@ -580,10 +580,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Bookmark bookmark = new Bookmark();
         bookmark.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+        bookmark.setPhoto_id(holder.photo.getPhoto_id());
+        bookmark.setImage_name(holder.photo.getImage_name());
 //        mReference.child(mContext.getString(R.string.dbname_photos))
 //                .child(holder.photo.getPhoto_id())
-        mReference.child(mContext.getString(R.string.dbname_photos))
+        mReference.child(mContext.getString(R.string.dbname_bookmarks))
                 .child(newLikeID)
                 .child(holder.photo.getPhoto_id())
                 .setValue(bookmark);

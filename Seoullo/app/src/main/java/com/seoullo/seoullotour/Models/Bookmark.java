@@ -4,6 +4,7 @@ public class Bookmark {
 
     private String user_id;
     private String photo_id;
+    private String image_name;
 
     public Bookmark() {
     }
@@ -22,8 +23,11 @@ public class Bookmark {
 
     public String getPhoto_id() { return photo_id; }
 
-    public String setPhoto_id(String photo_id) { this.photo_id = photo_id};
+    public void setPhoto_id(String photo_id) { this.photo_id = photo_id; }
 
+    public String getImage_name() { return image_name; }
+
+    public void setImage_name(String image_name) { this.image_name = image_name; }
     @Override
     public String toString() {
         return super.toString();

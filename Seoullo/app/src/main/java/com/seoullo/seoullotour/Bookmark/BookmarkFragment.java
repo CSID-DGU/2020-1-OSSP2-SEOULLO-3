@@ -104,7 +104,7 @@ public class BookmarkFragment extends Fragment {
 
             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_bookmarks))
-//                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
 //                    .orderByChild(getString(R.string.field_photo_id))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -114,8 +114,11 @@ public class BookmarkFragment extends Fragment {
                                 Bookmark bookmark = new Bookmark();
                                 Log.d(TAG, "스냅샷: "+ singleSnapshot);
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                Log.d(TAG, "스냅샷22: "+ objectMap.get(getString(R.string.field_user_id)).toString());
+
                                 bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
                                 mBookmarkList.add(bookmark);
+                                Log.d(TAG, "출력 " + mBookmarkList.get(0).getPhoto_id());
                             }
                             notifyDataSetChanged();
                         }
@@ -128,6 +131,7 @@ public class BookmarkFragment extends Fragment {
                     });
             for(int i=0;i<mBookmarkList.size();i++) {
                 reference.child(getString(R.string.dbname_photos))
+                        .orderByChild(getString(R.string.field_photo_id))
                         .equalTo(mBookmarkList.get(i).getPhoto_id())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -157,6 +161,7 @@ public class BookmarkFragment extends Fragment {
                                     photo.setComments(comments);
 
                                     mBookmarkPhotos.add(photo);
+                                    Log.d(TAG, "북마크 주세요 " + mBookmarkPhotos.get(0).getPhoto_id());
                                 }
                                 notifyDataSetChanged();
                             }
@@ -187,14 +192,15 @@ public class BookmarkFragment extends Fragment {
         @Override
         public void onBindViewHolder(final BookmarkRecyclerViewAdapter.ViewHolder viewHolder, final int position) {
             // Get the data model based on position
-            Photo photo = mBookmarkPhotos.get(position);
 
             TextView textView = viewHolder.textView;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
-                    .child("photos").child("users").child(mBookmarkPhotos.get(position).getUser_id())
-                    .child(mBookmarkPhotos.get(position).getImage_name());
+                    .child(getString(R.string.dbname_bookmarks))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(mBookmarkList.get(position).getUser_id())
+                    .child(mBookmarkList.get(position).getImage_name());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
