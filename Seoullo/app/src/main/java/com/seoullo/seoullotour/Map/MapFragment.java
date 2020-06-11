@@ -195,6 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.getMapAsync(this);
 
     }
+    //핸들러
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @SuppressLint({"ResourceType", "SetTextI18n"})

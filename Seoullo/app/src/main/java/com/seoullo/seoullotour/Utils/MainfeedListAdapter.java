@@ -3,9 +3,13 @@ package com.seoullo.seoullotour.Utils;
 
 import android.animation.Animator;
 import android.animation.StateListAnimator;
+import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,6 +22,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +71,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +80,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import cz.msebera.android.httpclient.client.utils.CloneUtils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
@@ -117,8 +124,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     static class ViewHolder {
         CircleImageView mprofileImage;
-        String likesString;
         TextView username, timeDetla, caption, likes, comments, location, likecount;
+        LinearLayout likeLayout;
         com.seoullo.seoullotour.Utils.SquareImageView image;
         ImageView heartRed, heartWhite, comment, bookmarkBlack, bookmarkWhite, options;
 
@@ -149,6 +156,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.heartWhite = (ImageView) convertView.findViewById(R.id.image_heart);
             holder.comment = (ImageView) convertView.findViewById(R.id.speech_bubble);
             holder.likes = (TextView) convertView.findViewById(R.id.image_likes);
+            holder.likeLayout = (LinearLayout) convertView.findViewById(R.id.linLayout_like);
             holder.comments = (TextView) convertView.findViewById(R.id.image_comments_link);
             holder.caption = (TextView) convertView.findViewById(R.id.image_caption);
             holder.timeDetla = (TextView) convertView.findViewById(R.id.image_time_posted);
@@ -162,6 +170,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.bookmarkBlack = (ImageView) convertView.findViewById(R.id.image_bookmark_black);
             holder.bookmarkWhite = (ImageView) convertView.findViewById(R.id.image_bookmark_white);
             holder.bookmark = new Mark(holder.bookmarkWhite, holder.bookmarkBlack);
+
             convertView.setTag(holder);
 
         } else {
@@ -696,10 +705,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             });
         } catch (NullPointerException e) {
             Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
-            holder.likesString = "";
+//            holder.likesString = "";
             holder.likeByCurrentUser = false;
             //setup likes string
-            setupLikesString(holder, holder.likesString);
+            setupLikesString(holder, null, null);
         }
     }
 
@@ -775,8 +784,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
                     holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
+                    //textview 동적생성
+                    final TextView item = new TextView(getContext());
+                    final TextView info = new TextView(getContext());
+
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference
@@ -784,6 +797,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 .orderByChild(mContext.getString(R.string.field_user_id))
                                 .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -795,7 +809,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 }
 
-                                String[] splitUsers = holder.users.toString().split(",");
+                                String[] split = holder.users.toString().split(",");
+
+                                int length = split.length;
 
                                 if (holder.users.toString().contains(currentUsername)) {//mitch, mitchell.tabian
                                     holder.likeByCurrentUser = true;
@@ -803,40 +819,19 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     holder.likeByCurrentUser = false;
                                 }
 
-                                int length = splitUsers.length;
-                                if (length == 1) {
-                                    holder.likesString = "Liked by " + splitUsers[0];
+                                if (length > 0) {
                                     holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 2) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + " and " + splitUsers[1];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 3) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + " and " + splitUsers[2];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 4) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + ", " + splitUsers[2]
-                                            + " and " + splitUsers[3];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length > 4) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + ", " + splitUsers[2]
-                                            + " and " + (splitUsers.length - 3) + " others";
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else {
+                                    item.setText(split[length-1]);
+                                    item.setTypeface(null, Typeface.BOLD);
+                                    info.setText("님 외 "+length+"명이 좋아합니다");
+                                }
+                                else {
 
                                     holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
-                                Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
+
                                 //setup likes string
-                                setupLikesString(holder, holder.likesString);
-
-
+                                setupLikesString(holder, item, info);
                             }
 
                             @Override
@@ -847,11 +842,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     }
 
                     if (!dataSnapshot.exists()) {
-                        holder.likesString = "";
+//                        holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
                         //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
-                        setupLikesString(holder, holder.likesString);
+                        setupLikesString(holder,null, null);
                     } else {
 
                         //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
@@ -865,15 +860,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             });
         } catch (NullPointerException e) {
             Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
-            holder.likesString = "";
+//            holder.likesString = "";
             holder.likeByCurrentUser = false;
             //setup likes string
-            setupLikesString(holder, holder.likesString);
+            setupLikesString(holder, null, null);
         }
     }
 
-    private void setupLikesString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupLikesString(final ViewHolder holder, TextView item, TextView info) {
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");
@@ -897,11 +892,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 }
             });
         }
-        holder.likes.setText(likesString);
+        holder.likeLayout.removeAllViews();
+        if(item != null && info != null) {
+            //holder.likes.setText(likesString);
+            holder.likeLayout.addView(item);
+            holder.likeLayout.addView(info);
+        }
     }
 
     private void setupBookmarksString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");

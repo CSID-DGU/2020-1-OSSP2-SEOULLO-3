@@ -75,6 +75,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //값 받아오기
     public RecommendFragment(String ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
         this.findLocation = ref1;
+        System.out.println(findLocation+"===========================");
         this.placeList = (ArrayList<Place>) ref2.clone();
         this.UserId = ref3;
         this.ImageName = ref4;
@@ -419,9 +420,16 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
-        resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
-        resultPoint.location = findLocation;
+        if(addressList.isEmpty()) {
+            resultPoint.x = 37.6666;
+            resultPoint.y = 127.2345;
+            resultPoint.location = findLocation;
+        }
+        else {
+            resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
+            resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
+            resultPoint.location = findLocation;
+        }
 
         return resultPoint;
     }
