@@ -616,9 +616,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Bookmark bookmark = new Bookmark();
-        bookmark.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        bookmark.setUser_id(holder.photo.getUser_id());
         bookmark.setPhoto_id(holder.photo.getPhoto_id());
         bookmark.setImage_name(holder.photo.getImage_name());
+        bookmark.setLocation("default");
 //        mReference.child(mContext.getString(R.string.dbname_photos))
 //                .child(holder.photo.getPhoto_id())
         mReference.child(mContext.getString(R.string.dbname_bookmarks))
@@ -650,54 +651,58 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
+
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        Query query = reference
-                                .child(mContext.getString(R.string.dbname_users))
-                                .orderByChild(mContext.getString(R.string.field_user_id))
-                                .equalTo(singleSnapshot.getValue(Bookmark.class).getUser_id());
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Log.d(TAG, "onDataChange: found bookmark: " +
-                                            singleSnapshot.getValue(User.class).getUsername());
+                        if (singleSnapshot.getValue(Bookmark.class).getUser_id() == null) {
+                        } else {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            Query query = reference
+                                    .child(mContext.getString(R.string.dbname_users))
+                                    .orderByChild(mContext.getString(R.string.field_user_id))
+                                    .equalTo(singleSnapshot.getValue(Bookmark.class).getUser_id());
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                        Log.d(TAG, "onDataChange: found bookmark: " +
+                                                singleSnapshot.getValue(User.class).getUsername());
 
-                                    holder.users.append(singleSnapshot.getValue(User.class).getUsername());
-                                    holder.users.append(",");
+                                        holder.users.append(singleSnapshot.getValue(User.class).getUsername());
+                                        holder.users.append(",");
+                                    }
+
+                                    String[] splitUsers = holder.users.toString().split(",");
+                                    Log.d(TAG, "HOLDER.user: " + holder.users.toString());
+                                    Log.d(TAG, "Currentuser: " + currentUsername);
+
+                                    if (holder.users.toString().contains(currentUsername)) {
+                                        Log.d(TAG, "holder.bookmarkByCurrentUser = true");
+                                        holder.bookmarkByCurrentUser = true;
+                                        holder.bookmarkBlack.setEnabled(true);
+                                        holder.bookmarkWhite.setEnabled(false);
+                                    } else {
+                                        Log.d(TAG, "holder.bookmarkByCurrentUser = false");
+                                        holder.bookmarkByCurrentUser = false;
+                                        holder.bookmarkBlack.setEnabled(false);
+                                        holder.bookmarkWhite.setEnabled(true);
+
+
+                                    }
                                 }
 
-                                String[] splitUsers = holder.users.toString().split(",");
-                                Log.d(TAG, "HOLDER.user: " + holder.users.toString());
-                                Log.d(TAG, "Currentuser: " + currentUsername);
-
-                                if (holder.users.toString().contains(currentUsername)) {
-                                    Log.d(TAG, "holder.bookmarkByCurrentUser = true");
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
                                     holder.bookmarkByCurrentUser = true;
-                                    holder.bookmarkBlack.setEnabled(true);
-                                    holder.bookmarkWhite.setEnabled(false);
-                                } else {
-                                    Log.d(TAG, "holder.bookmarkByCurrentUser = false");
-                                    holder.bookmarkByCurrentUser = false;
-                                    holder.bookmarkBlack.setEnabled(false);
-                                    holder.bookmarkWhite.setEnabled(true);
-
-
                                 }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                holder.bookmarkByCurrentUser = true;
-                            }
-                        });
-                    }
+                            });
+                        }
 
-                    if (!dataSnapshot.exists()) {
-                        holder.bookmarkByCurrentUser = false;
-                    } else {
+                        if (!dataSnapshot.exists()) {
+                            holder.bookmarkByCurrentUser = false;
+                        } else {
+                        }
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     holder.likecount.setText("좋아요 " + "0" + "개");
