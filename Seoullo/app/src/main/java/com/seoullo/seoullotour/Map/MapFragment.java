@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.database.annotations.Nullable;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationSource;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapSdk;
@@ -239,6 +243,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 mGuide.setText("도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
+                nMap.moveCamera(CameraUpdate.zoomTo(13f));
             }
         }
     };
@@ -257,6 +262,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setLogoGravity(1);
         uiSettings.setLogoMargin(5, 5, 450, 1000);
         uiSettings.setZoomGesturesEnabled(true);    //줌 제스처
+
+        //location change listener
+        nMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
+            @Override
+            public void onLocationChange(@NonNull Location location) {
+                nMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+                Toast.makeText(getContext(),
+                        location.getLatitude() + " , " + location.getLongitude(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);
@@ -428,7 +443,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         for(int i=0; i<mPath.size(); ++i) {
             String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
-            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).length()-1);
 
             System.out.println("added : " + lat + "," + lng);
 
