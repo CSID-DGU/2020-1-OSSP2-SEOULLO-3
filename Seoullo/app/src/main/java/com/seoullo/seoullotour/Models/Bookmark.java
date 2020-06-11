@@ -20,6 +20,25 @@ public class Bookmark implements Parcelable, Serializable {
         this.user_id = user_id;
     }
 
+    protected Bookmark(Parcel in) {
+        user_id = in.readString();
+        photo_id = in.readString();
+        image_name = in.readString();
+        location = in.readString();
+    }
+
+    public static final Creator<Bookmark> CREATOR = new Creator<Bookmark>() {
+        @Override
+        public Bookmark createFromParcel(Parcel in) {
+            return new Bookmark(in);
+        }
+
+        @Override
+        public Bookmark[] newArray(int size) {
+            return new Bookmark[size];
+        }
+    };
+
     public String getUser_id() {
         return user_id;
     }
@@ -57,6 +76,6 @@ public class Bookmark implements Parcelable, Serializable {
 
         dest.writeString(photo_id);
         dest.writeString(user_id);
-//        dest.writeString(location);
+        dest.writeString(location);
     }
 }
