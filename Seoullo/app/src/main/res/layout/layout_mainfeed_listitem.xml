@@ -43,7 +43,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
-                android:id="@+id/ivEllipses"/>
+                android:id="@+id/btnShow"/>
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/group_location"
