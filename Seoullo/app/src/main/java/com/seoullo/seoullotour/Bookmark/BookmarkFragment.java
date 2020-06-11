@@ -86,7 +86,6 @@ public class BookmarkFragment extends Fragment {
             // for any view that will be set as you render a row
             public ImageView imageView;
             public TextView textView;
-
             // We also create a constructor that accepts the entire item row
             // and does the view lookups to find each subview
             public ViewHolder(View itemView) {
@@ -114,7 +113,6 @@ public class BookmarkFragment extends Fragment {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Bookmark bookmark = new Bookmark();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
                                 bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
                                 bookmark.setImage_name(objectMap.get("image_name").toString());
                                 bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
