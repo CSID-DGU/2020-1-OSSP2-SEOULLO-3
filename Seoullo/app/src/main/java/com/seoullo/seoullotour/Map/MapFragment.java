@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +84,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<LatLng> mPathList = new ArrayList<>();
     //widget
     private TextView mGuide;
+    private TextView mVicinity;
+    private Button mDirection;
+    private LinearLayout mLinDirection;
 
     MapFragment() {
     }
@@ -140,13 +145,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도
         NaverMapSdk.getInstance(this.getContext()).setClient(
                 new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
+        //current location
+        locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
 
         //xml layout
         View view = inflater.inflate(R.layout.activity_map, container, false);
         mGuide = (TextView) view.findViewById(R.id.navermap_guide);
+        mVicinity = (TextView) view.findViewById(R.id.direction_vicinity);
+        mDirection = (Button) view.findViewById(R.id.direction_btn);
+        mLinDirection = (LinearLayout) view.findViewById(R.id.direction_lin);
 
-        //current location
-        locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
+        mLinDirection.setVisibility(View.INVISIBLE);
+
+        if(mPoint != null) {
+            mLinDirection.setVisibility(View.VISIBLE);
+            mVicinity.setText(mPoint.location);
+            mDirection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new Thread() {
+                        public void run() {
+                            System.out.println("THREAD RUN");
+                            String isSettedNow = "";
+                            try {
+                                HttpConnection();
+                                isSettedNow = "true";
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (CloneNotSupportedException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Bundle bun = new Bundle();
+                            bun.putString("setted", isSettedNow);
+                            Message msg = handler.obtainMessage();
+                            msg.setData(bun);
+                            handler.sendMessage(msg);
+                        }
+                    }.start();
+                    System.out.println("thread finished");
+                }
+            });
+        }
 
         mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
             @NonNull
@@ -156,29 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public boolean onClick(@NonNull Overlay overlay) {
                         System.out.println("click event");
-                        new Thread() {
-                            public void run() {
-                                System.out.println("THREAD RUN");
-                                String isSettedNow = "";
-                                try {
-                                    HttpConnection();
-                                    isSettedNow = "true";
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
 
-                                Bundle bun = new Bundle();
-                                bun.putString("setted", isSettedNow);
-                                Message msg = handler.obtainMessage();
-                                msg.setData(bun);
-                                handler.sendMessage(msg);
-                            }
-                        }.start();
-                        System.out.println("thread finished");
                         return false;
                     }
                 });
@@ -243,7 +263,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 mGuide.setText("도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
-                nMap.moveCamera(CameraUpdate.zoomTo(13f));
+                mGuide.setTextSize(10);
+                mGuide.setVisibility(View.VISIBLE);
+
+                if(locationSource.getLastLocation() == null) {
+                    Toast.makeText(getContext(), "현재위치정보를 한번 눌러주세요 !", Toast.LENGTH_LONG).show();
+                    nMap.moveCamera(CameraUpdate.zoomTo(13f));
+                }
+                else {
+                    LatLng currentPosition = new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude());
+                    nMap.moveCamera(CameraUpdate.scrollAndZoomTo(currentPosition, 13f));
+                }
+
             }
         }
     };
@@ -268,8 +299,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onLocationChange(@NonNull Location location) {
                 nMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-                Toast.makeText(getContext(),
-                        location.getLatitude() + " , " + location.getLongitude(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(),
+//                        location.getLatitude() + " , " + location.getLongitude(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -442,7 +473,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
 
         for(int i=0; i<mPath.size(); ++i) {
-            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(","));
             String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).length()-1);
 
             System.out.println("added : " + lat + "," + lng);
