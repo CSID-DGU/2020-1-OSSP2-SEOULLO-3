@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,12 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.widget.PopupMenuCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.annotations.Nullable;
@@ -79,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationSource locationSource;
     //got from recommend
     private Point mPoint;
+    private boolean isDrawed = false;
     //save direction routes
     private Route mRoute;
     private List<LatLng> mPathList = new ArrayList<>();
@@ -87,6 +94,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private TextView mVicinity;
     private Button mDirection;
     private LinearLayout mLinDirection;
+    private ImageButton mShowGuide;
+    private ListView mListGuide;
+    private MapDirectionAdapter mapDirectionAdapter;
 
     MapFragment() {
     }
@@ -154,6 +164,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mVicinity = (TextView) view.findViewById(R.id.direction_vicinity);
         mDirection = (Button) view.findViewById(R.id.direction_btn);
         mLinDirection = (LinearLayout) view.findViewById(R.id.direction_lin);
+        mShowGuide = (ImageButton) view.findViewById(R.id.direction_showguide);
+        mListGuide = (ListView) view.findViewById(R.id.direction_list);
 
         mLinDirection.setVisibility(View.INVISIBLE);
 
@@ -163,32 +175,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new Thread() {
-                        public void run() {
-                            System.out.println("THREAD RUN");
-                            String isSettedNow = "";
-                            try {
-                                HttpConnection();
-                                isSettedNow = "true";
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (CloneNotSupportedException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                    if (!isDrawed) {
+                        new Thread() {
+                            public void run() {
+                                System.out.println("THREAD RUN");
+                                String isSettedNow = "";
+                                try {
+                                    HttpConnection();
+                                    isSettedNow = "true";
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                            Bundle bun = new Bundle();
-                            bun.putString("setted", isSettedNow);
-                            Message msg = handler.obtainMessage();
-                            msg.setData(bun);
-                            handler.sendMessage(msg);
-                        }
-                    }.start();
-                    System.out.println("thread finished");
-                }
+                                Bundle bun = new Bundle();
+                                bun.putString("setted", isSettedNow);
+                                Message msg = handler.obtainMessage();
+                                msg.setData(bun);
+                                handler.sendMessage(msg);
+                            }
+                        }.start();
+                        System.out.println("thread finished");
+                    } //if
+                    else
+                        Toast.makeText(getContext(),"이미 길찾기를 하셨습니다 !", Toast.LENGTH_LONG).show();
+                } //onClick
             });
-        }
+        } //if point null
 
         mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
             @NonNull
@@ -228,12 +244,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             String set = bun.getString("setted");
             if(set.equals("true")) {
                 System.out.println("draw path !");
-
+                isDrawed = true;
                 //draw path here
                 PathOverlay path = new PathOverlay();
                 path.setCoords(mPathList);
-                path.setColor(R.color.theme_lightblue);
+                path.setColor(Color.parseColor("#049DD9"));
                 path.setMap(nMap);
+
+                mListGuide.setVisibility(View.INVISIBLE);
+
+                mShowGuide.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                       if(mListGuide.getVisibility() == View.INVISIBLE) {
+                           try {
+                               mapDirectionAdapter = new MapDirectionAdapter(getContext(), mRoute.getGuideArray());
+                           } catch (CloneNotSupportedException e) {
+                               e.printStackTrace();
+                           }
+                           mListGuide.setAdapter(mapDirectionAdapter);
+                           mListGuide.setVisibility(View.VISIBLE);
+                       }
+
+                       else {
+                           mListGuide.setAdapter(null);
+                           mListGuide.setVisibility(View.INVISIBLE);
+                       }
+
+
+
+                    }
+                });
 
                 //draw text view
                 int durationMilliesecond = mRoute.getDuration();
@@ -261,8 +303,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     Min += (int)durationMinute;
                 }
+                float toKM = mRoute.getDistance() / 1000;
 
-                mGuide.setText("도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
+                mGuide.setText("총 거리 : " + toKM + "km " + "\n도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
                 mGuide.setTextSize(10);
                 mGuide.setVisibility(View.VISIBLE);
 
