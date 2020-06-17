@@ -724,9 +724,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         Userids.add(singleSnapshot.getKey());
                     }
-                    System.out.println("Useridsize::"+ Userids.size());
                     for(int i =0; i < Userids.size() ; i++) {
-                        System.out.println("Useridsize::"+ Userids.size());
                         mReference.child("bookmarks")
                                 .child(Userids.get(i))
                                 .child(photoid)
@@ -801,7 +799,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null) {
-                        System.out.println(dataSnapshot.getValue() + "북마크누른곳");
                         holder.bookmark.toggleBookmark();
                     }
 
