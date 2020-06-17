@@ -46,6 +46,7 @@ public class RecommendActivity extends AppCompatActivity {
     private String UserId;
     private String ImageName;
     private String PhotoId;
+
     private Place mPlace = new Place();
 
     //TODO: link to fragment -> done
@@ -64,7 +65,9 @@ public class RecommendActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         //location
+
         this.mPlace = (Place) intent.getSerializableExtra("firstPlace");
+
         ArrayList<Place> tempPlace = (ArrayList<Place>) intent.getSerializableExtra("places");
         if( tempPlace.size() != 0) Log.d(TAG,"tempPlace is not null!\n");
             this.mPlaces = (ArrayList<Place>) tempPlace.clone();
@@ -94,7 +97,9 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
         adapter.addFragment(new RecommendFragment(mPlace ,mPlaces, UserId, ImageName, PhotoId));
+
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){

@@ -117,6 +117,7 @@ public class BookmarkFragment extends Fragment {
                                 bookmark.setImage_name(objectMap.get("image_name").toString());
                                 bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 bookmark.setLocation(objectMap.get("location").toString());
+                                bookmark.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 mBookmarkList.add(bookmark);
                             }
                             notifyDataSetChanged();
@@ -190,10 +191,7 @@ public class BookmarkFragment extends Fragment {
         @Override
         public void onBindViewHolder(final BookmarkRecyclerViewAdapter.ViewHolder viewHolder, final int position) {
             // Get the data model based on position
-
             TextView textView = viewHolder.textView;
-            Log.d(TAG, "북마크리스트 이미지 이름 "+ mBookmarkList.get(position).getImage_name());
-            Log.d(TAG, "userid 이름 :  "+ mBookmarkList.get(position).getUser_id());
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()

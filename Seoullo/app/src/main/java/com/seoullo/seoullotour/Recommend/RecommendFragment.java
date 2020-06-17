@@ -61,6 +61,8 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //정보가져올 DTO
     private Geocoder geocoder;
     ArrayList<Place> placeList;
+    ArrayList<Double> mLatLng;
+    private String location;
     private String UserId;
     private String ImageName;
     private String PhotoId;
@@ -242,6 +244,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                     switch (position) {
                         case 0:
                             LatLng latlng0 = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
+
                             marker.setPosition(latlng0);
                             marker.setIconTintColor(Color.GREEN);
                             marker.setMap(nMap);
@@ -369,6 +372,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                         }
                     });
                     return "선택하신 곳 : \n" + mPlace.getVicinity();
+
                 }
             });
 
