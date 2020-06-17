@@ -33,7 +33,6 @@
         <activity android:name=".Share.ShareActivity" />
         <activity android:name=".Map.MapActivity"
             android:noHistory="true" />
-        <activity android:name=".Directions.DirectionActivity" />
         <activity android:name=".Recommend.RecommendActivity"/>
 
         <activity android:name=".Profile.AccountSettingsActivity" />
