@@ -651,22 +651,25 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
+                    System.out.println(dataSnapshot.getChildrenCount() +"넘어온 개수");
+                    System.out.println(dataSnapshot.getValue()+"객체?");
+                    if(dataSnapshot.getValue() != null) {
+                        Bookmark books = dataSnapshot.getValue(Bookmark.class);
 
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        if (singleSnapshot.getValue(Bookmark.class).getUser_id() == null) {
+                        String currentuid = books.getUser_id();
+                        if (currentuid == null) {
                         } else {
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             Query query = reference
                                     .child(mContext.getString(R.string.dbname_users))
                                     .orderByChild(mContext.getString(R.string.field_user_id))
-                                    .equalTo(singleSnapshot.getValue(Bookmark.class).getUser_id());
+                                    .equalTo(books.getUser_id());
                             query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                         Log.d(TAG, "onDataChange: found bookmark: " +
                                                 singleSnapshot.getValue(User.class).getUsername());
-
                                         holder.users.append(singleSnapshot.getValue(User.class).getUsername());
                                         holder.users.append(",");
                                     }
@@ -700,6 +703,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         if (!dataSnapshot.exists()) {
                             holder.bookmarkByCurrentUser = false;
                         } else {
+                        }
+
+
+                        try {
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                            }
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage());
                         }
                     }
                 }
