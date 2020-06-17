@@ -178,26 +178,29 @@ public class GalleryFragment extends Fragment {
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
-        try {
+        if(imgURLs.size() != 0) {
+            try {
+                setImage(imgURLs.get(0), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(0);
+                imageName = imgURLs.get(0).substring(imgURLs.get(0).lastIndexOf("/") + 1);
 
-            setImage(imgURLs.get(0), galleryImage, mAppend);
-            mSelectedImage = imgURLs.get(0);
-            imageName = imgURLs.get(0).substring(imgURLs.get(0).lastIndexOf("/")+1);
 
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
+            }
 
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
+                    setImage(imgURLs.get(position), galleryImage, mAppend);
+                    mSelectedImage = imgURLs.get(position);
+                    imageName = imgURLs.get(position).substring(imgURLs.get(position).lastIndexOf("/")+1);
+                }
+            });
         }
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
-                setImage(imgURLs.get(position), galleryImage, mAppend);
-                mSelectedImage = imgURLs.get(position);
-                imageName = imgURLs.get(position).substring(imgURLs.get(position).lastIndexOf("/")+1);
-            }
-        });
+
 
     }
 

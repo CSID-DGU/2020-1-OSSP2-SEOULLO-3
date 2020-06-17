@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
     public RequestManager mRequestManager;
     private  ProfileFragment profileFragment;
     private int loadSize;
+    private int count =0;
 
 
     public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs , String uid, int flag) {
@@ -97,15 +99,14 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
-
         int holderIndex = photos.size()-1-position;
         //holder 생성
-        if(convertView == null) {
+        if(convertView == null){
+            System.out.println("count:"+ count);
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
             //holder.mProgressBar = (ProgressBar) convertView.findViewById(R.id.gridImageProgressbar);
             holder.image = (com.seoullo.seoullotour.Utils.SquareImageView) convertView.findViewById(R.id.gridImageView);
-
             convertView.setTag(holder);
         }
         else {
@@ -118,7 +119,6 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
             //if(holderIndex >= 0) {
-            System.out.println(photos.get(position) + "사진이 있을까?");
             if (photos.size() != 0) {
                 storageReference.child("photos").child("users").child(uid).child(photos.get(position).getImage_name()).getDownloadUrl()
                         .addOnSuccessListener(new OnSuccessListener<Uri>() {
