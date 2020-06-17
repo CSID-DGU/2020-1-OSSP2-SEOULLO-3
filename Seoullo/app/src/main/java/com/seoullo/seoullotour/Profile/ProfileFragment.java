@@ -236,11 +236,9 @@ public class ProfileFragment extends Fragment {
                 GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
                         "", imgUrls , currentuid, 1 , photos,mRequestManager,ProfileFragment.this);
                 gridView.setAdapter(adapter);
-
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                         ((ProfileActivity) getActivity()).gridClick();
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
