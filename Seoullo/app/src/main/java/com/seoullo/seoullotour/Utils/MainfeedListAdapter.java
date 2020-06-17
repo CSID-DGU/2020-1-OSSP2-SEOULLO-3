@@ -111,7 +111,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     //location and places
     private String mValue;
     private ArrayList<Photo> photosList = new ArrayList<>();
-    private ArrayList<Double> mLatLng = new ArrayList<>();
+    private Place mPlace = new Place();
 
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -389,6 +389,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 String location = "not recognized";
                 String jsonString = dataSnapshot.toString();
                 mValue = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+                mPlace.setVicinity(mValue);
                 holder.location.setText(mValue);
             }
 
@@ -405,8 +406,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         latlngQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mLatLng.add(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
-                mLatLng.add(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
+                mPlace.setLatitude(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
+                mPlace.setLongitude(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
             }
 
             @Override
@@ -476,8 +477,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                 Log.d(TAG,"placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
-                intent.putExtra("latlng", mLatLng);
-                intent.putExtra("location", mValue);
+                intent.putExtra("firstPlace", mPlace);
                 intent.putExtra("places", (ArrayList<Place>)placeList);
                 intent.putExtra("user_id",photosList.get(position).getUser_id());
                 intent.putExtra("image_name",holder.photo.getImage_name());

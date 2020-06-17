@@ -5,20 +5,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.PopupWindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,6 +46,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Home.HomeFragment;
+import com.seoullo.seoullotour.Login.LoginActivity;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Like;
 import com.seoullo.seoullotour.Models.Photo;
@@ -371,10 +379,38 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to account settings.");
-                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-                //getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                //팝업메뉴
+                final PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.logout_menu,popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().equals("로그아웃")) {
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else if(item.getTitle().equals("제작")){
+                            System.out.println("팝업=======");
+                            View popupView = getLayoutInflater().inflate(R.layout.layout_popup_credit, null);
+                            final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            popupWindow.setAnimationStyle(0);
+                            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0,0);
+
+                            Button closeBtn = (Button) popupView.findViewById(R.id.popupwindow_close);
+                            closeBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    popupWindow.dismiss();
+                                }
+                            });
+                        }
+
+                        return false;
+                    }
+                });
             }
         });
     }
