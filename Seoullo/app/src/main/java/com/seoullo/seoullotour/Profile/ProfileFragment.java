@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -236,11 +237,9 @@ public class ProfileFragment extends Fragment {
                 GridImageAdapter adapter = new GridImageAdapter(mContext,R.layout.layout_grid_imageview,
                         "", imgUrls , currentuid, 1 , photos,mRequestManager,ProfileFragment.this);
                 gridView.setAdapter(adapter);
-
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                         ((ProfileActivity) getActivity()).gridClick();
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -373,10 +372,22 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to account settings.");
-                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-                //getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                //팝업메뉴
+                PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.logout_menu,popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().equals("로그아웃")) {
+
+                        } else {
+                            
+                        }
+
+                        return false;
+                    }
+                });
             }
         });
     }

@@ -66,6 +66,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private String UserId;
     private String ImageName;
     private String PhotoId;
+    private Place mPlace;
     private int cnt = 0;
     //뷰페이저
     public ViewPager viewPager;
@@ -73,9 +74,8 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //기본 생성자
     public RecommendFragment() { }
     //값 받아오기
-    public RecommendFragment(String ref0, ArrayList<Double> ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
-        this.location = ref0;
-        this.mLatLng = (ArrayList<Double>) ref1.clone();
+    public RecommendFragment(Place ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
+        this.mPlace = ref1;
         this.placeList = (ArrayList<Place>) ref2.clone();
         this.UserId = ref3;
         this.ImageName = ref4;
@@ -136,7 +136,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //        } else {
 //            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
 //        }
-        viewPagerAdapter.addItem(new RecommendFirstFragment(location, UserId, ImageName, PhotoId));
+        viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
         viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(0)));
         viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(1)));
 
@@ -189,9 +189,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                                 Intent intent = new Intent(getActivity(), MapActivity.class);
                                 if(position == 0) {
                                     Point point = new Point();
-                                    point.x = mLatLng.get(0);
-                                    point.y = mLatLng.get(1);
-                                    point.location = location;
+                                    point.x = mPlace.getLatitude();
+                                    point.y = mPlace.getLongitude();
+                                    point.location = mPlace.getVicinity();
                                     intent.putExtra("point", point);
                                 }
                                 else {
@@ -208,7 +208,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                         });
                         switch (position) {
                             case 0:
-                                return "선택하신 곳 \n" + location;
+                                return "선택하신 곳 \n" +mPlace.getVicinity();
                             case 1:
                                 return placeList.get(0).getName();
                             case 2:
@@ -243,7 +243,8 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 if(placeList.size() >= 3) {
                     switch (position) {
                         case 0:
-                            LatLng latlng0 = new LatLng(mLatLng.get(0), mLatLng.get(1));
+                            LatLng latlng0 = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
+
                             marker.setPosition(latlng0);
                             marker.setIconTintColor(Color.GREEN);
                             marker.setMap(nMap);
@@ -359,9 +360,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                         @Override
                         public boolean onClick(@NonNull Overlay overlay) {
                             Point point = new Point();
-                            point.x = mLatLng.get(0);
-                            point.y = mLatLng.get(1);
-                            point.location = location;
+                            point.x = mPlace.getLatitude();
+                            point.y = mPlace.getLongitude();
+                            point.location = mPlace.getVicinity();
 
                             Intent intent = new Intent(getActivity(), MapActivity.class);
                             intent.putExtra("point", point);
@@ -370,7 +371,8 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             return false;
                         }
                     });
-                    return "선택하신 곳 : \n" + location;
+                    return "선택하신 곳 : \n" + mPlace.getVicinity();
+
                 }
             });
 
@@ -407,7 +409,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         nMap.setLocationSource(locationSource);
 
         //get to location
-        LatLng latLng = new LatLng(mLatLng.get(0), mLatLng.get(1));
+        LatLng latLng = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
         //Marker marker = new Marker();
         marker.setPosition(latLng);
         marker.setMap(nMap);
