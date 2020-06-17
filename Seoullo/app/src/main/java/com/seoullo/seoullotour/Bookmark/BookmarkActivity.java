@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -16,6 +17,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.seoullo.seoullotour.Bookmark.cardviewpager.CardFragmentPagerAdapter;
+import com.seoullo.seoullotour.Bookmark.cardviewpager.CardPagerAdapter;
+import com.seoullo.seoullotour.Bookmark.cardviewpager.ShadowTransformer;
 import com.seoullo.seoullotour.Home.GridFragment;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.R;
@@ -37,6 +41,14 @@ public class BookmarkActivity extends AppCompatActivity {
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
     private ImageButton mImageButton;
+    private ImageView mBookmarkImage;
+
+    private CardPagerAdapter mCardAdapter;
+    private ShadowTransformer mCardShadowTransformer;
+    private CardFragmentPagerAdapter mFragmentCardAdapter;
+    private ShadowTransformer mFragmentCardShadowTransformer;
+
+    private boolean mShowingFragments = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,10 +56,12 @@ public class BookmarkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
         Log.d(TAG, "onCreate: bookmark starting.");
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
         mImageButton = (ImageButton) findViewById(R.id.add_post);
+
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mBookmarkImage = (ImageView) findViewById(R.id.bookmark_image);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.rel_layout_3, BookmarkFragment.newInstance()).addToBackStack(null).commit();

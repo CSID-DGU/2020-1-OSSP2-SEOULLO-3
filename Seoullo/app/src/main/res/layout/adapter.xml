@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/group_vicinity"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+
+            app:layout_constraintBottom_toTopOf="@id/group_info"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="10dp"
+                android:adjustViewBounds="true"
+
+                android:src="@drawable/location_outline" />
+
+            <TextView
+                android:id="@+id/recommend_vicinity"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+
+                android:layout_marginStart="5dp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center_vertical"
+                android:text="Vicinity"
+                android:textColor="@color/theme_deepblue"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/group_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_vicinity">
+
+
+            <ImageView
+                android:id="@+id/bookmark_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:src="@color/theme_orange" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
