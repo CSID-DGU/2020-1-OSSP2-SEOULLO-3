@@ -244,6 +244,7 @@ public class HomeFragment extends Fragment {
 
     }
 
+
     public void displayMorePhotos() {
         Log.d(TAG, "displayMorePhotos: displaying more photos");
 

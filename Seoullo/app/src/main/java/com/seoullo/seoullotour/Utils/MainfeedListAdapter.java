@@ -712,18 +712,46 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                .setValue(bookmark);
 
         holder.bookmark.toggleBookmark();
+    }//.removeValue();
+    private void deleteBookmarkphoto(final String photoid){
+        final ArrayList<String> Userids = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("bookmarks")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        Userids.add(singleSnapshot.getKey());
+                    }
+                    System.out.println("Useridsize::"+ Userids.size());
+                    for(int i =0; i < Userids.size() ; i++) {
+                        System.out.println("Useridsize::"+ Userids.size());
+                        mReference.child("bookmarks")
+                                .child(Userids.get(i))
+                                .child(photoid)
+                                .removeValue();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
-
     private void deletePhoto(final Photo photo, final ViewGroup parent, final int position) {
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
         builder.setTitle("게시글 삭제");
         builder.setMessage("정말로 삭제하시겠습니까 ?");
         builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                deleteBookmarkphoto(photo.getPhoto_id());
+
                 mReference.child(mContext.getString(R.string.dbname_photos))
                         .child(photo.getPhoto_id())
                         .removeValue();
@@ -731,6 +759,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         .child(photo.getUser_id())
                         .child(photo.getPhoto_id())
                         .removeValue();
+
                 FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
                 StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
                 storageReference.child("photos").child("users").child(photo.getUser_id()).child(photo.getImage_name()).delete()
@@ -914,6 +943,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
     }
+
+
 
 
     private void getLikesString(final ViewHolder holder) {
