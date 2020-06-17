@@ -122,6 +122,8 @@ public class HomeFragment extends Fragment {
                                 photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
                                 photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
+                                photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
+                                photo.setLocation(objectMap.get("location").toString());
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
                                         .child(getString(R.string.field_comments)).getChildren()) {
@@ -169,7 +171,9 @@ public class HomeFragment extends Fragment {
                             photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                             photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
                             photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
-
+                            photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
+                            photo.setLocation(objectMap.get("location").toString());
+                            
                             ArrayList<Comment> comments = new ArrayList<Comment>();
                             for (DataSnapshot dSnapshot : singleSnapshot
                                     .child(getString(R.string.field_comments)).getChildren()) {
