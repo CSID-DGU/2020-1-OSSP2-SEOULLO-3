@@ -4,8 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.client.utils.CloneUtils;
 
 public class Photo implements Parcelable, Serializable {
 
@@ -22,12 +25,13 @@ public class Photo implements Parcelable, Serializable {
     private String location;    //added 0516 00:16
     private ArrayList<Place> places;
     private List<Bookmark> bookmarks;
+    private ArrayList<Double> latlng;
 
     public Photo() {
     }
 
     public Photo(String image_name, String caption, String date_created, String image_path, String photo_id, String user_id, String tags,
-                 List<Like> likes, int likeCount, List<Comment> comments,List<Bookmark> bookmarks, String location, ArrayList<Place> places) {
+                 List<Like> likes, int likeCount, List<Comment> comments,List<Bookmark> bookmarks, String location, ArrayList<Place> places, ArrayList<Double> latlng) {
         this.image_name = image_name;
         this.caption = caption;
         this.date_created = date_created;
@@ -41,6 +45,7 @@ public class Photo implements Parcelable, Serializable {
         this.bookmarks = bookmarks;
         this.location = location;
         this.places = (ArrayList<Place>)places.clone();
+        this.latlng = (ArrayList<Double>) latlng.clone();
     }
 
     protected Photo(Parcel in) {
@@ -155,6 +160,14 @@ public class Photo implements Parcelable, Serializable {
     public void setPLaces(ArrayList<Place> places) { this.places = (ArrayList<Place>) places.clone(); }
 
     public ArrayList<Place> getPlaces() { return places; }
+
+    public void setLatlng(ArrayList<Double> latlng) {
+        this.latlng = (ArrayList<Double>) latlng.clone();
+    }
+
+    public ArrayList<Double> getLatlng() {
+        return this.latlng;
+    }
 
 
     @Override
