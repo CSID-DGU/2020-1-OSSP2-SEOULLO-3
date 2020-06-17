@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:id="@+id/rel_layout_d"
+        android:id="@+id/map_direction"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:padding="3dp"
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/direction_list"
-        app:layout_constraintTop_toBottomOf="@id/rel_layout_d"
+        app:layout_constraintTop_toBottomOf="@id/map_direction"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 

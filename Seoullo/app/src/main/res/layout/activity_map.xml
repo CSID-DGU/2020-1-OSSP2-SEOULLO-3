@@ -15,8 +15,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:id="@+id/direction_lin"
+            android:orientation="vertical"
             >
-            <include layout="@layout/layout_direction"/>
+            <include layout="@layout/layout_direction"
+                />
+            <include layout="@layout/layout_map_search"
+                />
 
         </LinearLayout>
         <TextView
