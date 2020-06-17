@@ -138,6 +138,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Mark bookmark;
         GestureDetector detector;
         Photo photo;
+
     }
 
     @NonNull
@@ -168,7 +169,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
             holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
             holder.bookmark = new Mark( (ImageView) convertView.findViewById(R.id.image_bookmark_white),(ImageView) convertView.findViewById(R.id.image_bookmark_black));
-//            holder.bookmark.bookmarkBlack = (ImageView) convertView.findViewById(R.id.image_bookmark_black);
+            //            holder.bookmark.bookmarkBlack = (ImageView) convertView.findViewById(R.id.image_bookmark_black);
 //            holder.bookmark.bookmarkWhite = (ImageView) convertView.findViewById(R.id.image_bookmark_white);
             //holder.bookmark = new Mark(holder.bookmarkWhite, holder.bookmarkBlack);
 
@@ -188,7 +189,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the caption
         holder.caption.setText(photosList.get(position).getCaption());
 //        holder.username.setText(getItem(position).getUser_id());
-
+        holder.location.setText(photosList.get(position).getLocation());
         //set the comment
         List<Comment> comments = photosList.get(position).getComments();
 
@@ -260,7 +261,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     Log.d(TAG, "onDataChange: found user: "
                             + singleSnapshot.getValue(UserAccountSettings.class).getUsername());
                     holder.username.setText(singleSnapshot.getValue(UserAccountSettings.class).getUsername());
-
                     holder.username.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -345,7 +345,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                     });
                     getBookmarkCurrentUser(holder);
-                    Log.d(TAG, "true?" + holder.bookmarkByCurrentUser);
+                    holder.photo.setLatlng(photosList.get(position).getLatlng());
                     bookmarkClickEvent(holder);
                 }
 
@@ -674,7 +674,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         bookmark.setUser_id(holder.photo.getUser_id());
         bookmark.setPhoto_id(holder.photo.getPhoto_id());
         bookmark.setImage_name(holder.photo.getImage_name());
-        bookmark.setLocation("default");
+        bookmark.setLocation(holder.photo.getLocation());
+        bookmark.setLatlng(holder.photo.getLatlng());
+
+        Log.d(TAG, bookmark.getLocation() + " , loclocloc" + bookmark.getLatlng());
+
 //        mReference.child(mContext.getString(R.string.dbname_photos))
 //                .child(holder.photo.getPhoto_id())
         mReference.child(mContext.getString(R.string.dbname_bookmarks))
