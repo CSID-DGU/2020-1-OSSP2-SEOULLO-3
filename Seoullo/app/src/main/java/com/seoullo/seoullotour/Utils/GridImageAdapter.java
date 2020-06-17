@@ -99,6 +99,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
+
         int holderIndex = photos.size()-1-position;
         //holder 생성
         if(convertView == null){

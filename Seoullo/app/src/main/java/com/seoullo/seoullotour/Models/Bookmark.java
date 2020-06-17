@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bookmark implements Parcelable, Serializable {
 
@@ -11,7 +13,7 @@ public class Bookmark implements Parcelable, Serializable {
     private String photo_id;
     private String image_name;
     private String location;
-
+    private ArrayList<Double> latlng;
 
     public Bookmark() {
     }
@@ -58,6 +60,14 @@ public class Bookmark implements Parcelable, Serializable {
     public String getLocation() { return location; }
 
     public void setLocation(String location) { this.location = location; }
+
+    public void setLatlng(ArrayList<Double> latlng) {
+        this.latlng = (ArrayList<Double>) latlng;
+    }
+
+    public ArrayList<Double> getLatlng() {
+        return this.latlng;
+    }
 
     @Override
     public String toString() {

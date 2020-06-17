@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ public class RecommendActivity extends AppCompatActivity {
     private String UserId;
     private String ImageName;
     private String PhotoId;
+    private ArrayList<Double> mLatLng = new ArrayList<>();
 
     //TODO: link to fragment -> done
     @Override
@@ -63,9 +65,12 @@ public class RecommendActivity extends AppCompatActivity {
         Intent intent = getIntent();
         //location
         getLocation = intent.getStringExtra("location");
+        ArrayList<Double> tempLatLng = (ArrayList<Double>) intent.getSerializableExtra("latlng");
+        if(tempLatLng.size() != 0)
+            this.mLatLng = (ArrayList<Double>) tempLatLng.clone();
         ArrayList<Place> tempPlace = (ArrayList<Place>) intent.getSerializableExtra("places");
         if( tempPlace.size() != 0) Log.d(TAG,"tempPlace is not null!\n");
-        this.mPlaces = (ArrayList<Place>) tempPlace.clone();
+            this.mPlaces = (ArrayList<Place>) tempPlace.clone();
         //firebase info
         this.UserId = intent.getStringExtra("user_id");
         this.ImageName = intent.getStringExtra("image_name");
@@ -92,7 +97,7 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new RecommendFragment(getLocation, mPlaces, UserId, ImageName, PhotoId));
+        adapter.addFragment(new RecommendFragment(getLocation, mLatLng, mPlaces, UserId, ImageName, PhotoId));
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){
