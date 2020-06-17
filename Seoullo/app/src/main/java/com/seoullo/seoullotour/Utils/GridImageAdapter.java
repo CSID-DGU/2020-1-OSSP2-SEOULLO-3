@@ -73,6 +73,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
         this.imgURLs = imgURLs;
         this.photos = photos;
         loadSize = photos.size();
+        if(loadSize == 0)profileFragment.goneProgress();
     }
 
 
@@ -96,6 +97,7 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
+
         int holderIndex = photos.size()-1-position;
         //holder 생성
         if(convertView == null) {
@@ -111,12 +113,13 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
         }
         String imgURL = getItem(position);
        // String photo_name = "photo" + Integer.toString(position + 1);
-
         //gridFlag == 1 , 프로필 화면에서의 그리드뷰
         if(gridFlag == 1) {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
             //if(holderIndex >= 0) {
+            System.out.println(photos.get(position) + "사진이 있을까?");
+            if (photos.size() != 0) {
                 storageReference.child("photos").child("users").child(uid).child(photos.get(position).getImage_name()).getDownloadUrl()
                         .addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
@@ -124,39 +127,40 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                                 //loadCount++;
                                 mRequestManager.load(uri)
                                         .listener(
-                                new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        //holder.mProgressBar.setVisibility(View.GONE);
-                                        loadSize--;
-                                        if(loadSize == 0){
-                                            profileFragment.goneProgress();
-                                        }
-                                        return false;
-                                    }
+                                                new RequestListener<Drawable>() {
+                                                    @Override
+                                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                        //holder.mProgressBar.setVisibility(View.GONE);
+                                                        loadSize--;
+                                                        if (loadSize == 0) {
+                                                            profileFragment.goneProgress();
+                                                        }
+                                                        return false;
+                                                    }
 
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        //holder.mProgressBar.setVisibility(View.GONE);
+                                                    @Override
+                                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                                        //holder.mProgressBar.setVisibility(View.GONE);
 
-                                        loadSize--;
-                                        if(loadSize == 0){
-                                            profileFragment.goneProgress();
-                                        }
-                                        return false;
-                                    }
-                                })
+                                                        loadSize--;
+                                                        if (loadSize == 0) {
+                                                            profileFragment.goneProgress();
+                                                        }
+                                                        return false;
+                                                    }
+                                                })
 
 
                                         .into(holder.image);
-                               // holder.mProgressBar.setVisibility(View.GONE);
+                                // holder.mProgressBar.setVisibility(View.GONE);
 //                                Glide.with(mContext)
 //                                        .load(uri)
 //                                        .into(holder.image);
 //
                             }
                         });
-           // }
+                // }
+            }
         }
 
         //gridFlag == 2 , 게시글 선택 또는 프로필 사진 변경에서의 그리드 뷰
