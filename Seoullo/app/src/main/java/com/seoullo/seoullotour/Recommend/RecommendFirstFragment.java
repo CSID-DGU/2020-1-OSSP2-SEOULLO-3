@@ -65,7 +65,6 @@ public class RecommendFirstFragment extends Fragment {
     private LinearLayout mScrollItems;
 
     //var
-    private String mLocation;
     private String API_KEY;
 
     //firebase
@@ -74,8 +73,7 @@ public class RecommendFirstFragment extends Fragment {
     private String PhotoId;
 
     //init - google place api
-    RecommendFirstFragment(String ref1, String ref2, String ref3, String ref4) {
-        this.mLocation = ref1;
+    RecommendFirstFragment(String ref2, String ref3, String ref4) {
         this.UserId = ref2;
         this.ImageName = ref3;
         this.PhotoId = ref4;

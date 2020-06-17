@@ -46,7 +46,7 @@ public class RecommendActivity extends AppCompatActivity {
     private String UserId;
     private String ImageName;
     private String PhotoId;
-    private ArrayList<Double> mLatLng = new ArrayList<>();
+    private Place mPlace = new Place();
 
     //TODO: link to fragment -> done
     @Override
@@ -64,10 +64,7 @@ public class RecommendActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         //location
-        getLocation = intent.getStringExtra("location");
-        ArrayList<Double> tempLatLng = (ArrayList<Double>) intent.getSerializableExtra("latlng");
-        if(tempLatLng.size() != 0)
-            this.mLatLng = (ArrayList<Double>) tempLatLng.clone();
+        this.mPlace = (Place) intent.getSerializableExtra("firstPlace");
         ArrayList<Place> tempPlace = (ArrayList<Place>) intent.getSerializableExtra("places");
         if( tempPlace.size() != 0) Log.d(TAG,"tempPlace is not null!\n");
             this.mPlaces = (ArrayList<Place>) tempPlace.clone();
@@ -97,7 +94,7 @@ public class RecommendActivity extends AppCompatActivity {
     }
     private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new RecommendFragment(getLocation, mLatLng, mPlaces, UserId, ImageName, PhotoId));
+        adapter.addFragment(new RecommendFragment(mPlace ,mPlaces, UserId, ImageName, PhotoId));
         mViewPager.setAdapter(adapter);
     }
     public void hideLayout(){
