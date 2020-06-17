@@ -15,7 +15,7 @@ public class Mark {
     private static final DecelerateInterpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
 
-    private ImageView bookmarkWhite, bookmarkBlack;
+    public ImageView bookmarkWhite, bookmarkBlack;
 
     public Mark(ImageView bookmarkWhite, ImageView bookmarkBlack) {
         this.bookmarkWhite = bookmarkWhite;

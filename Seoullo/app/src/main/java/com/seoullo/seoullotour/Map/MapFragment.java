@@ -5,6 +5,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PointF;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,15 +18,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.widget.PopupMenuCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.annotations.Nullable;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationSource;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapSdk;
@@ -47,7 +69,9 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +80,8 @@ import java.util.Map;
 import com.seoullo.seoullotour.Utils.SharedRoute;
 
 import cz.msebera.android.httpclient.client.utils.CloneUtils;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 //TODO : 북마크 지도에 표시하기
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -73,11 +99,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationSource locationSource;
     //got from recommend
     private Point mPoint;
+    private boolean isDrawed = false;
     //save direction routes
     private Route mRoute;
     private List<LatLng> mPathList = new ArrayList<>();
+    private Point currentPoint;
+    //search map
+    private Geocoder geocoder;
+    private Point mSearchedPoint;
     //widget
     private TextView mGuide;
+    private TextView mVicinity;
+    private Button mDirection;
+
+
+    private ImageButton mShowGuide;
+    private ListView mListGuide;
+    private RelativeLayout mRelDirection;
+    private RelativeLayout mRelSearch;
+    private MapDirectionAdapter mapDirectionAdapter;
+    private AutoCompleteTextView mAutoCompleteTextView;
+    private ImageButton mSearchBtn;
+    private LinearLayout mLinearLayout;
 
     MapFragment() {
     }
@@ -124,6 +167,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return apiKey;
     }
+    public static String getApiKeyFromManifestGoogleAPI(Context context) {
+        String apiKey = null;
+
+        try {
+            String e = context.getPackageName();
+            ApplicationInfo ai = context
+                    .getPackageManager()
+                    .getApplicationInfo(e, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            if (bundle != null) {
+                apiKey = bundle.getString("com.google.android.geo.API_KEY");
+            }
+        } catch (Exception var6) {
+            Log.d(TAG, "Caught non-fatal exception while retrieving apiKey: " + var6);
+        }
+
+        return apiKey;
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -136,22 +197,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //네이버지도
         NaverMapSdk.getInstance(this.getContext()).setClient(
                 new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
+        //current location
+        locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
 
         //xml layout
         View view = inflater.inflate(R.layout.activity_map, container, false);
         mGuide = (TextView) view.findViewById(R.id.navermap_guide);
+        mVicinity = (TextView) view.findViewById(R.id.direction_vicinity);
+        mDirection = (Button) view.findViewById(R.id.direction_btn);
+        mListGuide = (ListView) view.findViewById(R.id.direction_list);
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.direction_lin);
+        mShowGuide = (ImageButton) view.findViewById(R.id.direction_showguide);
+        mRelDirection = (RelativeLayout) view.findViewById(R.id.map_direction);
+        mRelSearch = (RelativeLayout) view.findViewById(R.id.map_search_rel_layout);
+        mAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.map_search);
+        mSearchBtn = (ImageButton) view.findViewById(R.id.map_search_btn);
 
-        //current location
-        locationSource = new FusedLocationSource(getActivity(), LOCATION_PERMISSION_REQUEST_CODE);
+        mLinearLayout.setVisibility(View.VISIBLE);
 
-        mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-            @NonNull
-            @Override
-            public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                    @Override
-                    public boolean onClick(@NonNull Overlay overlay) {
-                        System.out.println("click event");
+        mRelDirection.setVisibility(View.INVISIBLE);
+        mRelSearch.setVisibility(View.INVISIBLE);
+
+        if(mPoint != null) {
+            mRelDirection.setVisibility(View.VISIBLE);
+            mRelSearch.setVisibility(View.GONE);
+            mVicinity.setText(mPoint.location);
+            mDirection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!isDrawed) {
+                        if (currentPoint != null) {  //current location enabled;
                         new Thread() {
                             public void run() {
                                 System.out.println("THREAD RUN");
@@ -175,12 +250,76 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         }.start();
                         System.out.println("thread finished");
-                        return false;
-                    }
-                });
-                return mPoint.location;
-            }
-        });
+                        } else {    //currentPoint is null
+                            Toast.makeText(getContext(),"왼쪽 하단에 현재 위치 설정을 한번 눌러주세요 !",Toast.LENGTH_SHORT).show();
+                        }
+                    } //if
+                    else
+                        Toast.makeText(getContext(),"이미 길찾기를 하셨습니다 !", Toast.LENGTH_SHORT).show();
+                } //onClick
+            });
+            mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+                            System.out.println("click event");
+
+                            return false;
+                        }
+                    });
+                    return mPoint.location;
+                }
+            });
+
+        } //if point null
+
+        //mPoint null 이면 검색창 띄워주기
+        else {
+            mRelSearch.setVisibility(View.VISIBLE);
+            mRelDirection.setVisibility(View.GONE);
+
+            //어댑터 생성
+            ArrayAdapter adapter = new GooglePlacesAutocompleteAdapter(getContext(),R.layout.layout_list_item);
+            mAutoCompleteTextView.setAdapter(adapter);
+
+            mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView parent, View view, int position, long id) {
+                    String str = (String) parent.getItemAtPosition(position);
+                    mAutoCompleteTextView.setText(str);
+                }
+            });
+
+            mSearchBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new Thread() {
+                        public void run() {
+                            Point pp = new Point();
+                            geocoder = new Geocoder(getContext());
+                            pp = getLatlngFromLocation(mAutoCompleteTextView.getText().toString());
+
+                            Bundle bun = new Bundle();
+                            bun.putString("lat", String.valueOf(pp.x));
+                            bun.putString("lng", String.valueOf(pp.y));
+                            bun.putString("location", pp.location);
+                            Message msg = handler2.obtainMessage();
+                            msg.setData(bun);
+                            handler2.sendMessage(msg);
+                        }
+                    }.start();
+
+                   InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != getActivity().getCurrentFocus())
+                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
+                                .getApplicationWindowToken(), 0);
+                }
+            });
+
+        }
 
         return view;
     }
@@ -195,6 +334,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.getMapAsync(this);
 
     }
+    //핸들러
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @SuppressLint({"ResourceType", "SetTextI18n"})
@@ -203,12 +343,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             String set = bun.getString("setted");
             if(set.equals("true")) {
                 System.out.println("draw path !");
-
+                isDrawed = true;
                 //draw path here
                 PathOverlay path = new PathOverlay();
                 path.setCoords(mPathList);
-                path.setColor(R.color.theme_lightblue);
+                path.setColor(Color.parseColor("#049DD9"));
                 path.setMap(nMap);
+
+                mListGuide.setVisibility(View.INVISIBLE);
+
+                mShowGuide.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                       if(mListGuide.getVisibility() == View.INVISIBLE) {
+                           try {
+                               mapDirectionAdapter = new MapDirectionAdapter(getContext(), mRoute.getGuideArray());
+                           } catch (CloneNotSupportedException e) {
+                               e.printStackTrace();
+                           }
+                           mListGuide.setAdapter(mapDirectionAdapter);
+                           mListGuide.setVisibility(View.VISIBLE);
+                       }
+
+                       else {
+                           mListGuide.setAdapter(null);
+                           mListGuide.setVisibility(View.INVISIBLE);
+                       }
+                    }
+                });
 
                 //draw text view
                 int durationMilliesecond = mRoute.getDuration();
@@ -236,9 +399,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     Min += (int)durationMinute;
                 }
+                float toKM = mRoute.getDistance() / 1000;
 
-                mGuide.setText("도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
+                mGuide.setText("총 거리 : " + toKM + "km " + "\n도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
+                mGuide.setTextSize(10);
+                mGuide.setVisibility(View.VISIBLE);
+
+                if(locationSource.getLastLocation() == null) {
+                    Toast.makeText(getContext(), "현재위치정보를 한번 눌러주세요 !", Toast.LENGTH_LONG).show();
+                    nMap.moveCamera(CameraUpdate.zoomTo(13f));
+                }
+                else {
+                    LatLng currentPosition = new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude());
+                    nMap.moveCamera(CameraUpdate.scrollAndZoomTo(currentPosition, 13f));
+                }
+
             }
+        }
+    };
+    //handler
+    @SuppressLint("HandlerLeak")
+    Handler handler2 = new Handler() {
+        public void handleMessage(Message msg) {
+            Bundle bun = msg.getData();
+            Double lat = Double.parseDouble(bun.getString("lat"));
+            Double lng = Double.parseDouble(bun.getString("lng"));
+            final String location = bun.getString("location");
+
+            if(lat != null && lng != null) {
+                LatLng latLng = new LatLng(lat, lng);
+                final Marker nMarker = new Marker();
+                nMarker.setPosition(latLng);
+                nMarker.setMap(nMap);
+
+                final boolean[] isInfoWindowOpen = {false};
+                nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        if (!isInfoWindowOpen[0]) {
+                            mInfoWindow.open(nMarker);
+                            isInfoWindowOpen[0] = true;
+                        } else {
+                            mInfoWindow.close();
+                            isInfoWindowOpen[0] = false;
+                        }
+                        return false;
+                    }
+                });
+                mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                    @NonNull
+                    @Override
+                    public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                        infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                            @Override
+                            public boolean onClick(@NonNull Overlay overlay) {
+                                System.out.println("click event");
+
+                                return false;
+                            }
+                        });
+                        return location;
+                    }
+                });
+
+                nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 14f));
+            }
+
         }
     };
 
@@ -255,7 +481,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
         uiSettings.setLogoGravity(1);
         uiSettings.setLogoMargin(5, 5, 450, 1000);
-        uiSettings.setZoomGesturesEnabled(true);    //줌 제스처
+        uiSettings.setAllGesturesEnabled(true);
+
+        //location change listener
+        nMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
+            @Override
+            public void onLocationChange(@NonNull Location location) {
+                currentPoint = new Point();
+                currentPoint.x = location.getLatitude();
+                currentPoint.y = location.getLongitude();
+                nMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+//                Toast.makeText(getContext(),
+//                        location.getLatitude() + " , " + location.getLongitude(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (mPoint != null) {
             LatLng latLng = new LatLng(mPoint.x, mPoint.y);
@@ -279,6 +518,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
         else {
+
+            final boolean[] isInfoWindowOpen = {false};
+            nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    if (!isInfoWindowOpen[0]) {
+                        mInfoWindow.open(nMarker);
+                        isInfoWindowOpen[0] = true;
+                    } else {
+                        mInfoWindow.close();
+                        isInfoWindowOpen[0] = false;
+                    }
+                    return false;
+                }
+            });
+
             LatLng latLng = new LatLng(37.5582, 127.0002);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
@@ -345,7 +600,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String result = null;
 
         String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
-                "?start=127.0002,37.5582" +
+                "?start=" +  this.currentPoint.y   + "," +    this.currentPoint.x +
                 "&goal=" + mPoint.y + "," + mPoint.x;
         // Open the connection
         URL url = new URL(mURL);
@@ -426,13 +681,148 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
 
         for(int i=0; i<mPath.size(); ++i) {
-            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(",") - 1);
-            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).indexOf("]") - 1);
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(","));
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).length()-1);
 
             System.out.println("added : " + lat + "," + lng);
 
             LatLng latLng = new LatLng(Double.parseDouble(lat),Double.parseDouble(lng));
             mPathList.add(latLng);
         }
+    }
+    //-----------------------------------PLACE AUTO COMPLETE ---------------------------------------------------------//
+    private static final String LOG_TAG = "GOOGLE_PLACE_AUTOCOMPLETE";
+    private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
+    private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
+    private static final String OUT_JSON = "/json";
+
+    //google place auto complete
+    //place autocomplete custom version
+    @SuppressLint("LongLogTag")
+    public ArrayList autocomplete(String input) {
+
+        //google api key
+        final String GOOGLE_API_KEY = getApiKeyFromManifestGoogleAPI(getContext());
+
+        ArrayList resultList = null;
+
+        HttpURLConnection conn = null;
+        StringBuilder jsonResults = new StringBuilder();
+        try {
+            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
+            sb.append("?key=" + GOOGLE_API_KEY);
+            sb.append("&language=ko");
+            sb.append("&components=country:kr");
+            sb.append("&input=" + URLEncoder.encode(input, "utf8"));
+
+            URL url = new URL(sb.toString());
+            conn = (HttpURLConnection) url.openConnection();
+            InputStreamReader in = new InputStreamReader(conn.getInputStream());
+
+            // Load the results into a StringBuilder
+            int read;
+            char[] buff = new char[1024];
+            while ((read = in.read(buff)) != -1) {
+                jsonResults.append(buff, 0, read);
+            }
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Error processing Places API URL", e);
+            return resultList;
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error connecting to Places API", e);
+            return resultList;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        try {
+            // Create a JSON object hierarchy from the results
+            JSONObject jsonObj = new JSONObject(jsonResults.toString());
+            JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
+
+            // Extract the Place descriptions from the results
+            resultList = new ArrayList(predsJsonArray.length());
+            for (int i = 0; i < predsJsonArray.length(); i++) {
+                System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
+                System.out.println("============================================================");
+                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Cannot process JSON results", e);
+        }
+
+        return resultList;
+    }
+    //TODO: adapter upgrade -> recyclerview
+    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
+        private ArrayList resultList;
+
+        public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        @Override
+        public int getCount() {
+            return resultList.size();
+        }
+
+        @Override
+        public String getItem(int index) {
+            return (String) resultList.get(index);
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        // Retrieve the autocomplete results.
+                        resultList = autocomplete(constraint.toString());
+
+                        // Assign the data to the FilterResults
+                        filterResults.values = resultList;
+                        filterResults.count = resultList.size();
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
+    }
+    //================================================================GEOCODING !=================================================================
+    //geocoding
+    public Point getLatlngFromLocation(String findLocation) {
+
+        Point resultPoint = new Point();
+
+        String str = findLocation;
+        List<Address> addressList = null;
+
+        try {
+            addressList = geocoder.getFromLocationName(
+                    str,
+                    10);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
+        resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
+        resultPoint.location = findLocation;
+
+        return resultPoint;
     }
 }

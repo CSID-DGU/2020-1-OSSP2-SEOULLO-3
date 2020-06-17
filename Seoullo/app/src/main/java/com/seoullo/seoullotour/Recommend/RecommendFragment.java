@@ -59,10 +59,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private String NAVER_CLIENT_ID = "";
     private InfoWindow infoWindow = new InfoWindow();
     //정보가져올 DTO
-    private String findLocation;
-    public Point point;
     private Geocoder geocoder;
     ArrayList<Place> placeList;
+    ArrayList<Double> mLatLng;
+    private String location;
     private String UserId;
     private String ImageName;
     private String PhotoId;
@@ -73,8 +73,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     //기본 생성자
     public RecommendFragment() { }
     //값 받아오기
-    public RecommendFragment(String ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
-        this.findLocation = ref1;
+    public RecommendFragment(String ref0, ArrayList<Double> ref1, ArrayList<Place> ref2, String ref3, String ref4, String ref5) {
+        this.location = ref0;
+        this.mLatLng = (ArrayList<Double>) ref1.clone();
         this.placeList = (ArrayList<Place>) ref2.clone();
         this.UserId = ref3;
         this.ImageName = ref4;
@@ -135,7 +136,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //        } else {
 //            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
 //        }
-        viewPagerAdapter.addItem(new RecommendFirstFragment(findLocation, UserId, ImageName, PhotoId));
+        viewPagerAdapter.addItem(new RecommendFirstFragment(location, UserId, ImageName, PhotoId));
         viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(0)));
         viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(1)));
 
@@ -186,8 +187,13 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             public boolean onClick(@NonNull Overlay overlay) {
 
                                 Intent intent = new Intent(getActivity(), MapActivity.class);
-                                if(position == 0)
+                                if(position == 0) {
+                                    Point point = new Point();
+                                    point.x = mLatLng.get(0);
+                                    point.y = mLatLng.get(1);
+                                    point.location = location;
                                     intent.putExtra("point", point);
+                                }
                                 else {
                                     Point point1 = new Point();
                                     point1.location = placeList.get(position - 1).getVicinity();
@@ -202,7 +208,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                         });
                         switch (position) {
                             case 0:
-                                return "선택하신 곳 : \n" + findLocation;
+                                return "선택하신 곳 \n" + location;
                             case 1:
                                 return placeList.get(0).getName();
                             case 2:
@@ -237,7 +243,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                 if(placeList.size() >= 3) {
                     switch (position) {
                         case 0:
-                            LatLng latlng0 = new LatLng(point.x, point.y);
+                            LatLng latlng0 = new LatLng(mLatLng.get(0), mLatLng.get(1));
                             marker.setPosition(latlng0);
                             marker.setIconTintColor(Color.GREEN);
                             marker.setMap(nMap);
@@ -352,6 +358,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                     infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                         @Override
                         public boolean onClick(@NonNull Overlay overlay) {
+                            Point point = new Point();
+                            point.x = mLatLng.get(0);
+                            point.y = mLatLng.get(1);
+                            point.location = location;
 
                             Intent intent = new Intent(getActivity(), MapActivity.class);
                             intent.putExtra("point", point);
@@ -360,7 +370,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             return false;
                         }
                     });
-                    return "선택하신 곳 : \n" + findLocation;
+                    return "선택하신 곳 : \n" + location;
                 }
             });
 
@@ -395,34 +405,12 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         geocoder = new Geocoder(this.getContext());
         //location
         nMap.setLocationSource(locationSource);
-        point = getLatlngFromLocation(findLocation);
 
         //get to location
-        LatLng latLng = new LatLng(point.x, point.y);
+        LatLng latLng = new LatLng(mLatLng.get(0), mLatLng.get(1));
         //Marker marker = new Marker();
         marker.setPosition(latLng);
         marker.setMap(nMap);
         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng,16f));
-    }
-    //geocoding
-    public Point getLatlngFromLocation(String findLocation) {
-
-        Point resultPoint = new Point();
-
-        String str = findLocation;
-        List<Address> addressList = null;
-
-        try {
-            addressList = geocoder.getFromLocationName(
-                    str,
-                    10);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
-        resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
-        resultPoint.location = findLocation;
-
-        return resultPoint;
     }
 }

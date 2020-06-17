@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.naver.maps.geometry.LatLng;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
@@ -85,6 +86,7 @@ public class NextActivity extends AppCompatActivity {
     private Intent intent;
     //place location
     private String location;
+    private ArrayList<Double> mLatLng = new ArrayList<>();
     private static String API_KEY = "";
     private Geocoder geocoder;
     private ArrayList<Place> placeList = new ArrayList<>();
@@ -173,11 +175,11 @@ public class NextActivity extends AppCompatActivity {
                 if (intent.hasExtra(getString(R.string.selected_image))) {
                     imgUrl = intent.getStringExtra(getString(R.string.selected_image));
                     imgName = intent.getStringExtra("image_name");
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null ,location, imgName, placeList);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null ,location, imgName, placeList, mLatLng);
 
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location,imgName, placeList);
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location,imgName, placeList, mLatLng);
                 }
             }
         });
@@ -407,6 +409,9 @@ public class NextActivity extends AppCompatActivity {
         resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
         resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
         resultPoint.location = findLocation;
+
+        mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLatitude())));
+        mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLongitude())));
 
         return resultPoint;
     }

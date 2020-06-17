@@ -10,12 +10,33 @@
         app:navermap_locationButtonEnabled="true"
         android:layout_margin="2dp"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:id="@+id/direction_lin"
+            android:orientation="vertical"
+            >
+            <include layout="@layout/layout_direction"
+                />
+            <include layout="@layout/layout_map_search"
+                />
 
+        </LinearLayout>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/navermap_guide"
-            android:background="@drawable/round_shape"
+            android:background="@drawable/round_shape_top"
+
+            android:gravity="center"
+            android:layout_gravity="bottom|center"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="12sp"
+
+            android:visibility="invisible"
             />
 
     </com.naver.maps.map.MapView>

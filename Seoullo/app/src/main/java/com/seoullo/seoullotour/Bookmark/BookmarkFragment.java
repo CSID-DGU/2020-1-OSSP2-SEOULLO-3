@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -85,7 +86,6 @@ public class BookmarkFragment extends Fragment {
             // for any view that will be set as you render a row
             public ImageView imageView;
             public TextView textView;
-
             // We also create a constructor that accepts the entire item row
             // and does the view lookups to find each subview
             public ViewHolder(View itemView) {
@@ -113,11 +113,11 @@ public class BookmarkFragment extends Fragment {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Bookmark bookmark = new Bookmark();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
                                 bookmark.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
                                 bookmark.setImage_name(objectMap.get("image_name").toString());
                                 bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-//                                bookmark.setLocation(objectMap.get("location").toString());
+                                bookmark.setLocation(objectMap.get("location").toString());
+                                bookmark.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 mBookmarkList.add(bookmark);
                             }
                             notifyDataSetChanged();
@@ -191,9 +191,7 @@ public class BookmarkFragment extends Fragment {
         @Override
         public void onBindViewHolder(final BookmarkRecyclerViewAdapter.ViewHolder viewHolder, final int position) {
             // Get the data model based on position
-
             TextView textView = viewHolder.textView;
-            Log.d(TAG, "북마크리스트 이미지 이름 "+ mBookmarkList.get(position).getImage_name());
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
@@ -202,20 +200,28 @@ public class BookmarkFragment extends Fragment {
                     .child("photos").child("users")
                     .child(mBookmarkList.get(position).getUser_id())
                     .child(mBookmarkList.get(position).getImage_name());
-            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        // Glide 이용하여 이미지뷰에 로딩
-                        mRequestManager
-                                .load(task.getResult())
-                                .override(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().widthPixels / 3)
+            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            mRequestManager
+                                .load(uri)
                                 .into(viewHolder.imageView);
-
-                    } else {
-                    }
-                }
-            });
+                        }
+                    });
+//            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        // Glide 이용하여 이미지뷰에 로딩
+//                        mRequestManager
+//                                .load(task.getResult())
+//                                .override(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().widthPixels / 3)
+//                                .into(viewHolder.imageView);
+//
+//                    } else {
+//                    }
+//                }
+//            });
 
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;

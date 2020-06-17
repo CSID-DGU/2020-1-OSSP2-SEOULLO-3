@@ -3,9 +3,14 @@ package com.seoullo.seoullotour.Utils;
 
 import android.animation.Animator;
 import android.animation.StateListAnimator;
+import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +32,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.widget.ContentLoadingProgressBar;
 import com.bumptech.glide.RequestManager;
@@ -66,6 +73,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +82,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import cz.msebera.android.httpclient.client.utils.CloneUtils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
@@ -102,6 +111,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     //location and places
     private String mValue;
     private ArrayList<Photo> photosList = new ArrayList<>();
+    private ArrayList<Double> mLatLng = new ArrayList<>();
 
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -117,10 +127,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     static class ViewHolder {
         CircleImageView mprofileImage;
-        String likesString;
         TextView username, timeDetla, caption, likes, comments, location, likecount;
+        LinearLayout likeLayout;
         com.seoullo.seoullotour.Utils.SquareImageView image;
-        ImageView heartRed, heartWhite, comment, bookmarkBlack, bookmarkWhite, options;
+        ImageView heartRed, heartWhite, comment, options;
 
         UserAccountSettings settings = new UserAccountSettings();
         User user = new User();
@@ -131,6 +141,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Mark bookmark;
         GestureDetector detector;
         Photo photo;
+
     }
 
     @NonNull
@@ -149,6 +160,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.heartWhite = (ImageView) convertView.findViewById(R.id.image_heart);
             holder.comment = (ImageView) convertView.findViewById(R.id.speech_bubble);
             holder.likes = (TextView) convertView.findViewById(R.id.image_likes);
+            holder.likeLayout = (LinearLayout) convertView.findViewById(R.id.linLayout_like);
             holder.comments = (TextView) convertView.findViewById(R.id.image_comments_link);
             holder.caption = (TextView) convertView.findViewById(R.id.image_caption);
             holder.timeDetla = (TextView) convertView.findViewById(R.id.image_time_posted);
@@ -159,9 +171,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.users = new StringBuilder();
             holder.location = (TextView) convertView.findViewById(R.id.show_location);
             holder.likecount = (TextView) convertView.findViewById(R.id.count_likes);
-            holder.bookmarkBlack = (ImageView) convertView.findViewById(R.id.image_bookmark_black);
-            holder.bookmarkWhite = (ImageView) convertView.findViewById(R.id.image_bookmark_white);
-            holder.bookmark = new Mark(holder.bookmarkWhite, holder.bookmarkBlack);
+            holder.bookmark = new Mark( (ImageView) convertView.findViewById(R.id.image_bookmark_white),(ImageView) convertView.findViewById(R.id.image_bookmark_black));
+            //            holder.bookmark.bookmarkBlack = (ImageView) convertView.findViewById(R.id.image_bookmark_black);
+//            holder.bookmark.bookmarkWhite = (ImageView) convertView.findViewById(R.id.image_bookmark_white);
+            //holder.bookmark = new Mark(holder.bookmarkWhite, holder.bookmarkBlack);
+
             convertView.setTag(holder);
 
         } else {
@@ -178,7 +192,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the caption
         holder.caption.setText(photosList.get(position).getCaption());
 //        holder.username.setText(getItem(position).getUser_id());
-
+        holder.location.setText(photosList.get(position).getLocation());
         //set the comment
         List<Comment> comments = photosList.get(position).getComments();
 
@@ -201,22 +215,41 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.hello, popupMenu.getMenu());
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getTitle().equals("삭제")) {
-                            Toast.makeText(parent.getContext(), "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        else  if (item.getTitle().equals("신고")) {
-                            Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        return false;
+                String photoUid = photosList.get(position).getUser_id();
+                String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                    }
-                });
+
+                if(photoUid.equals(myuid)){
+                    PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.hello, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("삭제")) {
+                                deletePhoto(photosList.get(position),parent,position);
+                            }
+                            else if (item.getTitle().equals("신고")) {
+                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+                    });
+                }
+                else {
+                    PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.othermenu, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("신고")) {
+                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+                    });
+                }
             }
         });
 
@@ -250,7 +283,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     Log.d(TAG, "onDataChange: found user: "
                             + singleSnapshot.getValue(UserAccountSettings.class).getUsername());
                     holder.username.setText(singleSnapshot.getValue(UserAccountSettings.class).getUsername());
-
                     holder.username.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -335,7 +367,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                     });
                     getBookmarkCurrentUser(holder);
-                    Log.d(TAG, "true?" + holder.bookmarkByCurrentUser);
+                    holder.photo.setLatlng(photosList.get(position).getLatlng());
                     bookmarkClickEvent(holder);
                 }
 
@@ -365,32 +397,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 Log.e("location add", "error !!");
             }
         });
-        //get place array
-        Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
-        placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        //get location item
+        Query latlngQuery = reference
+                .child("photos")
+                .child(holder.photo.getPhoto_id())
+                .child("latlng");
+        latlngQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //15개 중에 3개를 저장할 예정
-                for (int i = 0; i < 3; ++i) {
-                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").child("0").getValue());
-                    System.out.println(dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount());
-
-                    Place place = new Place();
-
-                    place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
-                    place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
-                    place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
-                    place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
-                    place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
-
-                    ArrayList<String>temp = new ArrayList<>();
-                    //type
-                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
-                        temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
-                    }
-                    place.setType(temp);
-                    placeList.add(place);
-                }
+                mLatLng.add(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
+                mLatLng.add(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
             }
 
             @Override
@@ -398,6 +414,38 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             }
         });
+        //get place array
+        Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
+        placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //15개 중에 3개를 저장할 예정
+                if (dataSnapshot.getValue() != null) {
+                    for (int i = 0; i < 3; ++i) {
+                        Place place = new Place();
+                        place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
+                        place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
+                        place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
+                        place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
+                        place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
+
+                        ArrayList<String> temp = new ArrayList<>();
+                        //type
+                        for (int j = 0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                            temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
+                        }
+                        place.setType(temp);
+                        placeList.add(place);
+                    }
+                }
+            }
+                @Override
+                public void onCancelled (@NonNull DatabaseError databaseError){
+
+                }
+
+        });
+
 
         //get the user object
         Query userQuery = mReference
@@ -422,13 +470,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
-
         holder.location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d(TAG,"placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
+                intent.putExtra("latlng", mLatLng);
                 intent.putExtra("location", mValue);
                 intent.putExtra("places", (ArrayList<Place>)placeList);
                 intent.putExtra("user_id",photosList.get(position).getUser_id());
@@ -466,58 +514,114 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
     public void bookmarkClickEvent (final ViewHolder mHolder){
-        mHolder.bookmarkWhite.setOnClickListener(new View.OnClickListener() {
+        mHolder.bookmark.bookmarkWhite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewBookmark(mHolder);
+//                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//
+//                Query query = reference
+//                        .child(mContext.getString(R.string.dbname_bookmarks))
+//                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                        .child(mHolder.photo.getPhoto_id());
+//
+//                query.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//                            String keyID = singleSnapshot.getKey();
+//                            //case1: Then user already liked the photo
+//                            if (mHolder.bookmarkByCurrentUser &&
+//                                    singleSnapshot.getValue(Bookmark.class).getUser_id()
+//                                            .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+//                                mReference.child(mContext.getString(R.string.dbname_bookmarks))
+//                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                        .child(mHolder.photo.getPhoto_id())
+//                                        .removeValue();
+//
+////                                mReference.child(mContext.getString(R.string.dbname_user_photos))
+////                                        .child(mHolder.photo.getUser_id())
+////                                        .child(mHolder.photo.getPhoto_id())
+////                                        .child(mContext.getString(R.string.field_bookmarks))
+////                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+////                                        .removeValue();
+//                                mHolder.bookmark.toggleBookmark();
+//                            }
+//                            //case2: The user has not liked the photo
+//                            else if (!mHolder.bookmarkByCurrentUser) {
+//                                //add new like
+//                                addNewBookmark(mHolder);
+//                                break;
+//                            }
+//                        }
+//                        if (!dataSnapshot.exists()) {
+//                            //add new like
+//                            addNewBookmark(mHolder);
+//                        }
+//                    }
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+            }
+        });
+        mHolder.bookmark.bookmarkBlack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-                Query query = reference
-                        .child(mContext.getString(R.string.dbname_bookmarks))
+                mReference.child(mContext.getString(R.string.dbname_bookmarks))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(mHolder.photo.getPhoto_id());
-
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            String keyID = singleSnapshot.getKey();
-                            //case1: Then user already liked the photo
-                            if (mHolder.bookmarkByCurrentUser &&
-                                    singleSnapshot.getValue(Bookmark.class).getUser_id()
-                                            .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-
-                                mReference.child(mContext.getString(R.string.dbname_bookmarks))
-                                        .child(keyID)
-                                        .child(mHolder.photo.getPhoto_id())
-                                        .removeValue();
-
-//                                mReference.child(mContext.getString(R.string.dbname_user_photos))
-//                                        .child(mHolder.photo.getUser_id())
-//                                        .child(mHolder.photo.getPhoto_id())
-//                                        .child(mContext.getString(R.string.field_bookmarks))
+                        .child(mHolder.photo.getPhoto_id())
+                        .removeValue();
+                mHolder.bookmark.toggleBookmark();
+//                Query query = reference
+//                        .child(mContext.getString(R.string.dbname_bookmarks))
+//                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                        .child(mHolder.photo.getPhoto_id());
+//
+//                query.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//                            String keyID = singleSnapshot.getKey();
+//                            //case1: Then user already liked the photo
+//                            if (mHolder.bookmarkByCurrentUser &&
+//                                    singleSnapshot.getValue(Bookmark.class).getUser_id()
+//                                            .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+//                                mReference.child(mContext.getString(R.string.dbname_bookmarks))
 //                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                        .child(mHolder.photo.getPhoto_id())
 //                                        .removeValue();
-                                mHolder.bookmark.toggleBookmark();
-                            }
-                            //case2: The user has not liked the photo
-                            else if (!mHolder.bookmarkByCurrentUser) {
-                                //add new like
-                                addNewBookmark(mHolder);
-                                break;
-                            }
-                        }
-                        if (!dataSnapshot.exists()) {
-                            //add new like
-                            addNewBookmark(mHolder);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+//
+////                                mReference.child(mContext.getString(R.string.dbname_user_photos))
+////                                        .child(mHolder.photo.getUser_id())
+////                                        .child(mHolder.photo.getPhoto_id())
+////                                        .child(mContext.getString(R.string.field_bookmarks))
+////                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+////                                        .removeValue();
+//                                mHolder.bookmark.toggleBookmark();
+//                            }
+//                            //case2: The user has not liked the photo
+//                            else if (!mHolder.bookmarkByCurrentUser) {
+//                                //add new like
+//                                addNewBookmark(mHolder);
+//                                break;
+//                            }
+//                        }
+//                        if (!dataSnapshot.exists()) {
+//                            //add new like
+//                            addNewBookmark(mHolder);
+//                        }
+//                    }
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
             }
         });
+
     }
 
     public class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -607,9 +711,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         String newLikeID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Bookmark bookmark = new Bookmark();
-        bookmark.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        bookmark.setUser_id(holder.photo.getUser_id());
         bookmark.setPhoto_id(holder.photo.getPhoto_id());
         bookmark.setImage_name(holder.photo.getImage_name());
+        bookmark.setLocation(holder.photo.getLocation());
+        bookmark.setLatlng(holder.photo.getLatlng());
+
+        Log.d(TAG, bookmark.getLocation() + " , loclocloc" + bookmark.getLatlng());
+
 //        mReference.child(mContext.getString(R.string.dbname_photos))
 //                .child(holder.photo.getPhoto_id())
         mReference.child(mContext.getString(R.string.dbname_bookmarks))
@@ -625,6 +734,77 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                .setValue(bookmark);
 
         holder.bookmark.toggleBookmark();
+    }//.removeValue();
+    private void deleteBookmarkphoto(final String photoid){
+        final ArrayList<String> Userids = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("bookmarks")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        Userids.add(singleSnapshot.getKey());
+                    }
+                    for(int i =0; i < Userids.size() ; i++) {
+                        mReference.child("bookmarks")
+                                .child(Userids.get(i))
+                                .child(photoid)
+                                .removeValue();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    private void deletePhoto(final Photo photo, final ViewGroup parent, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+        builder.setTitle("게시글 삭제");
+        builder.setMessage("정말로 삭제하시겠습니까 ?");
+        builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteBookmarkphoto(photo.getPhoto_id());
+
+                mReference.child(mContext.getString(R.string.dbname_photos))
+                        .child(photo.getPhoto_id())
+                        .removeValue();
+                mReference.child(mContext.getString(R.string.dbname_user_photos))
+                        .child(photo.getUser_id())
+                        .child(photo.getPhoto_id())
+                        .removeValue();
+
+                FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+                storageReference.child("photos").child("users").child(photo.getUser_id()).child(photo.getImage_name()).delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(parent.getContext(), "게시글이 삭제되었습니다 !", Toast.LENGTH_SHORT).show();
+                                photosList.remove(position);
+                                notifyDataSetChanged();
+
+                            }
+                        });
+            }
+        });
+
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {       //취소 버튼을 생성하고 클릭시 동작을 구현합니다.
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog alert = builder.create();                                                       //빌더를 이용하여 AlertDialog객체를 생성합니다.
+        alert.show();                                                                                    //AlertDialog를 띄웁니
+
+
+
     }
 
     private void getBookmarkCurrentUser(final ViewHolder holder) {
@@ -640,54 +820,77 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    holder.users = new StringBuilder();
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        Query query = reference
-                                .child(mContext.getString(R.string.dbname_users))
-                                .orderByChild(mContext.getString(R.string.field_user_id))
-                                .equalTo(singleSnapshot.getValue(Bookmark.class).getUser_id());
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Log.d(TAG, "onDataChange: found bookmark: " +
-                                            singleSnapshot.getValue(User.class).getUsername());
-
-                                    holder.users.append(singleSnapshot.getValue(User.class).getUsername());
-                                    holder.users.append(",");
-                                }
-
-                                String[] splitUsers = holder.users.toString().split(",");
-                                Log.d(TAG, "HOLDER.user: " + holder.users.toString());
-                                Log.d(TAG, "Currentuser: " + currentUsername);
-
-                                if (holder.users.toString().contains(currentUsername)) {
-                                    Log.d(TAG, "holder.bookmarkByCurrentUser = true");
-                                    holder.bookmarkByCurrentUser = true;
-                                    holder.bookmarkBlack.setEnabled(true);
-                                    holder.bookmarkWhite.setEnabled(false);
-                                } else {
-                                    Log.d(TAG, "holder.bookmarkByCurrentUser = false");
-                                    holder.bookmarkByCurrentUser = false;
-                                    holder.bookmarkBlack.setEnabled(false);
-                                    holder.bookmarkWhite.setEnabled(true);
-
-
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                holder.bookmarkByCurrentUser = true;
-                            }
-                        });
+                    if (dataSnapshot.getValue() != null) {
+                        holder.bookmark.toggleBookmark();
                     }
 
-                    if (!dataSnapshot.exists()) {
-                        holder.bookmarkByCurrentUser = false;
-                    } else {
+//                            holder.bookmarkByCurrentUser = true;
+//                            holder.bookmark.bookmarkBlack.setEnabled(true);
+//                            holder.bookmark.bookmarkWhite.setEnabled(false);
+
+
+//                    holder.users = new StringBuilder();
+//                    if(dataSnapshot.getValue() != null) {
+//                        Bookmark books = dataSnapshot.getValue(Bookmark.class);
+//                        String currentuid = books.getUser_id();
+//                        if (currentuid == null) {
+//                        } else {
+//                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//                            Query query = reference
+//                                    .child(mContext.getString(R.string.dbname_bookmarks))
+//                                    .orderByChild(mContext.getString(R.string.field_user_id))
+//                                    .equalTo(books.getUser_id());
+//                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//                                        Log.d(TAG, "onDataChange: found bookmark: " +
+//                                                singleSnapshot.getValue(User.class).getUsername());
+////                                        holder.users.append(singleSnapshot.getValue(User.class).getUsername());
+////                                        holder.users.append(",");
+//                                    }
+//
+//                                    String[] splitUsers = holder.users.toString().split(",");
+//                                    Log.d(TAG, "HOLDER.user: " + holder.users.toString());
+//                                    Log.d(TAG, "Currentuser: " + currentUsername);
+//
+//                                    if (holder.users.toString().contains(currentUsername)) {
+//                                        Log.d(TAG, "holder.bookmarkByCurrentUser = true");
+//                                        holder.bookmarkByCurrentUser = true;
+//                                        holder.bookmark.bookmarkBlack.setEnabled(true);
+//                                        holder.bookmark.bookmarkWhite.setEnabled(false);
+//                                    } else {
+//                                        Log.d(TAG, "holder.bookmarkByCurrentUser = false");
+//                                        holder.bookmarkByCurrentUser = false;
+//                                        holder.bookmark.bookmarkBlack.setEnabled(false);
+//                                        holder.bookmark.bookmarkWhite.setEnabled(true);
+//
+//
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//                                    holder.bookmarkByCurrentUser = true;
+//                                }
+//                            });
+//                        }
+//
+//                        if (!dataSnapshot.exists()) {
+//                            holder.bookmarkByCurrentUser = false;
+//                        } else {
+//                        }
+//
+//
+//                        try {
+//                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//
+//                            }
+//                        } catch (NullPointerException e) {
+//                            Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage());
+//                        }
+//                    }
                     }
-                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -696,10 +899,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             });
         } catch (NullPointerException e) {
             Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
-            holder.likesString = "";
+//            holder.likesString = "";
             holder.likeByCurrentUser = false;
             //setup likes string
-            setupLikesString(holder, holder.likesString);
+            setupLikesString(holder, null, null);
         }
     }
 
@@ -761,6 +964,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
 
+
+
     private void getLikesString(final ViewHolder holder) {
         Log.d(TAG, "getLikesString: getting likes string");
 
@@ -775,8 +980,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     holder.users = new StringBuilder();
                     holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
+                    //textview 동적생성
+                    final TextView item = new TextView(getContext());
+                    final TextView info = new TextView(getContext());
+
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference
@@ -784,6 +993,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 .orderByChild(mContext.getString(R.string.field_user_id))
                                 .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -795,7 +1005,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 }
 
-                                String[] splitUsers = holder.users.toString().split(",");
+                                String[] split = holder.users.toString().split(",");
+
+                                int length = split.length;
 
                                 if (holder.users.toString().contains(currentUsername)) {//mitch, mitchell.tabian
                                     holder.likeByCurrentUser = true;
@@ -803,40 +1015,19 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     holder.likeByCurrentUser = false;
                                 }
 
-                                int length = splitUsers.length;
-                                if (length == 1) {
-                                    holder.likesString = "Liked by " + splitUsers[0];
+                                if (length > 0) {
                                     holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 2) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + " and " + splitUsers[1];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 3) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + " and " + splitUsers[2];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length == 4) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + ", " + splitUsers[2]
-                                            + " and " + splitUsers[3];
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else if (length > 4) {
-                                    holder.likesString = "Liked by " + splitUsers[0]
-                                            + ", " + splitUsers[1]
-                                            + ", " + splitUsers[2]
-                                            + " and " + (splitUsers.length - 3) + " others";
-                                    holder.likecount.setText("좋아요 " + length + "개");
-                                } else {
+                                    item.setText(split[length-1]);
+                                    item.setTypeface(null, Typeface.BOLD);
+                                    info.setText("님 외 "+length+"명이 좋아합니다");
+                                }
+                                else {
 
                                     holder.likecount.setText("좋아요 " + "0" + "개");
                                 }
-                                Log.d(TAG, "onDataChange: likes string: " + holder.likesString);
+
                                 //setup likes string
-                                setupLikesString(holder, holder.likesString);
-
-
+                                setupLikesString(holder, item, info);
                             }
 
                             @Override
@@ -847,11 +1038,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     }
 
                     if (!dataSnapshot.exists()) {
-                        holder.likesString = "";
+//                        holder.likesString = "";
                         holder.likeByCurrentUser = false;
                         //setup likes string
                         //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
-                        setupLikesString(holder, holder.likesString);
+                        setupLikesString(holder,null, null);
                     } else {
 
                         //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
@@ -865,15 +1056,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             });
         } catch (NullPointerException e) {
             Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
-            holder.likesString = "";
+//            holder.likesString = "";
             holder.likeByCurrentUser = false;
             //setup likes string
-            setupLikesString(holder, holder.likesString);
+            setupLikesString(holder, null, null);
         }
     }
 
-    private void setupLikesString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupLikesString(final ViewHolder holder, TextView item, TextView info) {
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");
@@ -897,11 +1088,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 }
             });
         }
-        holder.likes.setText(likesString);
+        holder.likeLayout.removeAllViews();
+        if(item != null && info != null) {
+            //holder.likes.setText(likesString);
+            holder.likeLayout.addView(item);
+            holder.likeLayout.addView(info);
+        }
     }
 
     private void setupBookmarksString(final ViewHolder holder, String likesString) {
-        Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
 
         if (holder.likeByCurrentUser) {
             Log.d(TAG, "setupLikesString: photo is liked by current user");

@@ -72,7 +72,7 @@ public class FirebaseMethods {
 
 
     public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl,
-                               Bitmap bm, final String location, final String imgName, final ArrayList<Place> places){
+                               Bitmap bm, final String location, final String imgName, final ArrayList<Place> places, final ArrayList<Double> latlng){
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
@@ -104,7 +104,7 @@ public class FirebaseMethods {
 
                     //add the new photo to 'photos' node and 'user_photos' node
 
-                    addPhotoToDatabase(caption, firebaseUrl.toString(), location, imgName, places);
+                    addPhotoToDatabase(caption, firebaseUrl.toString(), location, imgName, places, latlng);
 
                     //navigate to the main feed so the user can see their photo
                     Intent intent = new Intent(mContext, HomeActivity.class);
@@ -202,7 +202,7 @@ public class FirebaseMethods {
     }
 
 
-    private void addPhotoToDatabase(String caption, String url, String location, String imgName, ArrayList<Place> places) {
+    private void addPhotoToDatabase(String caption, String url, String location, String imgName, ArrayList<Place> places, ArrayList<Double> latlng) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);
@@ -217,6 +217,7 @@ public class FirebaseMethods {
         photo.setPhoto_id(newPhotoKey);
         photo.setLocation(location);    //added location
         photo.setPLaces(places);        //added places
+        photo.setLatlng(latlng);        //added latlng
 
 
 
