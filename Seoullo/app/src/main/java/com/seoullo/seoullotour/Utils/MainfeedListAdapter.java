@@ -6,6 +6,7 @@ import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,6 +32,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.widget.ContentLoadingProgressBar;
 import com.bumptech.glide.RequestManager;
@@ -212,22 +214,41 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.hello, popupMenu.getMenu());
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getTitle().equals("삭제")) {
-                            Toast.makeText(parent.getContext(), "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        else  if (item.getTitle().equals("신고")) {
-                            Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                        return false;
+                String photoUid = photosList.get(position).getUser_id();
+                String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                    }
-                });
+
+                if(photoUid.equals(myuid)){
+                    PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.hello, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("삭제")) {
+                                deletePhoto(photosList.get(position),parent,position);
+                            }
+                            else if (item.getTitle().equals("신고")) {
+                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+                    });
+                }
+                else {
+                    PopupMenu popupMenu = new PopupMenu(parent.getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.othermenu, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("신고")) {
+                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+                    });
+                }
             }
         });
 
@@ -381,30 +402,32 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //15개 중에 3개를 저장할 예정
-                for (int i = 0; i < 3; ++i) {
-                    Place place = new Place();
+                if (dataSnapshot.getValue() != null) {
+                    for (int i = 0; i < 3; ++i) {
+                        Place place = new Place();
+                        place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
+                        place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
+                        place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
+                        place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
+                        place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
 
-                    place.setPhotoReference(dataSnapshot.child(String.valueOf(i)).child("photoReference").getValue().toString());
-                    place.setVicinity(dataSnapshot.child(String.valueOf(i)).child("vicinity").getValue().toString());
-                    place.setName(dataSnapshot.child(String.valueOf(i)).child("name").getValue().toString());
-                    place.setLatitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("latitude").getValue().toString()));
-                    place.setLongitude(Double.parseDouble(dataSnapshot.child(String.valueOf(i)).child("longitude").getValue().toString()));
-
-                    ArrayList<String>temp = new ArrayList<>();
-                    //type
-                    for(int j=0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
-                        temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
+                        ArrayList<String> temp = new ArrayList<>();
+                        //type
+                        for (int j = 0; j < dataSnapshot.child(String.valueOf(i)).child("type").getChildrenCount(); ++j) {
+                            temp.add(dataSnapshot.child(String.valueOf(i)).child("type").child(String.valueOf(j)).getValue().toString());
+                        }
+                        place.setType(temp);
+                        placeList.add(place);
                     }
-                    place.setType(temp);
-                    placeList.add(place);
                 }
             }
+                @Override
+                public void onCancelled (@NonNull DatabaseError databaseError){
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
 
-            }
         });
+
 
         //get the user object
         Query userQuery = mReference
@@ -477,7 +500,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onClick(View v) {
                 addNewBookmark(mHolder);
-
 //                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
 //                Query query = reference
@@ -694,6 +716,50 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 //                .setValue(bookmark);
 
         holder.bookmark.toggleBookmark();
+    }
+
+    private void deletePhoto(final Photo photo, final ViewGroup parent, final int position) {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+        builder.setTitle("게시글 삭제");
+        builder.setMessage("정말로 삭제하시겠습니까 ?");
+        builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                mReference.child(mContext.getString(R.string.dbname_photos))
+                        .child(photo.getPhoto_id())
+                        .removeValue();
+                mReference.child(mContext.getString(R.string.dbname_user_photos))
+                        .child(photo.getUser_id())
+                        .child(photo.getPhoto_id())
+                        .removeValue();
+                FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://seoullo-4fbc1.appspot.com");
+                storageReference.child("photos").child("users").child(photo.getUser_id()).child(photo.getImage_name()).delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(parent.getContext(), "게시글이 삭제되었습니다 !", Toast.LENGTH_SHORT).show();
+                                photosList.remove(position);
+                                notifyDataSetChanged();
+
+                            }
+                        });
+            }
+        });
+
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {       //취소 버튼을 생성하고 클릭시 동작을 구현합니다.
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog alert = builder.create();                                                       //빌더를 이용하여 AlertDialog객체를 생성합니다.
+        alert.show();                                                                                    //AlertDialog를 띄웁니
+
+
+
     }
 
     private void getBookmarkCurrentUser(final ViewHolder holder) {
