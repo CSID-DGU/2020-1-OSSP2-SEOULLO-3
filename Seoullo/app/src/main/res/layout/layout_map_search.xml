@@ -13,16 +13,19 @@
 
         app:layout_constraintTop_toTopOf="parent"
         android:padding="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         >
         <AutoCompleteTextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/map_search"
             android:layout_marginEnd="30dp"
             android:layout_alignParentStart="true"
             android:textSize="12sp"
-
-            android:hint="  검색.."/>
+            android:background="@color/transparent"
+            android:paddingStart="10dp"
+            android:hint="  검색하기.."/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
