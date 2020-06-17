@@ -121,8 +121,6 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                         .addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-
-                                System.out.println(loadSize+"::loadSize");
                                 //loadCount++;
                                 mRequestManager.load(uri)
                                         .listener(
@@ -130,7 +128,6 @@ public class GridImageAdapter extends ArrayAdapter<String>  {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                         //holder.mProgressBar.setVisibility(View.GONE);
-
                                         loadSize--;
                                         if(loadSize == 0){
                                             profileFragment.goneProgress();
