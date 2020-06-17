@@ -1,48 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/round_shape_top"
+    android:padding="10dp">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/group_vicinity"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+
+        app:layout_constraintBottom_toTopOf="@id/group_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="10dp"
+            android:adjustViewBounds="true"
+
+            android:src="@drawable/location_outline" />
+
+        <TextView
+            android:id="@+id/recommend_vicinity"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_marginStart="5dp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical"
+            android:text="Vicinity"
+            android:textColor="@color/theme_deepblue"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/group_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_shape">
 
-        <RelativeLayout
-            android:id="@+id/group_location"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/group_vicinity">
+
+
+        <ImageView
+            android:id="@+id/bookmark_image"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:src="@color/theme_orange" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/location_outline" />
-
-            <TextView
-                android:id="@+id/show_location"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="40dp"
-                android:text="LOCATION"
-                android:textSize="15sp" />
-        </RelativeLayout>
-
-        <include
-            android:id="@+id/horizontal_scrollView"
-            layout="@layout/fragment_bookmark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/group_location"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:scaleType="centerCrop"
-            android:layout_marginRight="10dp"
-
-            android:layout_marginBottom="10dp" />
-
-    </RelativeLayout>
-</RelativeLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

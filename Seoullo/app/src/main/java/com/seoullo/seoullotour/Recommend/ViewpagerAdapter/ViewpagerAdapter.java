@@ -28,4 +28,9 @@ public class ViewpagerAdapter extends FragmentStatePagerAdapter {
     public void addItem(Fragment frg) {
         fragments.add(frg);
     }
+
+    public void addItem(ArrayList<Fragment> frg) {
+        for(int i=0; i<frg.size(); ++i)
+            fragments.add(frg.get(i));
+    }
 }

@@ -68,6 +68,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
     public static Fragment newInstance(Bookmark clickedPhoto, String photoID) {
         HomeFragment fragment = new HomeFragment();
         Bundle bundle = new Bundle();
@@ -76,6 +77,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -108,7 +110,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.getValue() != null) {
+                        if (dataSnapshot.getValue() != null) {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
@@ -133,7 +135,6 @@ public class HomeFragment extends Fragment {
                                     comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
                                     comments.add(comment);
                                 }
-
                                 photo.setComments(comments);
                                 mPhotos.add(photo);
 
@@ -185,11 +186,8 @@ public class HomeFragment extends Fragment {
                             }
                             photo.setComments(comments);
                             photos.add(photo);
-
                         }
-
                         displayPhotos();
-
                         for (int i = 0; i < photos.size(); i++) {
 
                             mPhotos.add(photos.get(i));
@@ -197,7 +195,7 @@ public class HomeFragment extends Fragment {
 
                         try {
                             mResults = 10;
-                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(HomeFragment.this.getContext(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(HomeFragment.this.getContext(), R.layout.layout_mainfeed_listitem, mPhotos, mRequestManager);
                             mListView.setAdapter(mAdapter);
 
 //                            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
