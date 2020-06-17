@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -102,6 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //save direction routes
     private Route mRoute;
     private List<LatLng> mPathList = new ArrayList<>();
+    private Point currentPoint;
     //search map
     private Geocoder geocoder;
     private Point mSearchedPoint;
@@ -203,7 +205,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGuide = (TextView) view.findViewById(R.id.navermap_guide);
         mVicinity = (TextView) view.findViewById(R.id.direction_vicinity);
         mDirection = (Button) view.findViewById(R.id.direction_btn);
-
+        mListGuide = (ListView) view.findViewById(R.id.direction_list);
         mLinearLayout = (LinearLayout) view.findViewById(R.id.direction_lin);
         mShowGuide = (ImageButton) view.findViewById(R.id.direction_showguide);
         mRelDirection = (RelativeLayout) view.findViewById(R.id.map_direction);
@@ -217,7 +219,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mRelSearch.setVisibility(View.INVISIBLE);
 
         if(mPoint != null) {
-            System.out.println("FROM RECOMMEND");
             mRelDirection.setVisibility(View.VISIBLE);
             mRelSearch.setVisibility(View.GONE);
             mVicinity.setText(mPoint.location);
@@ -225,6 +226,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onClick(View v) {
                     if (!isDrawed) {
+                        if (currentPoint != null) {  //current location enabled;
                         new Thread() {
                             public void run() {
                                 System.out.println("THREAD RUN");
@@ -237,7 +239,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 } catch (CloneNotSupportedException e) {
                                     e.printStackTrace();
                                 } catch (JSONException e) {
-                                   e.printStackTrace();
+                                    e.printStackTrace();
                                 }
 
                                 Bundle bun = new Bundle();
@@ -248,18 +250,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         }.start();
                         System.out.println("thread finished");
+                        } else {    //currentPoint is null
+                            Toast.makeText(getContext(),"왼쪽 하단에 현재 위치 설정을 한번 눌러주세요 !",Toast.LENGTH_SHORT).show();
+                        }
                     } //if
                     else
-                        Toast.makeText(getContext(),"이미 길찾기를 하셨습니다 !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"이미 길찾기를 하셨습니다 !", Toast.LENGTH_SHORT).show();
                 } //onClick
             });
+            mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+                            System.out.println("click event");
+
+                            return false;
+                        }
+                    });
+                    return mPoint.location;
+                }
+            });
+
         } //if point null
 
         //mPoint null 이면 검색창 띄워주기
         else {
-            System.out.println("FROM MAP TAP");
             mRelSearch.setVisibility(View.VISIBLE);
             mRelDirection.setVisibility(View.GONE);
+
             //어댑터 생성
             ArrayAdapter adapter = new GooglePlacesAutocompleteAdapter(getContext(),R.layout.layout_list_item);
             mAutoCompleteTextView.setAdapter(adapter);
@@ -284,6 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             Bundle bun = new Bundle();
                             bun.putString("lat", String.valueOf(pp.x));
                             bun.putString("lng", String.valueOf(pp.y));
+                            bun.putString("location", pp.location);
                             Message msg = handler2.obtainMessage();
                             msg.setData(bun);
                             handler2.sendMessage(msg);
@@ -298,22 +320,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             });
 
         }
-
-        mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-            @NonNull
-            @Override
-            public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                    @Override
-                    public boolean onClick(@NonNull Overlay overlay) {
-                        System.out.println("click event");
-
-                        return false;
-                    }
-                });
-                return mPoint.location;
-            }
-        });
 
         return view;
     }
@@ -364,9 +370,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                            mListGuide.setAdapter(null);
                            mListGuide.setVisibility(View.INVISIBLE);
                        }
-
-
-
                     }
                 });
 
@@ -421,12 +424,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Bundle bun = msg.getData();
             Double lat = Double.parseDouble(bun.getString("lat"));
             Double lng = Double.parseDouble(bun.getString("lng"));
+            final String location = bun.getString("location");
 
             if(lat != null && lng != null) {
                 LatLng latLng = new LatLng(lat, lng);
-                Marker nMarker = new Marker();
+                final Marker nMarker = new Marker();
                 nMarker.setPosition(latLng);
                 nMarker.setMap(nMap);
+
+                final boolean[] isInfoWindowOpen = {false};
+                nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        if (!isInfoWindowOpen[0]) {
+                            mInfoWindow.open(nMarker);
+                            isInfoWindowOpen[0] = true;
+                        } else {
+                            mInfoWindow.close();
+                            isInfoWindowOpen[0] = false;
+                        }
+                        return false;
+                    }
+                });
+                mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                    @NonNull
+                    @Override
+                    public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                        infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                            @Override
+                            public boolean onClick(@NonNull Overlay overlay) {
+                                System.out.println("click event");
+
+                                return false;
+                            }
+                        });
+                        return location;
+                    }
+                });
+
                 nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 14f));
             }
 
@@ -452,6 +487,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         nMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
             @Override
             public void onLocationChange(@NonNull Location location) {
+                currentPoint = new Point();
+                currentPoint.x = location.getLatitude();
+                currentPoint.y = location.getLongitude();
                 nMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 //                Toast.makeText(getContext(),
 //                        location.getLatitude() + " , " + location.getLongitude(), Toast.LENGTH_LONG).show();
@@ -480,6 +518,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
         else {
+
+            final boolean[] isInfoWindowOpen = {false};
+            nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    if (!isInfoWindowOpen[0]) {
+                        mInfoWindow.open(nMarker);
+                        isInfoWindowOpen[0] = true;
+                    } else {
+                        mInfoWindow.close();
+                        isInfoWindowOpen[0] = false;
+                    }
+                    return false;
+                }
+            });
+
             LatLng latLng = new LatLng(37.5582, 127.0002);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
         }
@@ -546,7 +600,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String result = null;
 
         String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
-                "?start=127.0002,37.5582" +
+                "?start=" +  this.currentPoint.y   + "," +    this.currentPoint.x +
                 "&goal=" + mPoint.y + "," + mPoint.x;
         // Open the connection
         URL url = new URL(mURL);

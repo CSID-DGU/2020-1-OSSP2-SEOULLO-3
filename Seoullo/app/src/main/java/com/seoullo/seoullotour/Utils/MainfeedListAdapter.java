@@ -111,6 +111,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     //location and places
     private String mValue;
     private ArrayList<Photo> photosList = new ArrayList<>();
+    private ArrayList<Double> mLatLng = new ArrayList<>();
 
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -396,6 +397,23 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 Log.e("location add", "error !!");
             }
         });
+        //get location item
+        Query latlngQuery = reference
+                .child("photos")
+                .child(holder.photo.getPhoto_id())
+                .child("latlng");
+        latlngQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mLatLng.add(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
+                mLatLng.add(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //get place array
         Query placeQuery = mReference.child("photos").child(holder.photo.getPhoto_id()).child("places");
         placeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -452,13 +470,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             }
         });
 
-
         holder.location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d(TAG,"placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
+                intent.putExtra("latlng", mLatLng);
                 intent.putExtra("location", mValue);
                 intent.putExtra("places", (ArrayList<Place>)placeList);
                 intent.putExtra("user_id",photosList.get(position).getUser_id());
