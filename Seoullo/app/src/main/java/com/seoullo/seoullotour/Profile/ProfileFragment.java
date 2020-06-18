@@ -143,8 +143,8 @@ public class ProfileFragment extends Fragment {
         setupFirebaseAuth();
         setupGridView();
 
-//        getFollowersCount();
-//        getFollowingCount();
+        getFollowersCount();
+        getFollowingCount();
         getPostsCount();
         getBookmarkCount();
 

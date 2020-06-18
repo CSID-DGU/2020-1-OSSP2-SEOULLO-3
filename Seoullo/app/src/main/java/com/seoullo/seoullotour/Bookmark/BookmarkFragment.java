@@ -70,6 +70,7 @@ public class BookmarkFragment extends Fragment {
 
     private class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRecyclerViewAdapter.ViewHolder> {
         private ArrayList<Bookmark> mBookmarkList;
+        private ArrayList<Photo> mBookmarkPhotos;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             // Your holder should contain a member variable
