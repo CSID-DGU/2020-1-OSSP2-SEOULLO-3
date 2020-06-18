@@ -123,6 +123,7 @@ public class HomeFragment extends Fragment {
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
                                 photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
+                                photo.setLocation(objectMap.get("location").toString());
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
                                         .child(getString(R.string.field_comments)).getChildren()) {

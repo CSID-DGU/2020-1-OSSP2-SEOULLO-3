@@ -13,16 +13,15 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.client.utils.CloneUtils;
 
-public class MapDirectionAdapter extends BaseAdapter {
+public class MapListAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<String> array_route;
     private ViewHolder mViewHolder;
 
-    public MapDirectionAdapter(Context mContext, ArrayList<String> array_route) throws CloneNotSupportedException {
+    public MapListAdapter(Context mContext, ArrayList<String> array_route) throws CloneNotSupportedException {
         this.mContext = mContext;
         this.array_route = (ArrayList<String>) CloneUtils.clone(array_route);
-
     }
     @Override
     public int getCount() {

@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,21 +26,27 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.core.widget.PopupMenuCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.LocationSource;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
@@ -54,6 +58,7 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.seoullo.seoullotour.Models.Bookmark;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.Models.Route;
 import com.seoullo.seoullotour.R;
@@ -66,22 +71,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import com.seoullo.seoullotour.Utils.SharedRoute;
 
 import cz.msebera.android.httpclient.client.utils.CloneUtils;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 //TODO : 북마크 지도에 표시하기
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -113,11 +110,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Button mDirection;
 
 
-    private ImageButton mShowGuide;
-    private ListView mListGuide;
+    private ImageButton mShowGuide, mBookmarkBtn;
+    private ListView mListGuide, mListBookmark;
     private RelativeLayout mRelDirection;
     private RelativeLayout mRelSearch;
-    private MapDirectionAdapter mapDirectionAdapter;
+    private MapListAdapter mapListAdapter;
     private AutoCompleteTextView mAutoCompleteTextView;
     private ImageButton mSearchBtn;
     private LinearLayout mLinearLayout;
@@ -212,6 +209,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mRelSearch = (RelativeLayout) view.findViewById(R.id.map_search_rel_layout);
         mAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.map_search);
         mSearchBtn = (ImageButton) view.findViewById(R.id.map_search_btn);
+        mBookmarkBtn = (ImageButton) view.findViewById(R.id.map_search_btn_bookmark);
+        mListBookmark = (ListView) view.findViewById(R.id.map_bookmark_list);
 
         mLinearLayout.setVisibility(View.VISIBLE);
 
@@ -319,6 +318,56 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
 
+            
+
+            mBookmarkBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: 지도에 북마크한 객체 표시하기
+
+
+                    //get from firebase
+                    Query query = FirebaseDatabase.getInstance().getReference()
+                                    .child("bookmarks")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            ArrayList<Bookmark> BookmarkList = new ArrayList<>();
+
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                Bookmark BM = new Bookmark();
+                                BM.setImage_name(singleSnapshot.child("image_name").toString());
+                                ArrayList<Double> LatLng = new ArrayList<>();
+                                LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").toString()));
+                                LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").toString()));
+                                BM.setLatlng(LatLng);
+                                BM.setLocation(singleSnapshot.child("location").toString());
+                                BM.setUser_id(singleSnapshot.child("user_id").toString());
+                                BM.setPhoto_id(singleSnapshot.child("photo_id").toString());
+
+                                BookmarkList.add(BM);
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+//                    try {
+//                        mapListAdapter = new MapListAdapter(getContext(),bookmark_location);
+//                    } catch (CloneNotSupportedException e) {
+//                        e.printStackTrace();
+//                    }
+                }
+            });
+
         }
 
         return view;
@@ -358,11 +407,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                        if(mListGuide.getVisibility() == View.INVISIBLE) {
                            try {
-                               mapDirectionAdapter = new MapDirectionAdapter(getContext(), mRoute.getGuideArray());
+                               mapListAdapter = new MapListAdapter(getContext(), mRoute.getGuideArray());
                            } catch (CloneNotSupportedException e) {
                                e.printStackTrace();
                            }
-                           mListGuide.setAdapter(mapDirectionAdapter);
+                           mListGuide.setAdapter(mapListAdapter);
                            mListGuide.setVisibility(View.VISIBLE);
                        }
 
