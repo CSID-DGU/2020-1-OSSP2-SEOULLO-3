@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/round_shape">
 
-
-
         <com.seoullo.seoullotour.Utils.SquareImageView
             android:id="@+id/post_image"
             android:layout_width="125dp"
