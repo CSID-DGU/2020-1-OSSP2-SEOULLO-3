@@ -67,7 +67,7 @@ public class BookmarkFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setLayoutManager(layoutManager);
         mRequestManager = Glide.with(this);
         buttonEvent();
         return view;
