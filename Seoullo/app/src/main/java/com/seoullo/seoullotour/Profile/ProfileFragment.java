@@ -110,7 +110,6 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         mDisplayName = (TextView) view.findViewById(R.id.display_name);
         mUsername = (TextView) view.findViewById(R.id.username);
-        mWebsite = (TextView) view.findViewById(R.id.website);
         mDescription = (TextView) view.findViewById(R.id.description);
         mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
         mPosts = (TextView) view.findViewById(R.id.tvPosts);
@@ -356,7 +355,7 @@ public class ProfileFragment extends Fragment {
 
         mDisplayName.setText(settings.getDisplay_name());
         mUsername.setText(settings.getUsername());
-        mWebsite.setText(settings.getWebsite());
+
         mDescription.setText(settings.getDescription());
      //   mProgressBar.setVisibility(View.GONE);
 

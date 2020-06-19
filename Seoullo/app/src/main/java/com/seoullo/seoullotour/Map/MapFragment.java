@@ -368,7 +368,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                 mListBookmark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                                         double lat = BookmarkList.get(position).getLatlng().get(0);
                                         double lng = BookmarkList.get(position).getLatlng().get(1);
 
@@ -376,6 +376,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         nMarker.setMap(null);
                                         nMarker.setPosition(itemLatLng);
                                         nMarker.setMap(nMap);
+
+                                        final InfoWindow mInfo = new InfoWindow();
+                                        mInfo.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                            @NonNull
+                                            @Override
+                                            public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                                String [] trimmed = BookmarkList.get(position).getLocation().split(" ");
+
+                                                return trimmed[trimmed.length - 1];
+                                            }
+                                        });
+                                        final boolean[] isInfoWindowOpen = {false};
+                                        nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                                            @Override
+                                            public boolean onClick(@NonNull Overlay overlay) {
+                                                if(!isInfoWindowOpen[0]) {
+                                                    mInfo.open(nMarker);
+                                                    isInfoWindowOpen[0] = true;
+                                                } else {
+                                                    mInfo.close();
+                                                    isInfoWindowOpen[0] = false;
+                                                }
+                                                return false;
+                                            }
+                                        });
 
                                         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(itemLatLng, 14f));
                                     }
@@ -477,7 +502,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 System.out.println("HH : " + Hrs + "MM : " + Min + "지연 : " + durationMinute);
 
-                if(Min + (int)durationMinute > 60) {
+                if(Min + (int)durationMinute >= 60) {
                    int toHrs = (Min + (int)durationMinute) / 60;
                    Min = (Min + (int)durationMinute) % 60;
                    Hrs = Hrs + toHrs;

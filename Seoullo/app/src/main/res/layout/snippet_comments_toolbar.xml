@@ -22,7 +22,7 @@
                     android:layout_marginEnd="20dp"
                     android:layout_centerVertical="true"
                     android:id="@+id/backArrow"
-                    android:src="@drawable/ic_backarrow"/>
+                    android:src="@drawable/ic_back_arrow"/>
 
 
                 <TextView
