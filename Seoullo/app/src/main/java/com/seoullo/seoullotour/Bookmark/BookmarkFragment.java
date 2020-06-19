@@ -1,6 +1,15 @@
 package com.seoullo.seoullotour.Bookmark;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,6 +62,7 @@ public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
     ScrollView scrollView;
     public RequestManager mRequestManager;
+    private ImageView mSeoulMap;
 
 
     public static BookmarkFragment newInstance() {
@@ -63,6 +73,25 @@ public class BookmarkFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_bookmark_list_item, container, false);
+
+        //draw circle
+        mSeoulMap = (ImageView) view.findViewById(R.id.bookmark_seoul_map);
+        Bitmap getSrc = BitmapFactory.decodeResource(getResources(), R.id.bookmark_seoul_map);
+        Bitmap tempBitmap = Bitmap.createBitmap(600, 500, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(tempBitmap);
+        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        Paint paint = new Paint();
+        paint.setColor(Color.YELLOW);
+
+        RectF rect = new RectF();
+        rect.set(100,100,200,200);
+
+        canvas.drawArc(rect, 0, 360, true, paint);
+
+        mSeoulMap.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+
+
 //        scrollView = view.findViewById(R.id.horizontal_scrollView);
 //        scrollView.setHorizontalScrollBarEnabled(true);
         mRequestManager = Glide.with(this);
