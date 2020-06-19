@@ -87,7 +87,6 @@ public class GridFragment extends Fragment {
         public GridFragmentRecyclerViewAdatper() {
 
             photos = new ArrayList<>();
-
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
                     .addListenerForSingleValueEvent(new ValueEventListener() {

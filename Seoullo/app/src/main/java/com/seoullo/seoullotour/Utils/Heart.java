@@ -15,7 +15,7 @@ public class Heart {
     private static final DecelerateInterpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
 
-    private ImageView heartWhite, heartRed;
+    public ImageView heartWhite, heartRed;
 
     public Heart(ImageView heartWhite, ImageView heartRed) {
         this.heartWhite = heartWhite;
@@ -45,7 +45,7 @@ public class Heart {
 
             animatorSet.playTogether(scaleDownY, scaleDownX);
 
-        } else if (heartRed.getVisibility() == View.GONE) {
+        } else if (heartWhite.getVisibility() == View.VISIBLE) {
             Log.d(TAG, "toggleLike: toggling red heart on.");
             heartRed.setScaleX(0.1f);
             heartRed.setScaleY(0.1f);
