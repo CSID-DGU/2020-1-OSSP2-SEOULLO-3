@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F3EFEF"
+    android:background="#F1ECEC"
     android:gravity="center"
     >
 
@@ -16,7 +16,7 @@
         android:text="ADD BOOKMARK"
 
         android:background="@drawable/round_shape_addbookmark"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:textSize="15sp"
         android:textStyle="bold"
         android:textColor="@color/white"

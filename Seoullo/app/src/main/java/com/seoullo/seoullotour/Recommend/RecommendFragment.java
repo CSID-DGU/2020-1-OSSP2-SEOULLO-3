@@ -198,9 +198,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                                 }
                                 else {
                                     Point point1 = new Point();
-                                    point1.location = placeList.get(position - 1).getVicinity();
-                                    point1.x = placeList.get(position - 1).getLatitude();
-                                    point1.y = placeList.get(position - 1).getLongitude();
+                                    point1.location = placeList.get(position).getVicinity();
+                                    point1.x = placeList.get(position).getLatitude();
+                                    point1.y = placeList.get(position).getLongitude();
                                     intent.putExtra("point", point1);
                                 }
                                 startActivity(intent);

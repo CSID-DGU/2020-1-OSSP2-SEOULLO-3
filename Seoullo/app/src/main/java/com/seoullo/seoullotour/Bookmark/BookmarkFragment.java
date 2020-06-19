@@ -204,7 +204,12 @@ public class BookmarkFragment extends Fragment {
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;
             imageView.setEnabled(true);
-            locationTextView.setText(mBookmarkList.get(position).getLocation());
+            String []getLocation = mBookmarkList.get(position).getLocation().split(" ");
+            String trimmedLocation = "";
+            for(int i=1; i< getLocation.length; ++i)
+                trimmedLocation += getLocation[i] + " ";
+
+            locationTextView.setText(trimmedLocation);
             countLikeTextView.setText("Likes " + mBookmarkList.get(position).getLikeCount());
             postTextView.setText(mBookmarkList.get(position).getCaption());
             postTextView.setEnabled(true);
