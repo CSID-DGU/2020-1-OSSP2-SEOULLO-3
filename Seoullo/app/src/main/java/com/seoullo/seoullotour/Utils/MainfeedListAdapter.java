@@ -361,8 +361,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String location = "not recognized";
-                String jsonString = dataSnapshot.toString();
-                mValue = jsonString.substring(jsonString.indexOf("value =") + 7, jsonString.length() - 1);
+                String jsonString = dataSnapshot.getValue().toString();
+                String []locationTrim = jsonString.split(" ");
+                mValue = "";
+                for(int i=2; i<locationTrim.length; ++i)
+                    mValue += " " + locationTrim[i];
                 mPlace.setVicinity(mValue);
                 holder.location.setText(mValue);
             }

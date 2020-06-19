@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/round_shape_bottom"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:id="@+id/map_search_rel_layout"
-
+        android:background="@drawable/round_shape_bottom"
         app:layout_constraintTop_toTopOf="parent"
         android:padding="5dp"
         android:paddingStart="10dp"
@@ -19,7 +18,6 @@
         <ImageButton
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:id="@+id/map_search_btn_bookmark"
             android:src="@drawable/ic_ellipses"
             android:background="@color/white"
@@ -47,13 +45,17 @@
             />
     </RelativeLayout>
     <ListView
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/round_shape"
         android:id="@+id/map_bookmark_list"
+
         app:layout_constraintTop_toBottomOf="@id/map_search_rel_layout"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

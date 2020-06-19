@@ -139,7 +139,11 @@ public class RecommendFirstFragment extends Fragment {
         vQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mVicinity.setText(dataSnapshot.getValue().toString());
+                String [] location = dataSnapshot.getValue().toString().split(" ");
+                String trimmedLocation = "";
+                for(int i=2; i<location.length;++i)
+                    trimmedLocation += location[i] + " ";
+                mVicinity.setText(trimmedLocation);
             }
 
             @SuppressLint("SetTextI18n")

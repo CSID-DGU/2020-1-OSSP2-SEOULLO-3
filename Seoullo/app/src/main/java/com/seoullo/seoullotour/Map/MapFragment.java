@@ -318,46 +318,82 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
 
-            
+            final boolean[] isBookmarkListOpen = new boolean[]{false};
 
             mBookmarkBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //TODO: 지도에 북마크한 객체 표시하기
+                    if(!isBookmarkListOpen[0]) {
+                        isBookmarkListOpen[0] = true;
+                        mListBookmark.setVisibility(View.VISIBLE);
 
+                        //get from firebase
+                        Query query = FirebaseDatabase.getInstance().getReference()
+                                .child("bookmarks")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                final ArrayList<Bookmark> BookmarkList = new ArrayList<>();
 
-                    //get from firebase
-                    Query query = FirebaseDatabase.getInstance().getReference()
-                                    .child("bookmarks")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            ArrayList<Bookmark> BookmarkList = new ArrayList<>();
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    Bookmark BM = new Bookmark();
+                                    BM.setImage_name(singleSnapshot.child("image_name").toString());
+                                    ArrayList<Double> LatLng = new ArrayList<>();
+                                    LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").getValue().toString()));
+                                    LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").getValue().toString()));
+                                    BM.setLatlng(LatLng);
+                                    String []locationSplit = singleSnapshot.child("location").getValue().toString().split(" ");
+                                    String trimmedLocation = "";
+                                    for(int loop=2; loop < locationSplit.length; ++loop) {
+                                        trimmedLocation += " " +  locationSplit[loop];
+                                    }
+                                    BM.setLocation(trimmedLocation);
+                                    BM.setUser_id(singleSnapshot.child("user_id").toString());
+                                    BM.setPhoto_id(singleSnapshot.child("photo_id").toString());
 
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                Bookmark BM = new Bookmark();
-                                BM.setImage_name(singleSnapshot.child("image_name").toString());
-                                ArrayList<Double> LatLng = new ArrayList<>();
-                                LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").toString()));
-                                LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").toString()));
-                                BM.setLatlng(LatLng);
-                                BM.setLocation(singleSnapshot.child("location").toString());
-                                BM.setUser_id(singleSnapshot.child("user_id").toString());
-                                BM.setPhoto_id(singleSnapshot.child("photo_id").toString());
+                                    BookmarkList.add(BM);
+                                }
+                                ArrayList<String> BookmarkLocationList = new ArrayList<>();
+                                for (int i = 0; i < BookmarkList.size(); ++i) {
+                                    BookmarkLocationList.add(i, BookmarkList.get(i).getLocation());
+                                }
+                                try {
+                                    mapListAdapter = new MapListAdapter(getContext(), BookmarkLocationList);
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                                mListBookmark.setAdapter(mapListAdapter);
 
-                                BookmarkList.add(BM);
+                                mListBookmark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        double lat = BookmarkList.get(position).getLatlng().get(0);
+                                        double lng = BookmarkList.get(position).getLatlng().get(1);
+
+                                        LatLng itemLatLng = new LatLng(lat, lng);
+                                        nMarker.setMap(null);
+                                        nMarker.setPosition(itemLatLng);
+                                        nMarker.setMap(nMap);
+
+                                        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(itemLatLng, 14f));
+                                    }
+                                });
+
                             }
 
 
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
+                            }
+                        });
+                    } //if
+                    else {
+                        mListBookmark.setVisibility(View.GONE);
+                        isBookmarkListOpen[0] = false;
+                    }
 
 
 //                    try {
@@ -529,7 +565,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
         uiSettings.setLogoGravity(1);
-        uiSettings.setLogoMargin(5, 5, 450, 1000);
+        uiSettings.setLogoMargin(450, 1600, 5, 5);
         uiSettings.setAllGesturesEnabled(true);
 
         //location change listener

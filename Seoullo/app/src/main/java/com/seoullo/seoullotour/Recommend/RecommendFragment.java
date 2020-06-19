@@ -44,6 +44,7 @@ import com.seoullo.seoullotour.R;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
@@ -136,9 +137,10 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //        } else {
 //            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
 //        }
+        Random rand = new Random();
         viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
-        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(0)));
-        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(1)));
+        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
+        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
 
         //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
@@ -210,9 +212,9 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             case 0:
                                 return "선택하신 곳 \n" +mPlace.getVicinity();
                             case 1:
-                                return placeList.get(0).getName();
-                            case 2:
                                 return placeList.get(1).getName();
+                            case 2:
+                                return placeList.get(2).getName();
                             default:
                                 return "장소 추천";
                         }
@@ -253,7 +255,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             break;
                         case 1:
 
-                            LatLng latlng1 = new LatLng(placeList.get(0).getLatitude(), placeList.get(0).getLongitude());
+                            LatLng latlng1 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
                             marker.setPosition(latlng1);
                             marker.setIconTintColor(Color.YELLOW);
                             marker.setMap(nMap);
@@ -263,7 +265,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             break;
                         case 2:
 
-                            LatLng latlng2 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
+                            LatLng latlng2 = new LatLng(placeList.get(2).getLatitude(), placeList.get(2).getLongitude());
                             marker.setPosition(latlng2);
                             marker.setIconTintColor(Color.BLUE);
                             marker.setMap(nMap);

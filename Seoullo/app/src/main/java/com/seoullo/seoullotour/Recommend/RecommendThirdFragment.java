@@ -123,7 +123,7 @@ public class RecommendThirdFragment extends Fragment {
             mScrollItems.addView(item);
         }
 
-        String desc = "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
+        String desc = "SEOULLO 에서 추천해드리는 장소 #2\n 지도에 있는 마커를 눌러 지도 기능을 사용해보세요 !";
         mDesc.setText(desc);
         mAnotherDecs.setText("this is another part of desc");
         //Image
