@@ -8,41 +8,47 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:id="@+id/profileToolbar">
+            android:id="@+id/profileToolbar"
+            android:gravity="center"
+            >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="15dp"
+                >
 
                 <ImageView
                     android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_centerVertical="true"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
                     android:id="@+id/backArrow"
                     android:src="@drawable/ic_back_arrow" />
 
                 <TextView
                     android:layout_toRightOf="@id/backArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="Edit Profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toStartOf="@id/saveChanges"
+                    android:layout_toEndOf="@id/backArrow"
+                    android:gravity="center"
+                    android:text="프로필 수정"
                     android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:layout_marginStart="5dp"
                     android:id="@+id/profileName" />
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_centerVertical="true"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:foregroundGravity="center_horizontal"
                     android:id="@+id/saveChanges"
-                    android:src="@drawable/ic_checkmark"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="18sp"
+                    android:textColor="@color/theme_lightblue"
+                    android:gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:text="수정"
+                    android:layout_alignParentEnd="true"/>
 
 
 

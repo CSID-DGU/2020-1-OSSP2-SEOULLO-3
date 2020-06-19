@@ -99,8 +99,9 @@
                         android:paddingBottom="3dp"
                         android:text="프로필 수정"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
                 </LinearLayout>
             </RelativeLayout>
 

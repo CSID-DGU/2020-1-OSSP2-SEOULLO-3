@@ -114,8 +114,8 @@ public class ProfileFragment extends Fragment {
         mDescription = (TextView) view.findViewById(R.id.description);
         mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
         mPosts = (TextView) view.findViewById(R.id.tvPosts);
-        mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
-        mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
+        //mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
+        //mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
