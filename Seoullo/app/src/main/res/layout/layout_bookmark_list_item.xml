@@ -29,7 +29,6 @@
             android:layout_height="20dp"
             android:layout_toRightOf="@id/post_image"
             android:layout_margin="5dp"
-            android:orientation="horizontal"
             android:layout_below="@id/post_text">
 
             <ImageView

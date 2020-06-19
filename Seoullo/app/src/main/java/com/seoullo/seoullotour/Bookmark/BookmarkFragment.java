@@ -48,18 +48,10 @@ import java.util.Map;
 public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
 
-    private ArrayList<Photo> mPhotos;
-    private ArrayList<Photo> mPaginatedPhotos;
-    private ArrayList<String> mAllUserPosts;
-    private ListView mListView;
     private Button addBookmarkButton;
-    private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
-    private int mResults;
     public RequestManager mRequestManager;
 
-    public static BookmarkFragment newInstance() {
-        return new BookmarkFragment();
-    }
+    public static BookmarkFragment newInstance() { return new BookmarkFragment(); }
 
     @Nullable
     @Override
@@ -75,10 +67,7 @@ public class BookmarkFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
-        mListView = (ListView) view.findViewById(R.id.listView);
-        mAllUserPosts = new ArrayList<>();
-        mPhotos = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         mRequestManager = Glide.with(this);
         buttonEvent();
         return view;
@@ -122,7 +111,6 @@ public class BookmarkFragment extends Fragment {
 
     private class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRecyclerViewAdapter.ViewHolder> {
         private ArrayList<Bookmark> mBookmarkList;
-        private ArrayList<Photo> mBookmarkPhotos;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             // Your holder should contain a member variable
@@ -131,11 +119,8 @@ public class BookmarkFragment extends Fragment {
             public TextView locationTextView;
             public TextView postTextView;
             public TextView countLikeTextView;
-            // We also create a constructor that accepts the entire item row
-            // and does the view lookups to find each subview
+
             public ViewHolder(View itemView) {
-                // Stores the itemView in a public final member variable that can be used
-                // to access the context from any ViewHolder instance.
                 super(itemView);
                 imageView = (ImageView) itemView.findViewById(R.id.post_image);
                 postTextView = (TextView) itemView.findViewById(R.id.post_text);
@@ -144,7 +129,6 @@ public class BookmarkFragment extends Fragment {
             }
         }
 
-        //        public BookmarkRecyclerViewAdapter(ArrayList<Photo> bookmark) {
         public BookmarkRecyclerViewAdapter(ArrayList<Photo> bookmark) {
 
             mBookmarkList = new ArrayList<>();
@@ -227,7 +211,6 @@ public class BookmarkFragment extends Fragment {
             locationTextView.setEnabled(true);
             countLikeTextView.setEnabled(true);
 
-            //TODO: 클릭하면 게시물로 이동하도록 해야 함
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
