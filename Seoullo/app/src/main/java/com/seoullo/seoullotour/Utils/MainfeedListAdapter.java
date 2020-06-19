@@ -686,6 +686,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         bookmark.setPhoto_id(holder.photo.getPhoto_id());
         bookmark.setImage_name(holder.photo.getImage_name());
         bookmark.setLocation(holder.photo.getLocation());
+        System.out.println(holder.photo.getLocation() + "=================");
         bookmark.setLatlng(holder.photo.getLatlng());
         bookmark.setLikeCount(holder.photo.getLikeCount());
         bookmark.setCaption(holder.photo.getCaption());
