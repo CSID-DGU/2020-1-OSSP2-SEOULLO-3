@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp">
@@ -40,7 +41,7 @@
         <RelativeLayout
             android:id="@+id/post_location"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/post_image_cardview"
             android:orientation="horizontal"
             android:padding="5dp"
@@ -61,14 +62,14 @@
             <TextView
                 android:id="@+id/show_location"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/textview_clicked"
-                android:layout_toRightOf="@id/location_image"
+                android:layout_toEndOf="@id/location_image"
                 android:text="LOCATION"
                 android:textSize="12sp"
                 android:gravity="center_vertical"
                 android:paddingStart="5dp"
-                />
+                tools:ignore="RtlSymmetry" />
         </RelativeLayout>
         <LinearLayout
             android:layout_width="wrap_content"
