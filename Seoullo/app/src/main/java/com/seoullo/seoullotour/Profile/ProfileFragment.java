@@ -143,8 +143,8 @@ public class ProfileFragment extends Fragment {
         setupFirebaseAuth();
         setupGridView();
 
-        getFollowersCount();
-        getFollowingCount();
+        //getFollowersCount();
+        //getFollowingCount();
         getPostsCount();
         getBookmarkCount();
 
@@ -276,7 +276,7 @@ public class ProfileFragment extends Fragment {
                     Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
                     mFollowersCount++;
                 }
-                mFollowers.setText(String.valueOf(mFollowersCount));
+                //mFollowers.setText(String.valueOf(mFollowersCount));
             }
 
             @Override

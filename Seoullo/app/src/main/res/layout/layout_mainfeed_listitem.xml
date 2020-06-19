@@ -74,7 +74,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/group_location"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:padding="10dp"
+            />
 
         <RelativeLayout
             android:id="@+id/relLayout2"

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/round_shape_top"
     android:padding="10dp">
-
     <LinearLayout
         android:id="@+id/title_group"
         android:layout_width="match_parent"
@@ -138,7 +145,7 @@
 
         <TextView
             android:id="@+id/recommend_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
 
             android:layout_margin="10dp"
@@ -149,32 +156,5 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/group_info2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@id/group_info1">
-
-        <TextView
-            android:id="@+id/recommend_anotherdesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:gravity="top"
-
-            android:text="another decriptions will be located here !"
-            android:textColor="@color/theme_deepblue"
-
-            android:textSize="15sp" />
-
-    </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

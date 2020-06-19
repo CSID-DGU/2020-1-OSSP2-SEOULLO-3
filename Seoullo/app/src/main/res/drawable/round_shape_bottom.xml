@@ -4,8 +4,8 @@
         <shape android:shape="rectangle">
             <solid android:color="#d8d8d8"/>
             <corners
-                android:bottomLeftRadius="8dp"
-                android:bottomRightRadius="8dp" />
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp" />
         </shape>
     </item>
     <item android:bottom="3px"
@@ -14,8 +14,8 @@
             android:shape="rectangle">
             <solid android:color="#FFFFFF" />
             <corners
-                android:bottomLeftRadius="8dp"
-                android:bottomRightRadius="8dp" />
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp" />
         </shape>
     </item>
 </layer-list>

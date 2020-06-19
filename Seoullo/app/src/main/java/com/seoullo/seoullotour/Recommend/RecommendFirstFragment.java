@@ -103,8 +103,6 @@ public class RecommendFirstFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("==================================Recommend 1st Fragment");
-
         View view;
 
         API_KEY = getApiKeyFromManifest(this.getContext());
@@ -114,7 +112,6 @@ public class RecommendFirstFragment extends Fragment {
         mVicinity = (TextView) view.findViewById(R.id.recommend_vicinity);
         mImage = (ImageView) view.findViewById(R.id.recommend_image);
         mDesc = (TextView) view.findViewById(R.id.recommend_desc);
-        mAnotherDecs = (TextView) view.findViewById(R.id.recommend_anotherdesc);
         mScrollItems = (LinearLayout) view.findViewById(R.id.scroll_type_item);
 
         //이미지

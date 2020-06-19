@@ -85,7 +85,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     //location and places
     private String mValue;
     private ArrayList<Photo> photosList = new ArrayList<>();
-    private Place mPlace = new Place();
+//    private Place mPlace = new Place();
 
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -116,7 +116,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Mark bookmark;
        // GestureDetector detector;
         Photo photo;
-
+        Place mPlace = new Place();
     }
 
     @NonNull
@@ -394,7 +394,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 mValue = "";
                 for(int i=2; i<locationTrim.length; ++i)
                     mValue += " " + locationTrim[i];
-                mPlace.setVicinity(mValue);
+                holder.mPlace.setVicinity(mValue);
                 holder.location.setText(mValue);
             }
 
@@ -411,8 +411,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         latlngQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mPlace.setLatitude(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
-                mPlace.setLongitude(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
+                holder.mPlace.setLatitude(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
+                holder.mPlace.setLongitude(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
             }
 
             @Override
@@ -482,7 +482,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                 Log.d(TAG,"placeList size is : " + placeList.size());
                 Intent intent = new Intent(mContext, RecommendActivity.class);
-                intent.putExtra("firstPlace", mPlace);
+                intent.putExtra("firstPlace", holder.mPlace);
                 intent.putExtra("places", (ArrayList<Place>)placeList);
                 intent.putExtra("user_id",photosList.get(position).getUser_id());
                 intent.putExtra("image_name",holder.photo.getImage_name());

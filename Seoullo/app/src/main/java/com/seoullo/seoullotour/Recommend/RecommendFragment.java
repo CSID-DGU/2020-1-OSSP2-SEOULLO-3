@@ -68,6 +68,8 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private String ImageName;
     private String PhotoId;
     private Place mPlace;
+    private int RecommendFirst = 0;
+    private int RecommendSecond = 0;
     private int cnt = 0;
     //뷰페이저
     public ViewPager viewPager;
@@ -108,7 +110,6 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("==================================Recommend Fragment");
 
         //네이버지도
         NAVER_CLIENT_ID = getApiKeyFromManifest(this.getContext());
@@ -138,9 +139,36 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 //            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
 //        }
         Random rand = new Random();
+        ArrayList<Integer> IntArr = new ArrayList<>();
+        for(int i=0;i<2;++i) {
+            int randnum = rand.nextInt(placeList.size());
+            if(RecommendFirst == 0) {
+                if(!IntArr.contains(randnum)) {
+                    if(placeList.get(randnum).getLatitude() != mPlace.getLatitude()) {
+                        IntArr.add(randnum);
+                        RecommendFirst = randnum;
+                    } else {
+                        i--;
+                        continue;
+                    }
+                }
+            }
+            else {
+                if(!IntArr.contains(randnum)) {
+                    if (placeList.get(randnum).getLatitude() != mPlace.getLatitude()) {
+                        IntArr.add(randnum);
+                        RecommendSecond = randnum;
+                    }
+                } else {
+                    i--;
+                    continue;
+                }
+            }
+        }
+        IntArr.clear();
         viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
-        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(1)));
-        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(2)));
+        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(RecommendFirst)));
+        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(RecommendSecond)));
 
         //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
@@ -196,12 +224,19 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                                     point.location = mPlace.getVicinity();
                                     intent.putExtra("point", point);
                                 }
-                                else {
+                                else if(position == 1) {
                                     Point point1 = new Point();
-                                    point1.location = placeList.get(position - 1).getVicinity();
-                                    point1.x = placeList.get(position - 1).getLatitude();
-                                    point1.y = placeList.get(position - 1).getLongitude();
+                                    point1.location = placeList.get(RecommendFirst).getVicinity();
+                                    point1.x = placeList.get(RecommendFirst).getLatitude();
+                                    point1.y = placeList.get(RecommendFirst).getLongitude();
                                     intent.putExtra("point", point1);
+                                }
+                                else {
+                                    Point point2 = new Point();
+                                    point2.location = placeList.get(RecommendSecond).getVicinity();
+                                    point2.x = placeList.get(RecommendSecond).getLatitude();
+                                    point2.y = placeList.get(RecommendSecond).getLongitude();
+                                    intent.putExtra("point", point2);
                                 }
                                 startActivity(intent);
                                 getActivity().finish();
@@ -210,11 +245,11 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                         });
                         switch (position) {
                             case 0:
-                                return "선택하신 곳 \n" +mPlace.getVicinity();
+                                return mPlace.getVicinity();
                             case 1:
-                                return placeList.get(1).getName();
+                                return placeList.get(RecommendFirst).getName();
                             case 2:
-                                return placeList.get(2).getName();
+                                return placeList.get(RecommendSecond).getName();
                             default:
                                 return "장소 추천";
                         }
@@ -255,7 +290,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             break;
                         case 1:
 
-                            LatLng latlng1 = new LatLng(placeList.get(1).getLatitude(), placeList.get(1).getLongitude());
+                            LatLng latlng1 = new LatLng(placeList.get(RecommendFirst).getLatitude(), placeList.get(RecommendFirst).getLongitude());
                             marker.setPosition(latlng1);
                             marker.setIconTintColor(Color.YELLOW);
                             marker.setMap(nMap);
@@ -265,7 +300,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
                             break;
                         case 2:
 
-                            LatLng latlng2 = new LatLng(placeList.get(2).getLatitude(), placeList.get(2).getLongitude());
+                            LatLng latlng2 = new LatLng(placeList.get(RecommendSecond).getLatitude(), placeList.get(RecommendSecond).getLongitude());
                             marker.setPosition(latlng2);
                             marker.setIconTintColor(Color.BLUE);
                             marker.setMap(nMap);
