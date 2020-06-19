@@ -71,8 +71,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private int DAY = 30;
     private int MONTH = 12;
 
+
+
     public RequestManager mRequestManager;
     OnLoadMoreItemsListener mOnLoadMoreItemsListener;
+
+    //report
+    private AlertDialog reportDialog;
+    private String[] reportlists = {"광고성 게시글 신고", "부적절한 게시글"};
+    private boolean[] reportSelected = new boolean[reportlists.length];
+
 
     private static final String TAG = "MainfeedListAdapter";
 
@@ -86,7 +94,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private String mValue;
     private ArrayList<Photo> photosList = new ArrayList<>();
 //    private Place mPlace = new Place();
-
     private ArrayList<Place> placeList = new ArrayList<>();
 
     public MainfeedListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Photo> objects, RequestManager requestManager) {
@@ -206,9 +213,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             if (item.getTitle().equals("삭제")) {
                                 deletePhoto(photosList.get(position),parent,position);
                             }
-                            else if (item.getTitle().equals("신고")) {
-                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
-                            }
+
                             return false;
                         }
                     });
@@ -221,7 +226,32 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             if (item.getTitle().equals("신고")) {
-                                Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                                reportDialog  = new AlertDialog.Builder(parent.getContext() )
+                                        .setMultiChoiceItems(reportlists, reportSelected, new DialogInterface.OnMultiChoiceClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                                reportSelected[i] = b;
+                                            }
+                                        })
+                                        .setTitle("신고")
+                                        .setPositiveButton("접수", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                        for(int i = 0; i < reportSelected.length; i++) {
+                                            if(reportSelected[i])
+                                            mReference.child("reports")
+                                                    .child(holder.photo.getPhoto_id())
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .child(String.valueOf(i))
+                                                    .setValue(reportlists[i]);
+                                        }
+                                        Toast.makeText(parent.getContext(), "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).setNegativeButton("취소",null)
+                                        .show();
                             }
                             return false;
                         }
