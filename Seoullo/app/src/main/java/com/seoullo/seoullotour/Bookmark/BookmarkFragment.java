@@ -71,7 +71,7 @@ public class BookmarkFragment extends Fragment {
         addBookmarkButton = (Button) view.findViewById(R.id.add_bookmark_button);
         BookmarkRecyclerViewAdapter adapter = new BookmarkRecyclerViewAdapter(bookmark);
         LinearLayoutManager layoutManager
-                = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setAdapter(adapter);

@@ -8,6 +8,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Surface"
             android:id="@+id/bookmarkToolbar">
 
             <RelativeLayout
@@ -19,7 +20,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_centerInParent="true"
-                    android:text="Bookmark"
+                    style="@style/ThemeOverlay.MaterialComponents.Toolbar.Surface"
+                    android:text="BOOKMARK"
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:layout_marginStart="5dp"
