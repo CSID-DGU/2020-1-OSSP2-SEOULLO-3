@@ -56,8 +56,13 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private String mParam;
 
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    public static HomeFragment newInstance(String photoID) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM1,  photoID);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     public static Fragment newInstance(Photo clickedPhoto, String photoID) {

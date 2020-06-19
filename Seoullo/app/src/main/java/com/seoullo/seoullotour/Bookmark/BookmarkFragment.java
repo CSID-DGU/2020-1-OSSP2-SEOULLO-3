@@ -9,25 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,9 +47,15 @@ import java.util.Map;
 
 public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
-    ScrollView scrollView;
-    public RequestManager mRequestManager;
 
+    private ArrayList<Photo> mPhotos;
+    private ArrayList<Photo> mPaginatedPhotos;
+    private ArrayList<String> mAllUserPosts;
+    private ListView mListView;
+    private Button addBookmarkButton;
+    private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
+    private int mResults;
+    public RequestManager mRequestManager;
 
     public static BookmarkFragment newInstance() {
         return new BookmarkFragment();
@@ -62,19 +64,60 @@ public class BookmarkFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_bookmark_list_item, container, false);
-//        scrollView = view.findViewById(R.id.horizontal_scrollView);
-//        scrollView.setHorizontalScrollBarEnabled(true);
+        View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
+
         mRequestManager = Glide.with(this);
         ArrayList<Photo> bookmark = new ArrayList<>();
+        addBookmarkButton = (Button) view.findViewById(R.id.add_bookmark_button);
         BookmarkRecyclerViewAdapter adapter = new BookmarkRecyclerViewAdapter(bookmark);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, true));
-
-        Log.d(TAG, "bookmark ing");
+        recyclerView.setLayoutManager(layoutManager);
+        mListView = (ListView) view.findViewById(R.id.listView);
+        mAllUserPosts = new ArrayList<>();
+        mPhotos = new ArrayList<>();
+        mRequestManager = Glide.with(this);
+        buttonEvent();
         return view;
+    }
+
+    public void buttonEvent(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final String[] photo_id = new String[1];
+        reference.child(getString(R.string.dbname_photos))
+                .child(getString(R.string.field_photo_id))
+                .orderByChild(getString(R.string.field_likes_count))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.getValue() != null) {
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                Photo photo = new Photo();
+                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                photo_id[0] = objectMap.get(getString(R.string.field_photo_id)).toString();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        addBookmarkButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.rel_layout_3, HomeFragment.newInstance(photo_id[0]));
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
     }
 
     private class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRecyclerViewAdapter.ViewHolder> {
@@ -85,15 +128,19 @@ public class BookmarkFragment extends Fragment {
             // Your holder should contain a member variable
             // for any view that will be set as you render a row
             public ImageView imageView;
-            public TextView textView;
+            public TextView locationTextView;
+            public TextView postTextView;
+            public TextView countLikeTextView;
             // We also create a constructor that accepts the entire item row
             // and does the view lookups to find each subview
             public ViewHolder(View itemView) {
                 // Stores the itemView in a public final member variable that can be used
                 // to access the context from any ViewHolder instance.
                 super(itemView);
-                imageView = (ImageView) itemView.findViewById(R.id.bookmark_image);
-                textView = (TextView) itemView.findViewById(R.id.bookmark_location);
+                imageView = (ImageView) itemView.findViewById(R.id.post_image);
+                postTextView = (TextView) itemView.findViewById(R.id.post_text);
+                locationTextView = (TextView) itemView.findViewById(R.id.show_location);
+                countLikeTextView = (TextView) itemView.findViewById(R.id.count_likes);
             }
         }
 
@@ -117,6 +164,8 @@ public class BookmarkFragment extends Fragment {
                                 bookmark.setImage_name(objectMap.get("image_name").toString());
                                 bookmark.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 bookmark.setLocation(objectMap.get("location").toString());
+                                bookmark.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                                bookmark.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
                                 bookmark.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 mBookmarkList.add(bookmark);
                             }
@@ -129,49 +178,6 @@ public class BookmarkFragment extends Fragment {
                         }
 
                     });
-            for(int i=0;i<mBookmarkList.size();i++) {
-                reference.child(getString(R.string.dbname_photos))
-                        .orderByChild(getString(R.string.field_photo_id))
-                        .equalTo(mBookmarkList.get(i).getPhoto_id())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                mBookmarkPhotos.clear();
-                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Photo photo = new Photo();
-                                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                                    photo.setImage_name(objectMap.get("image_name").toString());
-                                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                                    photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
-                                    ArrayList<Comment> comments = new ArrayList<Comment>();
-                                    for (DataSnapshot dSnapshot : singleSnapshot
-                                            .child(getString(R.string.field_comments)).getChildren()) {
-                                        Comment comment = new Comment();
-                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                        comments.add(comment);
-                                    }
-                                    photo.setComments(comments);
-
-                                    mBookmarkPhotos.add(photo);
-                                }
-                                notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-
-                        });
-            }
         }
 
         @Override
@@ -180,7 +186,7 @@ public class BookmarkFragment extends Fragment {
             LayoutInflater inflater = LayoutInflater.from(context);
 
             // Inflate the custom layout
-            View bookmarkView = inflater.inflate(R.layout.recycler_bookmark_item, parent, false);
+            View bookmarkView = inflater.inflate(R.layout.layout_bookmark_list_item, parent, false);
 
             // Return a new holder instance
             ViewHolder viewHolder = new ViewHolder(bookmarkView);
@@ -191,8 +197,10 @@ public class BookmarkFragment extends Fragment {
         @Override
         public void onBindViewHolder(final BookmarkRecyclerViewAdapter.ViewHolder viewHolder, final int position) {
             // Get the data model based on position
-            TextView textView = viewHolder.textView;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            TextView postTextView = viewHolder.postTextView;
+            TextView locationTextView = viewHolder.locationTextView;
+            TextView countLikeTextView = viewHolder.countLikeTextView;
+
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference()
 //                    .child(getString(R.string.dbname_bookmarks))
@@ -208,27 +216,17 @@ public class BookmarkFragment extends Fragment {
                                 .into(viewHolder.imageView);
                         }
                     });
-//            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Uri> task) {
-//                    if (task.isSuccessful()) {
-//                        // Glide 이용하여 이미지뷰에 로딩
-//                        mRequestManager
-//                                .load(task.getResult())
-//                                .override(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().widthPixels / 3)
-//                                .into(viewHolder.imageView);
-//
-//                    } else {
-//                    }
-//                }
-//            });
 
             // Set item views based on your views and data model
             ImageView imageView = viewHolder.imageView;
             imageView.setEnabled(true);
-//            textView.setText(mBookmarkPhotos.get(position).getLocation());
+            locationTextView.setText(mBookmarkList.get(position).getLocation());
+            countLikeTextView.setText("Likes " + mBookmarkList.get(position).getLikeCount());
+            postTextView.setText(mBookmarkList.get(position).getCaption());
+            postTextView.setEnabled(true);
+            locationTextView.setEnabled(true);
+            countLikeTextView.setEnabled(true);
 
-            textView.setEnabled(true);
             //TODO: 클릭하면 게시물로 이동하도록 해야 함
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
 
