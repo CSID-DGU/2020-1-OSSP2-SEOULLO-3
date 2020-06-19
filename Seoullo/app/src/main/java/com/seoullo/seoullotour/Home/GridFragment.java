@@ -155,7 +155,7 @@ public class GridFragment extends Fragment {
             ImageView imageView = new ImageView(parent.getContext());
             imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, width));
             imageView.setPadding(1, 1, 1, 1);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //            imageView.setCropToPadding(true);
 //            imageView.setAdjustViewBounds(true);
 
