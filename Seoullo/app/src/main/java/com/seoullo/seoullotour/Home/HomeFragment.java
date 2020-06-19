@@ -56,8 +56,13 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private String mParam;
 
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    public static HomeFragment newInstance(String photoID) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM1,  photoID);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     public static Fragment newInstance(Photo clickedPhoto, String photoID) {
@@ -68,6 +73,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
     public static Fragment newInstance(Bookmark clickedPhoto, String photoID) {
         HomeFragment fragment = new HomeFragment();
         Bundle bundle = new Bundle();
@@ -76,6 +82,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -98,9 +105,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void getPhotos() {
-//        Log.d(TAG, "getPhotos: getting photos");
-//
-       DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Log.d(TAG, "getPhotos: getting photos");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_photos))
                 .orderByChild(getString(R.string.field_photo_id))
 //                .equalTo(mParam)
@@ -108,7 +115,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.getValue() != null) {
+                        if (dataSnapshot.getValue() != null) {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
@@ -121,8 +128,8 @@ public class HomeFragment extends Fragment {
                                 photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                                 photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                                 photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                                photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
+                                photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 photo.setLocation(objectMap.get("location").toString());
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
@@ -150,7 +157,7 @@ public class HomeFragment extends Fragment {
 
         reference.child(getString(R.string.dbname_photos))
 //                .child(getString(R.string.field_photo_id))
-            .orderByChild(getString(R.string.field_photo_id))
+                .orderByChild(getString(R.string.field_photo_id))
 //                .orderByValue()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -186,19 +193,19 @@ public class HomeFragment extends Fragment {
                             photo.setComments(comments);
                             photos.add(photo);
 
-            }
+                        }
 
-            displayPhotos();
+                        displayPhotos();
 
-            for (int i = 0; i < photos.size(); i++) {
+                        for (int i = 0; i < photos.size(); i++) {
 
-                mPhotos.add(photos.get(i));
-            }
+                            mPhotos.add(photos.get(i));
+                        }
 
-            try {
-                mResults = 10;
-                mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(HomeFragment.this.getContext(), R.layout.layout_mainfeed_listitem, mPhotos,mRequestManager);
-                mListView.setAdapter(mAdapter);
+                        try {
+                            mResults = 10;
+                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(HomeFragment.this.getContext(), R.layout.layout_mainfeed_listitem, mPhotos, mRequestManager);
+                            mListView.setAdapter(mAdapter);
 
 //                            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //
@@ -217,20 +224,19 @@ public class HomeFragment extends Fragment {
 //                            });
 
 
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
+                        } catch (IndexOutOfBoundsException e) {
+                            Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
+                        }
+                    }
 
-            } catch (NullPointerException e) {
-                Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
-            } catch (IndexOutOfBoundsException e) {
-                Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
-            }
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    });
-}
+                    }
+                });
+    }
 
     private void displayPhotos() {
         try {
@@ -282,7 +288,6 @@ public class HomeFragment extends Fragment {
     //--> 필요가 없는 것 같음.
 /*    private void getAllPosts() {
         Log.d(TAG, "getAllPosts: show all posts");
-
         FirebaseDatabase.getInstance().getReference()
                 .child(getString(R.string.dbname_photos))
                 .orderByChild(getString(R.string.field_likes_count))
@@ -292,16 +297,13 @@ public class HomeFragment extends Fragment {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                             Log.d(TAG, "onDataChange: found posts: " +
                                     singleSnapshot.child(getString(R.string.field_photo_id)).getValue());
-
                             mAllUserPosts.add(singleSnapshot.child(getString(R.string.field_photo_id)).getValue().toString());
                         }
                         //get the photos
                         getPhotos();
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
     }*/

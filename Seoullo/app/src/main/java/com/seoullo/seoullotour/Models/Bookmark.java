@@ -15,6 +15,8 @@ public class Bookmark implements Parcelable, Serializable {
     private String photo_id;
     private String image_name;
     private String location;
+    private String caption;
+    private int likeCount;
     private ArrayList<Double> latlng;
 
     public Bookmark() {
@@ -29,6 +31,8 @@ public class Bookmark implements Parcelable, Serializable {
         photo_id = in.readString();
         image_name = in.readString();
         location = in.readString();
+        caption = in.readString();
+        likeCount = in.readInt();
     }
 
     public static final Creator<Bookmark> CREATOR = new Creator<Bookmark>() {
@@ -59,6 +63,18 @@ public class Bookmark implements Parcelable, Serializable {
 
     public void setImage_name(String image_name) { this.image_name = image_name; }
 
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public Integer getLikeCount() { return likeCount; }
+
+    public void setLikeCount(Integer likeCount) { this.likeCount = likeCount; }
+
     public String getLocation() { return location; }
 
     public void setLocation(String location) { this.location = location; }
@@ -85,7 +101,7 @@ public class Bookmark implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeString(image_name);
-
+        dest.writeString(caption);
         dest.writeString(photo_id);
         dest.writeString(user_id);
         dest.writeString(location);
