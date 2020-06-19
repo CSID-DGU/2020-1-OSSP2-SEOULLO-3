@@ -617,12 +617,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-            Query query = reference
+            reference
                     .child(mContext.getString(R.string.dbname_photos))
                     .child(mHolder.photo.getPhoto_id())
-                    .child(mContext.getString(R.string.field_likes));
-
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    .child(mContext.getString(R.string.field_likes)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -654,7 +652,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     .removeValue();
 
                             mHolder.heart.toggleLike();
-
                             getLikesString(mHolder);
                         }
                         //case2: The user has not liked the photo
@@ -788,8 +785,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         try {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//            reference.child(mContext.getString(R.string.dbname_photos))
-//                    .child(holder.photo.getPhoto_id())
             reference.child(mContext.getString(R.string.dbname_bookmarks))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child(holder.photo.getPhoto_id())
@@ -799,86 +794,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     if (dataSnapshot.getValue() != null) {
                         holder.bookmark.toggleBookmark();
                     }
-
-//                            holder.bookmarkByCurrentUser = true;
-//                            holder.bookmark.bookmarkBlack.setEnabled(true);
-//                            holder.bookmark.bookmarkWhite.setEnabled(false);
-
-
-//                    holder.users = new StringBuilder();
-//                    if(dataSnapshot.getValue() != null) {
-//                        Bookmark books = dataSnapshot.getValue(Bookmark.class);
-//                        String currentuid = books.getUser_id();
-//                        if (currentuid == null) {
-//                        } else {
-//                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//                            Query query = reference
-//                                    .child(mContext.getString(R.string.dbname_bookmarks))
-//                                    .orderByChild(mContext.getString(R.string.field_user_id))
-//                                    .equalTo(books.getUser_id());
-//                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//                                        Log.d(TAG, "onDataChange: found bookmark: " +
-//                                                singleSnapshot.getValue(User.class).getUsername());
-////                                        holder.users.append(singleSnapshot.getValue(User.class).getUsername());
-////                                        holder.users.append(",");
-//                                    }
-//
-//                                    String[] splitUsers = holder.users.toString().split(",");
-//                                    Log.d(TAG, "HOLDER.user: " + holder.users.toString());
-//                                    Log.d(TAG, "Currentuser: " + currentUsername);
-//
-//                                    if (holder.users.toString().contains(currentUsername)) {
-//                                        Log.d(TAG, "holder.bookmarkByCurrentUser = true");
-//                                        holder.bookmarkByCurrentUser = true;
-//                                        holder.bookmark.bookmarkBlack.setEnabled(true);
-//                                        holder.bookmark.bookmarkWhite.setEnabled(false);
-//                                    } else {
-//                                        Log.d(TAG, "holder.bookmarkByCurrentUser = false");
-//                                        holder.bookmarkByCurrentUser = false;
-//                                        holder.bookmark.bookmarkBlack.setEnabled(false);
-//                                        holder.bookmark.bookmarkWhite.setEnabled(true);
-//
-//
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(DatabaseError databaseError) {
-//                                    holder.bookmarkByCurrentUser = true;
-//                                }
-//                            });
-//                        }
-//
-//                        if (!dataSnapshot.exists()) {
-//                            holder.bookmarkByCurrentUser = false;
-//                        } else {
-//                        }
-//
-//
-//                        try {
-//                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//
-//                            }
-//                        } catch (NullPointerException e) {
-//                            Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage());
-//                        }
-//                    }
-                    }
+                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    holder.likecount.setText("좋아요 " + "0" + "개");
                 }
             });
         } catch (NullPointerException e) {
-            Log.e(TAG, "getLikesString: NullPointerException: " + e.getMessage());
-//            holder.likesString = "";
+            Log.e(TAG, "bookmark: NullPointerException: " + e.getMessage());
             holder.likeByCurrentUser = false;
-            //setup likes string
-            setupLikesString(holder, null, null);
         }
     }
 
@@ -1020,7 +944,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //holder.likecount.setText("좋아요 " + holder.photo.getLikeCount() + "개");
                         setupLikesString(holder,null, null);
                     } else {
-
+//                        setupLikesString(holder,item,info);
                         //holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
                     }
                 }
@@ -1049,8 +973,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.heartRed.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-
                     return holder.detector.onTouchEvent(event);
+
                 }
             });
         } else {
@@ -1070,33 +994,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.likeLayout.addView(item);
             holder.likeLayout.addView(info);
         }
-    }
-
-    private void setupBookmarksString(final ViewHolder holder, String likesString) {
-
-        if (holder.likeByCurrentUser) {
-            Log.d(TAG, "setupLikesString: photo is liked by current user");
-            holder.heartWhite.setVisibility(View.GONE);
-            holder.heartRed.setVisibility(View.VISIBLE);
-            holder.heartRed.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-
-                    return holder.detector.onTouchEvent(event);
-                }
-            });
-        } else {
-            Log.d(TAG, "setupLikesString: photo is not liked by current user");
-            holder.heartWhite.setVisibility(View.VISIBLE);
-            holder.heartRed.setVisibility(View.GONE);
-            holder.heartWhite.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return holder.detector.onTouchEvent(event);
-                }
-            });
-        }
-        holder.likes.setText(likesString);
     }
 
     /**
