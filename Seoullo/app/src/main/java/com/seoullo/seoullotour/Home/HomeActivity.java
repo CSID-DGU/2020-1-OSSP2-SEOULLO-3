@@ -105,7 +105,6 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     public void onCommentThreadSelected(Photo photo, String callingActivity){
-        Log.d(TAG, "onCommentThreadSelected: selected a coemment thread");
 
         ViewCommentsFragment fragment  = new ViewCommentsFragment();
         Bundle args = new Bundle();
@@ -114,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.fade_up,R.anim.fade_down);
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(getString(R.string.view_comments_fragment));
         transaction.commit();
