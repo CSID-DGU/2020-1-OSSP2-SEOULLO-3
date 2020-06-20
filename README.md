@@ -11,9 +11,10 @@
   길찾기는 자동차 기준이니 참고해주시기 바랍니다. 
   
 ## VERSION
-  ```
+  
   <pre>
   <code>
+  ```
   android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -28,9 +29,10 @@
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
       }
    }
+  ```
   </code>
   </pre>
-  ```
+
 ## FUNCTIONS
   ```
   1. Grid-View Fragment
