@@ -3,11 +3,13 @@ package com.seoullo.seoullotour.Share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -61,7 +63,6 @@ public class ShareActivity extends AppCompatActivity {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new GalleryFragment());
         adapter.addFragment(new PhotoFragment());
-
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mViewPager.setAdapter(adapter);
 
@@ -89,7 +90,18 @@ public class ShareActivity extends AppCompatActivity {
                 permissions,
                 VERIFY_PERMISSIONS_REQUEST
         );
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= 21) {
+            if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
+                //resume tasks needing this permission
+                setupViewPager();
+            }
+        }
     }
 
     /**
