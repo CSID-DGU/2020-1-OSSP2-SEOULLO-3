@@ -12,7 +12,7 @@
   
 ## VERSION
   
-  compileSdkVersion 28
+  compileSdkVersion 28 \n
   buildToolsVersion "28.0.3"
   minSdkVersion 21
   targetSdkVersion 28
