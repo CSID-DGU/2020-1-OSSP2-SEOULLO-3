@@ -78,15 +78,6 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/website"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:text="https://stephaniie.com"
-                        android:textColor="@color/link_blue"
-                        android:textSize="12sp" />
-
-                    <TextView
                         android:id="@+id/textEditProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -95,12 +86,13 @@
                         android:background="@drawable/round_shape_deepblue"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingTop="3dp"
+                        android:paddingTop="2dp"
                         android:paddingBottom="3dp"
                         android:text="프로필 수정"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
                 </LinearLayout>
             </RelativeLayout>
 

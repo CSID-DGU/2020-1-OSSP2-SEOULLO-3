@@ -286,13 +286,13 @@ public class ViewCommentsFragment extends Fragment {
                                     photo.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
                                     photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
 
-
-                                    mComments.clear();
-                                    Comment firstComment = new Comment();
-                                    firstComment.setComment(mPhoto.getCaption());
-                                    firstComment.setUser_id(mPhoto.getUser_id());
-                                    firstComment.setDate_created(mPhoto.getDate_created());
-                                    mComments.add(firstComment);
+//TODO: 여기 왜 두번 해주는 거임????
+//                                    mComments.clear();
+//                                    Comment firstComment = new Comment();
+//                                    firstComment.setComment(mPhoto.getCaption());
+//                                    firstComment.setUser_id(mPhoto.getUser_id());
+//                                    firstComment.setDate_created(mPhoto.getDate_created());
+//                                    mComments.add(firstComment);
 
                                     for (DataSnapshot dSnapshot : singleSnapshot
                                             .child(mContext.getString(R.string.field_comments)).getChildren()){

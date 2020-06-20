@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -21,15 +20,13 @@ import com.seoullo.seoullotour.R;
 
 import com.seoullo.seoullotour.Utils.ViewCommentsFragment;
 import com.seoullo.seoullotour.Utils.ViewPostFragment;
-import com.seoullo.seoullotour.Utils.ViewProfileFragment;
 
 /**
  * Created by User on 5/28/2017.
  */
 public class ProfileActivity extends AppCompatActivity implements
         com.seoullo.seoullotour.Profile.ProfileFragment.OnGridImageSelectedListener ,
-        ViewPostFragment.OnCommentThreadSelectedListener,
-        ViewProfileFragment.OnGridImageSelectedListener{
+        ViewPostFragment.OnCommentThreadSelectedListener{
 
     private static final String TAG = "ProfileActivity";
 
