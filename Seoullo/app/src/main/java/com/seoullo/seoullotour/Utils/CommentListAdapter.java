@@ -32,6 +32,7 @@ import com.seoullo.seoullotour.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +57,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     private int layoutResource;
     private Context mContext;
 
-    public CommentListAdapter(@NonNull Context context, int resource, @NonNull List<Comment> objects , RequestManager requestManager) {
+    public CommentListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Comment> objects , RequestManager requestManager) {
         super(context, resource, objects);
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContext = context;
