@@ -11,12 +11,14 @@
 
     <Button
         android:id="@+id/add_bookmark_button"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="ADD BOOKMARK"
 
         android:background="@drawable/round_shape_addbookmark"
         android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:textSize="15sp"
         android:textStyle="bold"
