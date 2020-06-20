@@ -74,7 +74,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/group_location"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:padding="10dp"
+            />
 
         <RelativeLayout
             android:id="@+id/relLayout2"
@@ -84,15 +86,16 @@
 
             <RelativeLayout
                 android:id="@+id/heartLayout"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="12dp"
                 android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/image_heart_red"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="12dp"
                     android:adjustViewBounds="true"
                     android:cropToPadding="true"
                     android:foregroundGravity="center"
@@ -101,10 +104,10 @@
 
                 <ImageView
                     android:id="@+id/image_heart"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="12dp"
                     android:adjustViewBounds="true"
                     android:cropToPadding="true"
                     android:foregroundGravity="center"
@@ -118,7 +121,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@+id/heartLayout"
                 android:adjustViewBounds="true"
                 android:cropToPadding="true"
@@ -143,8 +146,8 @@
                 android:layout_height="28dp"
                 android:layout_alignRight="@+id/speech_bubble"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="-50dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="-38dp"
                 android:adjustViewBounds="true"
                 android:cropToPadding="true"
                 android:foregroundGravity="center"
@@ -157,8 +160,8 @@
                 android:layout_height="28dp"
                 android:layout_alignRight="@+id/speech_bubble"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="-50dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="-36dp"
                 android:adjustViewBounds="true"
                 android:cropToPadding="true"
                 android:foregroundGravity="center"

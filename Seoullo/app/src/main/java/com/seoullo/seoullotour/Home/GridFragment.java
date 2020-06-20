@@ -87,7 +87,6 @@ public class GridFragment extends Fragment {
         public GridFragmentRecyclerViewAdatper() {
 
             photos = new ArrayList<>();
-
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -155,7 +154,7 @@ public class GridFragment extends Fragment {
             ImageView imageView = new ImageView(parent.getContext());
             imageView.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, width));
             imageView.setPadding(1, 1, 1, 1);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //            imageView.setCropToPadding(true);
 //            imageView.setAdjustViewBounds(true);
 

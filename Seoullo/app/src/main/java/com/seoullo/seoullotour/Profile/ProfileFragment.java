@@ -110,12 +110,11 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         mDisplayName = (TextView) view.findViewById(R.id.display_name);
         mUsername = (TextView) view.findViewById(R.id.username);
-        mWebsite = (TextView) view.findViewById(R.id.website);
         mDescription = (TextView) view.findViewById(R.id.description);
         mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
         mPosts = (TextView) view.findViewById(R.id.tvPosts);
-        mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
-        mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
+        //mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
+        //mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
@@ -143,8 +142,8 @@ public class ProfileFragment extends Fragment {
         setupFirebaseAuth();
         setupGridView();
 
-        getFollowersCount();
-        getFollowingCount();
+        //getFollowersCount();
+        //getFollowingCount();
         getPostsCount();
         getBookmarkCount();
 
@@ -276,7 +275,7 @@ public class ProfileFragment extends Fragment {
                     Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
                     mFollowersCount++;
                 }
-                mFollowers.setText(String.valueOf(mFollowersCount));
+                //mFollowers.setText(String.valueOf(mFollowersCount));
             }
 
             @Override
@@ -356,7 +355,7 @@ public class ProfileFragment extends Fragment {
 
         mDisplayName.setText(settings.getDisplay_name());
         mUsername.setText(settings.getUsername());
-        mWebsite.setText(settings.getWebsite());
+
         mDescription.setText(settings.getDescription());
      //   mProgressBar.setVisibility(View.GONE);
 

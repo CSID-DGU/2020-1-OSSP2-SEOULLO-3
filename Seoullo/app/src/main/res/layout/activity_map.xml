@@ -17,7 +17,7 @@
             android:id="@+id/direction_lin"
             android:orientation="vertical"
             >
-            <include layout="@layout/layout_direction"
+            <include layout="@layout/layout_map_direction"
                 />
             <include layout="@layout/layout_map_search"
                 />
@@ -32,10 +32,10 @@
 
             android:gravity="center"
             android:layout_gravity="bottom|center"
-            android:padding="5dp"
-            android:textColor="@color/black"
+            android:padding="8dp"
+            android:textColor="#353232"
             android:textStyle="bold"
-            android:textSize="12sp"
+            android:textSize="14sp"
 
             android:visibility="invisible"
             />

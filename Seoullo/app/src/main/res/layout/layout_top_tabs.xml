@@ -1,53 +1,53 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_alignParentTop="true"
-    android:background="@color/white"
-    android:id="@+id/top_tab">
-
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
-
-<!--        <com.google.android.material.tabs.TabLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/tabs"-->
-<!--            android:background="@drawable/white_grey_border_bottom">-->
-<!--        </com.google.android.material.tabs.TabLayout>-->
-
-
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
-    <ImageView
+    <RelativeLayout
+        android:id="@+id/top_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/seoullo"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        />
-    <ImageButton
-        android:layout_width="25dp"
-        android:layout_height="30dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:id="@+id/add_post"
-        android:background="@color/white"
-        android:src="@drawable/camera_outline_deepblue"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        />
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+
+        <!--    <com.google.android.material.appbar.AppBarLayout-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content">-->
+
+        <!--        <com.google.android.material.tabs.TabLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/tabs"-->
+        <!--            android:background="@drawable/white_grey_border_bottom">-->
+        <!--        </com.google.android.material.tabs.TabLayout>-->
 
 
-</RelativeLayout>
+        <!--    </com.google.android.material.appbar.AppBarLayout>-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/seoullo" />
+
+        <ImageButton
+            android:id="@+id/add_post"
+            android:layout_width="25dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:adjustViewBounds="true"
+            android:background="@color/white"
+            android:scaleType="centerCrop"
+            android:src="@drawable/camera_outline_deepblue" />
+
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/top_division"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:orientation="horizontal"
-        android:layout_below="@id/top_tab"/>
+        android:layout_below="@id/top_tab"
+        android:orientation="horizontal" />
 
 </merge>

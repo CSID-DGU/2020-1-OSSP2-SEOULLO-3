@@ -1,120 +1,128 @@
-<merge xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/profile_center_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/profile_center_container"
-        android:background="@color/white">
+        android:background="@color/transparent"
+        android:padding="5dp">
+
+            <RelativeLayout
+                android:id="@+id/profile_Rel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:padding="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="10dp"
+                    android:background="@color/transparent"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/linLayout_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+
+                    android:layout_toRightOf="@id/profile_photo"
+                    android:background="@drawable/round_shape"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/display_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:text="jonghapark"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="게시글 수" />
+
+                        <TextView
+                            android:id="@+id/tvPosts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="300" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:text="I live in Gothenburg, Sweden"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/textEditProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/round_shape_deepblue"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="3dp"
+                        android:text="프로필 수정"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
+            </RelativeLayout>
 
         <!-- Middle Section -->
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/rel_layout_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rel_layout_1"
-            android:id="@+id/rel_layout_2"
-            android:background="@color/white">
-            
-            <LinearLayout
+            android:layout_below="@id/profile_Rel"
+            android:layout_margin="10dp"
+            android:elevation="1dp"
+            app:cardCornerRadius="10dp">
+
+            <GridView
+                android:id="@+id/gridView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/linLayout"
-                android:weightSum="100">
+                android:gravity="center"
+                android:horizontalSpacing="0.5dp"
+                android:numColumns="3"
+                android:paddingLeft="0.5dp"
+                android:paddingTop="-1dp"
+                android:paddingRight="0.5dp"
+                android:paddingBottom="2dp"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="0.5dp"/>
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="25"
-                    android:layout_marginStart="15dp">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:id="@+id/profile_photo"
-                        android:layout_centerVertical="true"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="75"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="30dp">
-
-                    <include layout="@layout/snippet_top_profile"/>
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/linLayout"
-                android:padding="20dp"
-                android:id="@+id/linLayout2"
-                android:background="@drawable/white_grey_border_bottom">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/display_name"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:text="jonghapark"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/description"
-                    android:textColor="@color/black"
-                    android:text="I live in Gothenburg, Sweden"
-                    android:textSize="16sp"
-                    android:layout_marginTop="5dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/website"
-                    android:textColor="@color/link_blue"
-                    android:text="https://stephaniie.com"
-                    android:textSize="16sp"
-                    android:layout_marginTop="5dp"/>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rel_layout_3"
-                android:layout_below="@+id/linLayout2"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/white_grey_border_bottom">
-
-                <GridView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/gridView"
-                    android:numColumns="3"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="0.5dp"
-                    android:paddingRight="0.5dp"
-                    android:paddingTop="-1dp"
-                    android:horizontalSpacing="0.5dp"
-                    android:verticalSpacing="0.5dp"
-                    android:stretchMode="columnWidth"
-                    android:gravity="center"
-                    >
-                </GridView>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 

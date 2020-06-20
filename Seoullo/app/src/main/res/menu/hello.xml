@@ -6,10 +6,6 @@
         android:title="삭제"
         />
     <item
-        android:id="@+id/menu_singo"
-        android:title="신고"
-        />
-    <item
         android:id="@+id/menu_cancel"
         android:title="취소"
         />

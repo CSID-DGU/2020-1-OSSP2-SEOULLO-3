@@ -91,7 +91,6 @@ public class RecommendSecondFragment extends Fragment {
         mVicinity = (TextView) view.findViewById(R.id.recommend_vicinity);
         mImage = (ImageView) view.findViewById(R.id.recommend_image);
         mDesc = (TextView) view.findViewById(R.id.recommend_desc);
-        mAnotherDecs = (TextView) view.findViewById(R.id.recommend_anotherdesc);
         mScrollItems = (LinearLayout) view.findViewById(R.id.scroll_type_item);
 
         mTitle.setText(mPlace.getName());
@@ -110,7 +109,7 @@ public class RecommendSecondFragment extends Fragment {
                     item.setText(Html.fromHtml("#관심지역TOP10"));
                     break;
                 case "establishment":
-                    item.setText(Html.fromHtml("#설립107주년"));
+                    item.setText(Html.fromHtml("#설립된지역"));
                     break;
                 default:
                     item.setText(Html.fromHtml("#다양한카테고리제공"));
@@ -123,9 +122,8 @@ public class RecommendSecondFragment extends Fragment {
             mScrollItems.addView(item);
         }
 
-        String desc = "This place is located at latitude : " + mPlace.getLatitude() + " and longitude : " + mPlace.getLongitude();
+        String desc = "SEOULLO 에서 추천해드리는 장소 #1\n 지도에 있는 마커를 눌러 지도 기능을 사용해보세요 !";
         mDesc.setText(desc);
-        mAnotherDecs.setText("this is another part of desc");
         //Image
         final String targetUrl = "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxwidth=" + 400 +

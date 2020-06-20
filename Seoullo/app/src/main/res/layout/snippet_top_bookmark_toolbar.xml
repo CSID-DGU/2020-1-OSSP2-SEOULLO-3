@@ -3,30 +3,41 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/white_grey_border_bottom">
+        android:background="@color/white">
 
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Surface"
-            android:id="@+id/bookmarkToolbar">
-
-            <RelativeLayout
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            android:id="@+id/bookmarkToolbar"-->
+<!--            android:padding="3dp"-->
+<!--            >-->
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:src="@drawable/seoullo"
+                android:scaleType="fitCenter"
+                />
+<!--            <RelativeLayout-->
+<!--                -->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="center_vertical"-->
+<!--                >-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_centerInParent="true"
-                    style="@style/ThemeOverlay.MaterialComponents.Toolbar.Surface"
-                    android:text="BOOKMARK"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="5dp"
-                    android:id="@+id/bookmark" />
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
+<!--&lt;!&ndash;                <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_centerVertical="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_centerInParent="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                    style="@style/ThemeOverlay.MaterialComponents.Toolbar.Surface"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:text="BOOKMARK"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:textSize="20sp"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:textColor="@color/black"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_marginStart="5dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/bookmark" />&ndash;&gt;-->
+<!--                -->
+
+<!--            </RelativeLayout>-->
+<!--        </androidx.appcompat.widget.Toolbar>-->
     </com.google.android.material.appbar.AppBarLayout>
 </merge>

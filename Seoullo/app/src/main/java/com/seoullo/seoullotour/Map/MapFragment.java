@@ -231,7 +231,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 System.out.println("THREAD RUN");
                                 String isSettedNow = "";
                                 try {
-                                    HttpConnection();
+//                                    GoogleDirection gd = new GoogleDirection(currentPoint, mPoint, mRoute, mPathList, getActivity());
+//                                    gd.HttpConnection("transit"); //GOOGLE
+                                    HttpConnection(); //NAVER
                                     isSettedNow = "true";
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -318,46 +320,107 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
 
-            
+            final boolean[] isBookmarkListOpen = new boolean[]{false};
 
             mBookmarkBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //TODO: 지도에 북마크한 객체 표시하기
+                    if(!isBookmarkListOpen[0]) {
+                        isBookmarkListOpen[0] = true;
+                        mListBookmark.setVisibility(View.VISIBLE);
 
+                        //get from firebase
+                        Query query = FirebaseDatabase.getInstance().getReference()
+                                .child("bookmarks")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                final ArrayList<Bookmark> BookmarkList = new ArrayList<>();
 
-                    //get from firebase
-                    Query query = FirebaseDatabase.getInstance().getReference()
-                                    .child("bookmarks")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            ArrayList<Bookmark> BookmarkList = new ArrayList<>();
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    Bookmark BM = new Bookmark();
+                                    BM.setImage_name(singleSnapshot.child("image_name").toString());
+                                    ArrayList<Double> LatLng = new ArrayList<>();
+                                    LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").getValue().toString()));
+                                    LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").getValue().toString()));
+                                    BM.setLatlng(LatLng);
+                                    String []locationSplit = singleSnapshot.child("location").getValue().toString().split(" ");
+                                    String trimmedLocation = "";
+                                    for(int loop=2; loop < locationSplit.length; ++loop) {
+                                        trimmedLocation += " " +  locationSplit[loop];
+                                    }
+                                    BM.setLocation(trimmedLocation);
+                                    BM.setUser_id(singleSnapshot.child("user_id").toString());
+                                    BM.setPhoto_id(singleSnapshot.child("photo_id").toString());
 
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                Bookmark BM = new Bookmark();
-                                BM.setImage_name(singleSnapshot.child("image_name").toString());
-                                ArrayList<Double> LatLng = new ArrayList<>();
-                                LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").toString()));
-                                LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").toString()));
-                                BM.setLatlng(LatLng);
-                                BM.setLocation(singleSnapshot.child("location").toString());
-                                BM.setUser_id(singleSnapshot.child("user_id").toString());
-                                BM.setPhoto_id(singleSnapshot.child("photo_id").toString());
+                                    BookmarkList.add(BM);
+                                }
+                                ArrayList<String> BookmarkLocationList = new ArrayList<>();
+                                for (int i = 0; i < BookmarkList.size(); ++i) {
+                                    BookmarkLocationList.add(i, BookmarkList.get(i).getLocation());
+                                }
+                                try {
+                                    mapListAdapter = new MapListAdapter(getContext(), BookmarkLocationList);
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                                mListBookmark.setAdapter(mapListAdapter);
 
-                                BookmarkList.add(BM);
+                                mListBookmark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                                        double lat = BookmarkList.get(position).getLatlng().get(0);
+                                        double lng = BookmarkList.get(position).getLatlng().get(1);
+
+                                        LatLng itemLatLng = new LatLng(lat, lng);
+                                        nMarker.setMap(null);
+                                        nMarker.setPosition(itemLatLng);
+                                        nMarker.setMap(nMap);
+
+                                        final InfoWindow mInfo = new InfoWindow();
+                                        mInfo.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                                            @NonNull
+                                            @Override
+                                            public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                                String [] trimmed = BookmarkList.get(position).getLocation().split(" ");
+
+                                                return trimmed[trimmed.length - 1];
+                                            }
+                                        });
+                                        final boolean[] isInfoWindowOpen = {false};
+                                        nMarker.setOnClickListener(new Overlay.OnClickListener() {
+                                            @Override
+                                            public boolean onClick(@NonNull Overlay overlay) {
+                                                if(!isInfoWindowOpen[0]) {
+                                                    mInfo.open(nMarker);
+                                                    isInfoWindowOpen[0] = true;
+                                                } else {
+                                                    mInfo.close();
+                                                    isInfoWindowOpen[0] = false;
+                                                }
+                                                return false;
+                                            }
+                                        });
+
+                                        nMap.moveCamera(CameraUpdate.scrollAndZoomTo(itemLatLng, 14f));
+                                    }
+                                });
+
                             }
 
 
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
+                            }
+                        });
+                    } //if
+                    else {
+                        mListBookmark.setVisibility(View.GONE);
+                        isBookmarkListOpen[0] = false;
+                    }
 
 
 //                    try {
@@ -441,7 +504,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 System.out.println("HH : " + Hrs + "MM : " + Min + "지연 : " + durationMinute);
 
-                if(Min + (int)durationMinute > 60) {
+                if(Min + (int)durationMinute >= 60) {
                    int toHrs = (Min + (int)durationMinute) / 60;
                    Min = (Min + (int)durationMinute) % 60;
                    Hrs = Hrs + toHrs;
@@ -529,7 +592,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
         uiSettings.setLogoGravity(1);
-        uiSettings.setLogoMargin(5, 5, 450, 1000);
+        uiSettings.setLogoMargin(5, 1500, 440, 5);
         uiSettings.setAllGesturesEnabled(true);
 
         //location change listener
@@ -643,11 +706,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onRequestPermissionsResult(
                 requestCode, permissions, grantResults);
     }
+    //============================================DIRECTION API=================================================
 
     protected void HttpConnection() throws IOException, CloneNotSupportedException, JSONException {
 
         String result = null;
-
+        //NAVER
         String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
                 "?start=" +  this.currentPoint.y   + "," +    this.currentPoint.x +
                 "&goal=" + mPoint.y + "," + mPoint.x;
@@ -739,7 +803,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mPathList.add(latLng);
         }
     }
-    //-----------------------------------PLACE AUTO COMPLETE ---------------------------------------------------------//
+    //=============================================PLACE AUTO COMPLETE ---------------------------------------------------------//
     private static final String LOG_TAG = "GOOGLE_PLACE_AUTOCOMPLETE";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
