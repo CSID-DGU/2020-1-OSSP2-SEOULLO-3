@@ -11,24 +11,38 @@
   길찾기는 자동차 기준이니 참고해주시기 바랍니다. 
   
 ## VERSION
-  
-  compileSdkVersion 28 "\n"
-  buildToolsVersion "28.0.3"
-  minSdkVersion 21
-  targetSdkVersion 28
-  
+  <pre>
+  <code>
+  android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        applicationId "com.seoullo.seoullotour"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+      }
+   }
+  </code>
+  </pre>
+
 ## USED OPEN SOURCE
 
-  BASE OPEN SOURCE PROJECT : https://github.com/stephyswe/Android-Instagram
+  #### BASE OPEN SOURCE PROJECT : https://github.com/stephyswe/Android-Instagram
   
-  Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
-  Glide version : 'com.github.bumptech.glide:glide:4.9.0'
-  Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
+  #### Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+  #### Glide version : 'com.github.bumptech.glide:glide:4.9.0'
+  #### Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
   
 ## HOW TO USE API
   
-  * USE YOUR OWN API KEYS
-    - NAVER API KEY : https://console.ncloud.com/mc/solution/naverService/application
+  ### USE YOUR OWN API KEYS
+  #### NAVER API KEY : https://console.ncloud.com/mc/solution/naverService/application
+
       - Client ID
       - Client Secret
       
@@ -38,21 +52,21 @@
          - Mobile Dynamic Map
          - Directions 5 
         
-    - GOOGLE API KEY : https://console.developers.google.com/
+   #### GOOGLE API KEY : https://console.developers.google.com/
       Add library to your project
       - Places API
       - Directions API ( added in com.seoullo.seollotour.Map )
       
-    - FIREBASE API KEY : https://console.firebase.google.com/
+   #### FIREBASE API KEY : https://console.firebase.google.com/
       Add your project to Firebase
       Firebase shows best instructions ! just follow the instructions
       * place google-services.json to your project
 
 ## USED API
 
-  * Google
+  #### Google
     - Firebase
     - Google Places API
-  * Naver
+  #### Naver
     - Mobile Dynamic Map API
     - Direction 5
