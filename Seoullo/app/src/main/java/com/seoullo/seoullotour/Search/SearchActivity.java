@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,10 +46,12 @@ public class SearchActivity extends AppCompatActivity {
     //widgets
     private EditText mSearchParam;
     private ListView mListView;
-
+    private TextView searchText;
     //vars
     private List<User> mUserList;
     private UserListAdapter mAdapter;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         mSearchParam = (EditText) findViewById(R.id.search);
         mListView = (ListView) findViewById(R.id.listView);
+        searchText = (TextView) findViewById(R.id.user_search_text);
+
         Log.d(TAG, "onCreate: started.");
         mRequestManager = Glide.with(this);
         hideSoftKeyboard();
@@ -105,8 +110,14 @@ public class SearchActivity extends AppCompatActivity {
                         Log.d(TAG, "onDataChange: found user:" + singleSnapshot.getValue(User.class).toString());
 
                         mUserList.add(singleSnapshot.getValue(User.class));
+                        searchText.setVisibility(View.GONE);
+                        mListView.setVisibility(View.VISIBLE);
                         //update the users list view
                         updateUsersList();
+                    }
+                    if(dataSnapshot.getValue() == null){
+                        searchText.setVisibility(View.VISIBLE);
+                        mListView.setVisibility(View.GONE);
                     }
                 }
 

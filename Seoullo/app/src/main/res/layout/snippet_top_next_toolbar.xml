@@ -27,11 +27,11 @@
                     android:id="@+id/tvShare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/string_share"
+                    android:text="공유"
                     android:gravity="center_vertical"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="15dp"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:textColor="@color/link_blue"
                     android:layout_centerVertical="true"/>
 

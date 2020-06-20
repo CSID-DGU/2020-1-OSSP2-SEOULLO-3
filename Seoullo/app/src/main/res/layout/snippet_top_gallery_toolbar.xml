@@ -41,10 +41,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/string_next"
+                    android:text="선택"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="15dp"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textColor="@color/link_blue"
                     android:layout_centerVertical="true"
                     android:id="@+id/tvNext"

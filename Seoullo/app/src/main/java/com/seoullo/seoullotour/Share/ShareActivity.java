@@ -31,7 +31,6 @@ public class ShareActivity extends AppCompatActivity {
     private static final int VERIFY_PERMISSIONS_REQUEST = 1;
 
     private ViewPager mViewPager;
-
     private Context mContext = ShareActivity.this;
 
     @Override

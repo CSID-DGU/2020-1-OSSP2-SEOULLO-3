@@ -22,6 +22,14 @@
                     android:layout_marginStart="5dp"
                     android:id="@+id/search"
                     android:background="@null"/>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_search_btn"
+                    android:src="@drawable/ic_search"
+                    android:background="@color/white"
+                    android:layout_alignParentEnd="true"
+                    />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
