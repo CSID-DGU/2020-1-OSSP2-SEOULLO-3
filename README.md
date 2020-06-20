@@ -24,8 +24,7 @@
   
 ## VERSION
   ```
-  <pre>
-  <code>
+  ...
   android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -40,8 +39,8 @@
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
       }
    }
-  </code>
-  </pre>
+  ...
+  
   ```
 
 ## FUNCTIONS
