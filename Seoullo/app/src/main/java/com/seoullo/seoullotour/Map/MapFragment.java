@@ -231,7 +231,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 System.out.println("THREAD RUN");
                                 String isSettedNow = "";
                                 try {
-                                    HttpConnection();
+//                                    GoogleDirection gd = new GoogleDirection(currentPoint, mPoint, mRoute, mPathList, getActivity());
+//                                    gd.HttpConnection("transit"); //GOOGLE
+                                    HttpConnection(); //NAVER
                                     isSettedNow = "true";
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -704,11 +706,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onRequestPermissionsResult(
                 requestCode, permissions, grantResults);
     }
+    //============================================DIRECTION API=================================================
 
     protected void HttpConnection() throws IOException, CloneNotSupportedException, JSONException {
 
         String result = null;
-
+        //NAVER
         String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
                 "?start=" +  this.currentPoint.y   + "," +    this.currentPoint.x +
                 "&goal=" + mPoint.y + "," + mPoint.x;
@@ -800,7 +803,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mPathList.add(latLng);
         }
     }
-    //-----------------------------------PLACE AUTO COMPLETE ---------------------------------------------------------//
+    //=============================================PLACE AUTO COMPLETE ---------------------------------------------------------//
     private static final String LOG_TAG = "GOOGLE_PLACE_AUTOCOMPLETE";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
