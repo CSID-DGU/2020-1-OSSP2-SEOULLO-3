@@ -100,8 +100,7 @@ public class ViewCommentsFragment extends Fragment {
         }catch (NullPointerException e){
             Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage() );
         }
-
-
+        System.out.println(mPhoto.getComments().get(0)+"첫번째 게시글");
 
 
         return view;
@@ -234,8 +233,6 @@ public class ViewCommentsFragment extends Fragment {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-
-
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -255,8 +252,20 @@ public class ViewCommentsFragment extends Fragment {
             firstComment.setDate_created(mPhoto.getDate_created());
             mComments.add(firstComment);
             mPhoto.setComments(mComments);
+            System.out.println(mPhoto.getComments().get(0)+"사이즈0일때 0번");
+            setupWidgets();
+        } else{
+            mComments.clear();
+            Comment firstComment = new Comment();
+            firstComment.setComment(mPhoto.getCaption());
+            firstComment.setUser_id(mPhoto.getUser_id());
+            firstComment.setDate_created(mPhoto.getDate_created());
+            mComments.add(firstComment);
+            mPhoto.setComments(mComments);
+            System.out.println(mPhoto.getComments().get(0)+"else 일때 0번");
             setupWidgets();
         }
+
 
 
         myRef.child(mContext.getString(R.string.dbname_photos))
@@ -287,13 +296,15 @@ public class ViewCommentsFragment extends Fragment {
                                     photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
 
 //TODO: 여기 왜 두번 해주는 거임????
-//                                    mComments.clear();
-//                                    Comment firstComment = new Comment();
-//                                    firstComment.setComment(mPhoto.getCaption());
-//                                    firstComment.setUser_id(mPhoto.getUser_id());
-//                                    firstComment.setDate_created(mPhoto.getDate_created());
-//                                    mComments.add(firstComment);
+                                    //첫댓글 넣어주는 부분
+                                    mComments.clear();
+                                    Comment firstComment = new Comment();
+                                    firstComment.setComment(mPhoto.getCaption());
+                                    firstComment.setUser_id(mPhoto.getUser_id());
+                                    firstComment.setDate_created(mPhoto.getDate_created());
+                                    mComments.add(firstComment);
 
+                                    //댓글넣어주는 부분
                                     for (DataSnapshot dSnapshot : singleSnapshot
                                             .child(mContext.getString(R.string.field_comments)).getChildren()){
                                         Comment comment = new Comment();
@@ -306,7 +317,7 @@ public class ViewCommentsFragment extends Fragment {
                                     photo.setComments(mComments);
 
                                     mPhoto = photo;
-
+                                    System.out.println(mPhoto.getComments().get(0)+"내부에서 0번");
                                     setupWidgets();
 //                    List<Like> likesList = new ArrayList<Like>();
 //                    for (DataSnapshot dSnapshot : singleSnapshot
