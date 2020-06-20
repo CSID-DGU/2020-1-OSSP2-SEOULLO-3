@@ -11,6 +11,7 @@
   길찾기는 자동차 기준이니 참고해주시기 바랍니다. 
   
 ## VERSION
+  ```
   <pre>
   <code>
   android {
@@ -29,22 +30,46 @@
    }
   </code>
   </pre>
+  ```
+## FUNCTIONS
+  ```
+  1. Grid-View Fragment
+  2. List-View Fragment 
+  3. Add picture form gallery
+  4. Autocompletion using Google Place API
+  5. Ask each Permissions for usage
+  6. Camera Activity
+  7. Add DataBase to Firebase
+  8. Like function
+  9. Comment function
+  10. Bookmark function
+  11. Get Place information from Google Places API
+  12. Usage of Viewpager
+  13. Drawing Path of Direction
+  14. Map Overlay
+  15. Search Users
+  16. Search Places in Map
+  17. Current Location - Navermap
+  
+  ...more added
+  ```
+
 
 ## USED OPEN SOURCE
 
-  #### BASE OPEN SOURCE PROJECT : https://github.com/stephyswe/Android-Instagram
+  ##### BASE OPEN SOURCE PROJECT : https://github.com/stephyswe/Android-Instagram
   
-  #### Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
-  #### Glide version : 'com.github.bumptech.glide:glide:4.9.0'
-  #### Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
+  ##### Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+  ##### Glide version : 'com.github.bumptech.glide:glide:4.9.0'
+  ##### Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
   
 ## HOW TO USE API
   
   ### USE YOUR OWN API KEYS
   #### NAVER API KEY : https://console.ncloud.com/mc/solution/naverService/application
 
-      - Client ID
-      - Client Secret
+      + Client ID
+      + Client Secret
       
       * must include Android package name in NAVER CLOUD PLATFORM
       
@@ -60,6 +85,7 @@
    #### FIREBASE API KEY : https://console.firebase.google.com/
       Add your project to Firebase
       Firebase shows best instructions ! just follow the instructions
+      
       * place google-services.json to your project
 
 ## USED API
