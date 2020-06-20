@@ -1,6 +1,10 @@
 # 2020-1-OSSP2-SEOULLO-3
-
-    이승환, 박종하, 최정인
+    
+    동국대학교 컴퓨터공학과   
+     이승환, 박종하, 최정인   
+     
+    Dongguk University Computer Science
+     Seunghwan Lee, Jongha Park, Jungin Choi   
   
 ## SEOULLO(서울로)
 
