@@ -1,3 +1,13 @@
+/*
+*
+* Original Code
+* https://github.com/stephyswe/Android-Instagram
+* Apache License 2.0
+* modifyed by Seoullo
+*
+*
+* */
+
 package com.seoullo.seoullotour.Home;
 
 import android.app.DownloadManager;

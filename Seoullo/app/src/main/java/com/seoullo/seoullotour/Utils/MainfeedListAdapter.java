@@ -129,7 +129,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
-
         final ViewHolder holder;
         if (photosList.size() > position) {
 //        if (convertView == null) {
