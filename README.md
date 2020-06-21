@@ -121,3 +121,7 @@
   #### Naver
     - Mobile Dynamic Map API
     - Direction 5
+    
+## LICENSE
+
+   #### Apache License 2.0
