@@ -91,7 +91,7 @@
    ##### BASE OPEN SOURCE PROJECT : <https://github.com/stephyswe/Android-Instagram>
   
     + Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
-    + Glide version : 'com.github.bumptech.glide:glide:4.9.0'
+    + Glide ImageLoader : 'com.github.bumptech.glide:glide:4.9.0'
     + Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
   
 ## HOW TO USE API
