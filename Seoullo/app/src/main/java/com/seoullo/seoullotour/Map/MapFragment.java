@@ -13,9 +13,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -595,8 +599,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setLocationButtonEnabled(true);      //현위치버튼
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
-        uiSettings.setLogoGravity(1);
-        uiSettings.setLogoMargin(5, 1500, 440, 5);
+        uiSettings.setLogoGravity(Gravity.END|Gravity.BOTTOM);
+        uiSettings.setLogoMargin(0,0,0,200);
         uiSettings.setAllGesturesEnabled(true);
 
         //location change listener
