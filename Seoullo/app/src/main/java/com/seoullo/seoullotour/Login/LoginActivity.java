@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -28,6 +29,10 @@ import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 import com.seoullo.seoullotour.R;
 
+import java.time.Clock;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by User on 6/19/2017.
  */
@@ -43,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     private Context mContext;
     private ProgressBar mProgressBar;
     private EditText mEmail, mPassword;
-    private TextView mPleaseWait;
+    private TextView mPleaseWait, mDesc;
 
 
     @Override
@@ -55,8 +60,10 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
         mContext = LoginActivity.this;
-        Log.d(TAG, "onCreate: started.");
+        mDesc = (TextView) findViewById(R.id.login_desc);
 
+        Log.d(TAG, "onCreate: started.");
+        
         mPleaseWait.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
 
