@@ -162,39 +162,40 @@ public class HomeFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        if (dataSnapshot.getValue() != null){
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            Photo photo = new Photo();
+                                Photo photo = new Photo();
 
-                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                            if (objectMap.get(getString(R.string.field_photo_id)).toString().equals(mParam))
-                                continue;
-                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                            Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
-                            photo.setImage_name(objectMap.get("image_name").toString());
-                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                            photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                            photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
-                            photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
-                            photo.setLocation(objectMap.get("location").toString());
+                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                if (objectMap.get(getString(R.string.field_photo_id)).toString().equals(mParam))
+                                    continue;
+                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
+                                photo.setImage_name(objectMap.get("image_name").toString());
+                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                                photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                                photo.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
+                                photo.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
+                                photo.setLocation(objectMap.get("location").toString());
 
-                            ArrayList<Comment> comments = new ArrayList<Comment>();
-                            for (DataSnapshot dSnapshot : singleSnapshot
-                                    .child(getString(R.string.field_comments)).getChildren()) {
-                                Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                comments.add(comment);
+                                ArrayList<Comment> comments = new ArrayList<Comment>();
+                                for (DataSnapshot dSnapshot : singleSnapshot
+                                        .child(getString(R.string.field_comments)).getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+                                }
+                                photo.setComments(comments);
+                                photos.add(photo);
+
                             }
-                            photo.setComments(comments);
-                            photos.add(photo);
-
-                        }
-
+                    }
                         displayPhotos();
 
                         for (int i = 0; i < photos.size(); i++) {

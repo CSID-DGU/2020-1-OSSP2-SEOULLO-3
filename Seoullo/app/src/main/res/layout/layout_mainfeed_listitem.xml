@@ -1,31 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="10dp">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/round_shape">
-
         <RelativeLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
             android:layout_height="50dp">
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_photo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="20dp" />
-
-
-            <TextView
-                android:id="@+id/username"
+                android:layout_marginTop="20dp"/>
+            <TextView android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -33,18 +22,15 @@
                 android:layout_toRightOf="@+id/profile_photo"
                 android:text="username"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:id="@+id/btnShow"
+                android:textSize="20sp"/>
+            <ImageView android:id="@+id/btnShow"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/ic_ellipses" />
+                android:src="@drawable/ic_ellipses"/>
         </RelativeLayout>
-
         <RelativeLayout
             android:id="@+id/group_location"
             android:layout_width="match_parent"
@@ -52,13 +38,11 @@
             android:layout_below="@id/relLayout1"
             android:layout_margin="5dp"
             android:orientation="horizontal">
-
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/location_outline" />
-
+                android:src="@drawable/location_outline"/>
             <TextView
                 android:id="@+id/show_location"
                 android:layout_width="match_parent"
@@ -66,30 +50,25 @@
                 android:layout_marginStart="40dp"
                 android:background="@drawable/textview_clicked"
                 android:text="LOCATION"
-                android:textSize="15sp" />
+                android:textSize="15sp"/>
         </RelativeLayout>
-
         <com.seoullo.seoullotour.Utils.SquareImageView
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/group_location"
             android:scaleType="centerCrop"
-            android:padding="10dp"
-            />
-
+            android:padding="10dp"/>
         <RelativeLayout
             android:id="@+id/relLayout2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/post_image">
-
             <RelativeLayout
                 android:id="@+id/heartLayout"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_height="match_parent">
-
                 <ImageView
                     android:id="@+id/image_heart_red"
                     android:layout_width="31dp"
@@ -100,8 +79,7 @@
                     android:cropToPadding="true"
                     android:foregroundGravity="center"
                     android:src="@drawable/heart_seung"
-                    android:visibility="invisible" />
-
+                    android:visibility="invisible"/>
                 <ImageView
                     android:id="@+id/image_heart"
                     android:layout_width="31dp"
@@ -112,10 +90,8 @@
                     android:cropToPadding="true"
                     android:foregroundGravity="center"
                     android:src="@drawable/heart_outline_grey"
-                    android:visibility="visible" />
-
+                    android:visibility="visible"/>
             </RelativeLayout>
-
             <ImageView
                 android:id="@+id/speech_bubble"
                 android:layout_width="28dp"
@@ -127,87 +103,66 @@
                 android:cropToPadding="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/chatbubble_ellipses_outline"
-                android:visibility="visible" />
-
+                android:visibility="visible"/>
             <TextView
                 android:id="@+id/image_time_posted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="15dp"
                 android:text="3 DAYS AGO"
                 android:textColor="@color/grey"
-                android:textSize="16sp" />
-
+                android:textSize="16sp"/>
             <ImageView
                 android:id="@+id/image_bookmark_black"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_alignRight="@+id/speech_bubble"
+                android:layout_toRightOf="@+id/speech_bubble"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="-38dp"
+                android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
                 android:cropToPadding="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/bookmark"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/image_bookmark_white"
+                android:visibility="gone"/>
+            <ImageView android:id="@+id/image_bookmark_white"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_alignRight="@+id/speech_bubble"
+                android:layout_toRightOf="@+id/speech_bubble"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="-36dp"
+                android:layout_marginLeft="5dp"
                 android:adjustViewBounds="true"
                 android:cropToPadding="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/bookmark_outline"
-                android:visibility="visible" />
-
-
+                android:visibility="visible"/>
         </RelativeLayout>
-
-        <RelativeLayout
-
-            android:id="@+id/relLayout3"
+        <RelativeLayout android:id="@+id/relLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relLayout2"
             android:padding="20dp">
-
-            <TextView
-                android:id="@+id/count_likes"
+            <TextView android:id="@+id/count_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="좋아요 0개"
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/linLayout_like"
+                android:textStyle="bold"/>
+            <LinearLayout android:id="@+id/linLayout_like"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_below="@+id/count_likes"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/image_caption"
+                android:orientation="horizontal"> </LinearLayout>
+            <TextView android:id="@+id/image_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linLayout_like"
                 android:layout_marginTop="15dp"
                 android:text="mitch.tabian moutains #earthporn #mountains"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
-
+                android:textSize="15sp"/>
             <TextView
                 android:id="@+id/image_comments_link"
                 android:layout_width="wrap_content"
@@ -216,10 +171,7 @@
                 android:layout_marginTop="15dp"
                 android:text="View all 3 comments"
                 android:textColor="@color/grey"
-                android:textSize="15sp" />
-
+                android:textSize="15sp"/>
         </RelativeLayout>
-
     </RelativeLayout>
-
 </RelativeLayout>

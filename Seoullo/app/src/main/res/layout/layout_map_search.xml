@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:id="@+id/map_search_rel_layout"
-        android:background="@drawable/round_shape_bottom"
+        android:background="@drawable/round_all"
         app:layout_constraintTop_toTopOf="parent"
         android:padding="5dp"
         android:paddingStart="10dp"
@@ -40,7 +40,6 @@
             android:id="@+id/map_search_btn"
             android:src="@drawable/ic_search"
             android:background="@color/white"
-
             android:layout_alignParentEnd="true"
             />
     </RelativeLayout>

@@ -105,6 +105,7 @@
             android:layout_below="@id/profile_Rel"
             android:layout_margin="10dp"
             android:elevation="1dp"
+            android:padding="0.5dp"
             app:cardCornerRadius="10dp">
 
             <GridView
@@ -115,9 +116,9 @@
                 android:horizontalSpacing="0.5dp"
                 android:numColumns="3"
                 android:paddingLeft="0.5dp"
-                android:paddingTop="-1dp"
+                android:paddingTop="0.5dp"
                 android:paddingRight="0.5dp"
-                android:paddingBottom="2dp"
+                android:paddingBottom="0.5dp"
                 android:scrollbars="none"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="0.5dp"/>

@@ -5,17 +5,27 @@
     android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/relLayout1">
             <include layout="@layout/snippet_searchbar"/>
         </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_search_text"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="사용자 아이디를  검색해 보세요 !"
+            android:textSize="13sp"/>
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/listView"
+            android:visibility="gone"
             android:layout_below="@+id/relLayout1">
         </ListView>
     </RelativeLayout>

@@ -864,7 +864,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
-                                System.out.println(dataSnapshot.getValue()+"여기는 ?");
                                 holder.heart.toggleLike();
                             }
                         }
@@ -992,8 +991,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getKey() != null){
                         holder.users = new StringBuilder();
-                        holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
 
+                        holder.likecount.setText("좋아요 " + dataSnapshot.getChildrenCount() + "개");
+                        final int currentlikeCount = (int) dataSnapshot.getChildrenCount();
                     //textview 동적생성
                     final TextView item = new TextView(getContext());
                     final TextView info = new TextView(getContext());
@@ -1016,9 +1016,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     holder.users.append(",");
 
                                 }
-
                                 String[] split = holder.users.toString().split(",");
-
+                                //int length = currentlikeCount;
                                 int length = split.length;
 
                                 if (holder.users.toString().contains(currentUsername)) {//mitch, mitchell.tabian
@@ -1026,12 +1025,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 } else {
                                     holder.likeByCurrentUser = false;
                                 }
-
                                 if (length > 0) {
-                                    holder.likecount.setText("좋아요 " + length + "개");
+                                    holder.likecount.setText("좋아요 " + currentlikeCount + "개");
+                                    holder.photo.setLikeCount(currentlikeCount);
                                     item.setText(split[length - 1]);
                                     item.setTypeface(null, Typeface.BOLD);
-                                    info.setText("님 외 " + length + "명이 좋아합니다");
+                                    info.setText("님 외 " + currentlikeCount + "명이 좋아합니다");
                                 } else {
 
                                     holder.likecount.setText("좋아요 " + "0" + "개");
