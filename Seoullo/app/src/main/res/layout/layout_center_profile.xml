@@ -101,7 +101,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/rel_layout_3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/profile_Rel"
             android:layout_margin="10dp"
             android:elevation="1dp"
