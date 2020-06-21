@@ -174,24 +174,7 @@ public class NextActivity extends AppCompatActivity {
                 }.start();
 
 
-                //==============================================place저장중===================================================
-                if(allowUpload) {
-                    //upload image to firebase
-                    Toast.makeText(NextActivity.this, "게시글을 올리는 중입니다..", Toast.LENGTH_SHORT).show();
-                    String caption = mCaption.getText().toString();
 
-                    if (intent.hasExtra(getString(R.string.selected_image))) {
-                        imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-                        imgName = intent.getStringExtra("image_name");
-                        mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
-
-                    } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
-                        bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                        mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
-                    }
-                } else {
-                    Toast.makeText(NextActivity.this, "장소를 다시 선택해 주세요 !", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -417,7 +400,7 @@ public class NextActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(addressList.isEmpty() == false) {
+        if(!addressList.isEmpty()) {
 
             resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
             resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
@@ -493,31 +476,32 @@ public class NextActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
             String json = bun.getString("json");
-            if(json != null) {
+            if(!json.equals("null")) {
                 jsonParsing(json); //json PARSING
-
-                //check placeList is null or least under 3
-                if(placeList.size() < 3) {
-                    for(int i=0; i < 3 - placeList.size(); ++i) {
-                        Place extra = new Place();
-                        extra.setVicinity("근처에 추천장소가 없네요 :(");
-                        extra.setLatitude(0.0);
-                        extra.setLongitude(0.0);
-                        extra.setPhotoReference(null);
-                        extra.setName("추천장소가 없어요");
-                        ArrayList<String> et = new ArrayList<String>();
-                        et.add("CANNOT");
-                        et.add("FOUND");
-                        extra.setType(et);
-                    }
-                }
-
-                if(mLatLng != null) {
-                    allowUpload = true;
-                }
-                else allowUpload = false;
-            }
+                allowUpload = true;
+            }   //if
             else allowUpload = false;
+
+            //==============================================place저장중===================================================
+            if(allowUpload) {
+                //upload image to firebase
+                Toast.makeText(NextActivity.this, "게시글을 올리는 중입니다..", Toast.LENGTH_SHORT).show();
+                String caption = mCaption.getText().toString();
+
+                if (intent.hasExtra(getString(R.string.selected_image))) {
+                    imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+                    imgName = intent.getStringExtra("image_name");
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
+
+                } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
+                    bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
+                }
+            } else {
+                mLatLng.clear();
+                placeList.clear();
+                Toast.makeText(NextActivity.this, "장소를 다시 선택해 주세요 !", Toast.LENGTH_SHORT).show();
+            }
         }
     };
 

@@ -19,7 +19,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import com.seoullo.seoullotour.Bookmark.BookmarkActivity;
 import com.seoullo.seoullotour.Home.HomeActivity;
-import com.seoullo.seoullotour.Likes.LikesActivity;
 import com.seoullo.seoullotour.Map.MapActivity;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 import com.seoullo.seoullotour.R;
