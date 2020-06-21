@@ -2,10 +2,10 @@
 
 <TextView
     android:id="@+id/list_item"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@null"
-    android:textSize="15sp"
+    android:textSize="12sp"
     android:paddingStart="10dp"
     android:paddingEnd="10dp"
     android:padding="5dp"

@@ -70,6 +70,7 @@ import com.seoullo.seoullotour.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -108,20 +109,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //search map
     private Geocoder geocoder;
     private Point mSearchedPoint;
+
     //widget
-    private TextView mGuide;
-    private TextView mVicinity;
+    private TextView mGuide,mVicinity,mBookmarkText;
     private Button mDirection;
-
-
-    private ImageButton mShowGuide, mBookmarkBtn;
+    private ImageButton mShowGuide, mBookmarkBtn,mSearchBtn;
     private ListView mListGuide, mListBookmark;
-    private RelativeLayout mRelDirection;
-    private RelativeLayout mRelSearch;
-    private MapListAdapter mapListAdapter;
     private AutoCompleteTextView mAutoCompleteTextView;
-    private ImageButton mSearchBtn;
+    private RelativeLayout mRelDirection, mRelSearch;
     private LinearLayout mLinearLayout;
+    private MapListAdapter mapListAdapter;
+
+
 
     MapFragment() {
     }
@@ -168,6 +167,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return apiKey;
     }
+
     public static String getApiKeyFromManifestGoogleAPI(Context context) {
         String apiKey = null;
 
@@ -215,13 +215,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mSearchBtn = (ImageButton) view.findViewById(R.id.map_search_btn);
         mBookmarkBtn = (ImageButton) view.findViewById(R.id.map_search_btn_bookmark);
         mListBookmark = (ListView) view.findViewById(R.id.map_bookmark_list);
+        mBookmarkText = (TextView) view.findViewById(R.id.map_search_textview);
 
         mLinearLayout.setVisibility(View.VISIBLE);
-
         mRelDirection.setVisibility(View.INVISIBLE);
         mRelSearch.setVisibility(View.INVISIBLE);
+        mBookmarkText.setVisibility(View.GONE);
 
-        if(mPoint != null) {    // [ RECOMMEND ] => [ MAP ]
+        if (mPoint != null) {    // [ RECOMMEND ] => [ MAP ]
             mRelDirection.setVisibility(View.VISIBLE);
             mRelSearch.setVisibility(View.GONE);
             mVicinity.setText(mPoint.location);
@@ -230,37 +231,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onClick(View v) {
                     if (!isDrawed) {
                         if (currentPoint != null) {  //current location enabled;
-                        new Thread() {
-                            public void run() {
-                                System.out.println("THREAD RUN");
-                                String isSettedNow = "";
-                                try {
+                            new Thread() {
+                                public void run() {
+                                    System.out.println("THREAD RUN");
+                                    String isSettedNow = "";
+                                    try {
 //                                    GoogleDirection gd = new GoogleDirection(currentPoint, mPoint, mRoute, mPathList, getActivity());
 //                                    gd.HttpConnection("transit"); //GOOGLE
-                                    HttpConnection(); //NAVER
-                                    isSettedNow = "true";
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                        HttpConnection(); //NAVER
+                                        isSettedNow = "true";
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (CloneNotSupportedException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
 
-                                Bundle bun = new Bundle();
-                                bun.putString("setted", isSettedNow);
-                                Message msg = handler.obtainMessage();
-                                msg.setData(bun);
-                                handler.sendMessage(msg);
-                            }
-                        }.start();
-                        System.out.println("thread finished");
+                                    Bundle bun = new Bundle();
+                                    bun.putString("setted", isSettedNow);
+                                    Message msg = handler.obtainMessage();
+                                    msg.setData(bun);
+                                    handler.sendMessage(msg);
+                                }
+                            }.start();
+                            System.out.println("thread finished");
                         } else {    //currentPoint is null
-                            Toast.makeText(getContext(),"왼쪽 하단에 현재 위치 설정을 한번 눌러주세요 !",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "왼쪽 하단에 현재 위치 설정을 한번 눌러주세요 !", Toast.LENGTH_SHORT).show();
                         }
                     } //if
                     else
-                        Toast.makeText(getContext(),"이미 길찾기를 하셨습니다 !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "이미 길찾기를 하셨습니다 !", Toast.LENGTH_SHORT).show();
                 } //onClick
             });
             mInfoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
@@ -287,7 +288,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mRelDirection.setVisibility(View.GONE);
 
             //어댑터 생성
-            ArrayAdapter adapter = new GooglePlacesAutocompleteAdapter(getContext(),R.layout.layout_list_item);
+            ArrayAdapter adapter = new GooglePlacesAutocompleteAdapter(getContext(), R.layout.layout_list_item);
             mAutoCompleteTextView.setAdapter(adapter);
 
             mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -317,7 +318,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }.start();
 
-                   InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (null != getActivity().getCurrentFocus())
                         imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
                                 .getApplicationWindowToken(), 0);
@@ -330,9 +331,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onClick(View v) {
                     //TODO: 지도에 북마크한 객체 표시하기
-                    if(!isBookmarkListOpen[0]) {
+                    if (!isBookmarkListOpen[0]) {
                         isBookmarkListOpen[0] = true;
                         mListBookmark.setVisibility(View.VISIBLE);
+                        mBookmarkText.setVisibility(View.VISIBLE);
 
                         //get from firebase
                         Query query = FirebaseDatabase.getInstance().getReference()
@@ -350,10 +352,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     LatLng.add(0, Double.parseDouble(singleSnapshot.child("latlng").child("0").getValue().toString()));
                                     LatLng.add(1, Double.parseDouble(singleSnapshot.child("latlng").child("1").getValue().toString()));
                                     BM.setLatlng(LatLng);
-                                    String []locationSplit = singleSnapshot.child("location").getValue().toString().split(" ");
+                                    String[] locationSplit = singleSnapshot.child("location").getValue().toString().split(" ");
                                     String trimmedLocation = "";
-                                    for(int loop=2; loop < locationSplit.length; ++loop) {
-                                        trimmedLocation += " " +  locationSplit[loop];
+                                    for (int loop = 2; loop < locationSplit.length; ++loop) {
+                                        trimmedLocation += " " + locationSplit[loop];
                                     }
                                     BM.setLocation(trimmedLocation);
                                     BM.setUser_id(singleSnapshot.child("user_id").toString());
@@ -371,10 +373,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     e.printStackTrace();
                                 }
                                 mListBookmark.setAdapter(mapListAdapter);
+                                mListBookmark.setItemsCanFocus(true);
 
                                 mListBookmark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
                                         double lat = BookmarkList.get(position).getLatlng().get(0);
                                         double lng = BookmarkList.get(position).getLatlng().get(1);
 
@@ -388,7 +392,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                             @NonNull
                                             @Override
                                             public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                                String [] trimmed = BookmarkList.get(position).getLocation().split(" ");
+                                                String[] trimmed = BookmarkList.get(position).getLocation().split(" ");
 
                                                 return trimmed[trimmed.length - 1];
                                             }
@@ -397,7 +401,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         nMarker.setOnClickListener(new Overlay.OnClickListener() {
                                             @Override
                                             public boolean onClick(@NonNull Overlay overlay) {
-                                                if(!isInfoWindowOpen[0]) {
+                                                if (!isInfoWindowOpen[0]) {
                                                     mInfo.open(nMarker);
                                                     isInfoWindowOpen[0] = true;
                                                 } else {
@@ -411,9 +415,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                         //hide mListBookmark
                                         mListBookmark.setVisibility(View.GONE);
+                                        mBookmarkText.setVisibility(View.GONE);
                                         isBookmarkListOpen[0] = false;
                                         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(itemLatLng, 14f));
                                     }
+
                                 });
 
                             }
@@ -427,6 +433,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     } //if
                     else {
                         mListBookmark.setVisibility(View.GONE);
+                        mBookmarkText.setVisibility(View.GONE);
                         isBookmarkListOpen[0] = false;
                     }
 
@@ -454,6 +461,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.getMapAsync(this);
 
     }
+
     //핸들러
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
@@ -461,7 +469,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
             String set = bun.getString("setted");
-            if(set.equals("true")) {
+            if (set.equals("true")) {
                 System.out.println("draw path !");
                 isDrawed = true;
                 //draw path here
@@ -476,30 +484,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onClick(View v) {
 
-                       if(mListGuide.getVisibility() == View.INVISIBLE) {
-                           try {
-                               mapListAdapter = new MapListAdapter(getContext(), mRoute.getGuideArray());
-                           } catch (CloneNotSupportedException e) {
-                               e.printStackTrace();
-                           }
-                           mListGuide.setAdapter(mapListAdapter);
-                           mListGuide.setVisibility(View.VISIBLE);
-                       }
-
-                       else {
-                           mListGuide.setAdapter(null);
-                           mListGuide.setVisibility(View.INVISIBLE);
-                       }
+                        if (mListGuide.getVisibility() == View.INVISIBLE) {
+                            try {
+                                mapListAdapter = new MapListAdapter(getContext(), mRoute.getGuideArray());
+                            } catch (CloneNotSupportedException e) {
+                                e.printStackTrace();
+                            }
+                            mListGuide.setAdapter(mapListAdapter);
+                            mListGuide.setVisibility(View.VISIBLE);
+                        } else {
+                            mListGuide.setAdapter(null);
+                            mListGuide.setVisibility(View.INVISIBLE);
+                        }
                     }
                 });
 
                 //draw text view
                 int durationMilliesecond = mRoute.getDuration();
-                double durationMinute = durationMilliesecond * ( 0.16666666666667 ) * 0.0001;
+                double durationMinute = durationMilliesecond * (0.16666666666667) * 0.0001;
 
                 String departureTime = mRoute.getDepartureTime().substring(
-                        mRoute.getDepartureTime().indexOf("T")+1,
-                        mRoute.getDepartureTime().length()-3
+                        mRoute.getDepartureTime().indexOf("T") + 1,
+                        mRoute.getDepartureTime().length() - 3
                 );
                 System.out.println(departureTime);
                 String[] time = departureTime.split(":");
@@ -512,24 +518,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 System.out.println("HH : " + Hrs + "MM : " + Min + "지연 : " + durationMinute);
 
-                if(Min + (int)durationMinute >= 60) {
-                   int toHrs = (Min + (int)durationMinute) / 60;
-                   Min = (Min + (int)durationMinute) % 60;
-                   Hrs = Hrs + toHrs;
+                if (Min + (int) durationMinute >= 60) {
+                    int toHrs = (Min + (int) durationMinute) / 60;
+                    Min = (Min + (int) durationMinute) % 60;
+                    Hrs = Hrs + toHrs;
                 } else {
-                    Min += (int)durationMinute;
+                    Min += (int) durationMinute;
                 }
                 float toKM = mRoute.getDistance() / 1000;
 
-                mGuide.setText("총 거리 : " + toKM + "km " + "\n도착 시간 : " + Hrs +" 시 " + Min + " 분 도착 예정입니다.");
+                mGuide.setText("총 거리 : " + toKM + "km " + "\n도착 시간 : " + Hrs + " 시 " + Min + " 분 도착 예정입니다.");
                 mGuide.setTextSize(10);
                 mGuide.setVisibility(View.VISIBLE);
 
-                if(locationSource.getLastLocation() == null) {
+                if (locationSource.getLastLocation() == null) {
                     Toast.makeText(getContext(), "현재위치정보를 한번 눌러주세요 !", Toast.LENGTH_LONG).show();
                     nMap.moveCamera(CameraUpdate.zoomTo(13f));
-                }
-                else {
+                } else {
                     LatLng currentPosition = new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude());
                     nMap.moveCamera(CameraUpdate.scrollAndZoomTo(currentPosition, 13f));
                 }
@@ -546,7 +551,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Double lng = Double.parseDouble(bun.getString("lng"));
             final String location = bun.getString("location");
 
-            if(lat != null && lng != null) {
+            if (lat != null && lng != null) {
                 LatLng latLng = new LatLng(lat, lng);
                 final Marker nMarker = new Marker();
                 nMarker.setPosition(latLng);
@@ -599,8 +604,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setLocationButtonEnabled(true);      //현위치버튼
         uiSettings.setZoomControlEnabled(true);         //줌버튼
         uiSettings.setIndoorLevelPickerEnabled(true);   //층별로 볼수있
-        uiSettings.setLogoGravity(Gravity.END|Gravity.BOTTOM);
-        uiSettings.setLogoMargin(0,0,30,200);
+        uiSettings.setLogoGravity(Gravity.END | Gravity.BOTTOM);
+        uiSettings.setLogoMargin(0, 0, 30, 200);
         uiSettings.setAllGesturesEnabled(true);
 
         //location change listener
@@ -636,8 +641,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             nMarker.setPosition(latLng);
             nMarker.setMap(nMap);
             nMap.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, 16f));
-        }
-        else {
+        } else {
 
             final boolean[] isInfoWindowOpen = {false};
             nMarker.setOnClickListener(new Overlay.OnClickListener() {
@@ -721,7 +725,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String result = null;
         //NAVER
         String mURL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving" +
-                "?start=" +  this.currentPoint.y   + "," +    this.currentPoint.x +
+                "?start=" + this.currentPoint.y + "," + this.currentPoint.x +
                 "&goal=" + mPoint.y + "," + mPoint.x;
         // Open the connection
         URL url = new URL(mURL);
@@ -788,7 +792,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         resultRoute.setPathArray(mPathArray);
         resultRoute.setGuideArray(mGuideArray);
 
-        mRoute =  (Route) CloneUtils.clone(resultRoute);
+        mRoute = (Route) CloneUtils.clone(resultRoute);
 
         System.out.println(mDepartureTime);
         System.out.println(mDistance);
@@ -798,19 +802,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (int i = 0; i < resultRoute.getGuideArray().size(); ++i)
             System.out.println(resultRoute.getGuideArray().get(i));
     }
+
     private void setPath() {
         ArrayList<String> mPath = (ArrayList<String>) mRoute.getPathArray().clone();
 
-        for(int i=0; i<mPath.size(); ++i) {
-            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1,mPath.get(i).indexOf(","));
-            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1,mPath.get(i).length()-1);
+        for (int i = 0; i < mPath.size(); ++i) {
+            String lng = mPath.get(i).substring(mPath.get(i).indexOf("[") + 1, mPath.get(i).indexOf(","));
+            String lat = mPath.get(i).substring(mPath.get(i).indexOf(",") + 1, mPath.get(i).length() - 1);
 
             System.out.println("added : " + lat + "," + lng);
 
-            LatLng latLng = new LatLng(Double.parseDouble(lat),Double.parseDouble(lng));
+            LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
             mPathList.add(latLng);
         }
     }
+
     //=============================================PLACE AUTO COMPLETE ---------------------------------------------------------//
     private static final String LOG_TAG = "GOOGLE_PLACE_AUTOCOMPLETE";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
@@ -876,6 +882,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return resultList;
     }
+
     //TODO: adapter upgrade -> recyclerview
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
         private ArrayList resultList;
@@ -923,6 +930,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return filter;
         }
     }
+
     //================================================================GEOCODING !=================================================================
     //geocoding
     public Point getLatlngFromLocation(String findLocation) {
