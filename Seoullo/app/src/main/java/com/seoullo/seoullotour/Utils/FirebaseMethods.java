@@ -104,7 +104,11 @@ public class FirebaseMethods {
 
                     //add the new photo to 'photos' node and 'user_photos' node
 
-                    addPhotoToDatabase(caption, firebaseUrl.toString(), location, imgName, places, latlng);
+                    try {
+                        addPhotoToDatabase(caption, firebaseUrl.toString(), location, imgName, places, latlng);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
 
                     //navigate to the main feed so the user can see their photo
                     Intent intent = new Intent(mContext, HomeActivity.class);
@@ -202,7 +206,7 @@ public class FirebaseMethods {
     }
 
 
-    private void addPhotoToDatabase(String caption, String url, String location, String imgName, ArrayList<Place> places, ArrayList<Double> latlng) {
+    private void addPhotoToDatabase(String caption, String url, String location, String imgName, ArrayList<Place> places, ArrayList<Double> latlng) throws CloneNotSupportedException {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
         String tags = StringManipulation.getTags(caption);

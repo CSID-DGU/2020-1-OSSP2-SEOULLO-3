@@ -373,7 +373,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                     });
 
-                    holder.photo.setLatlng(photosList.get(position).getLatlng());
+                    try {
+                        holder.photo.setLatlng(photosList.get(position).getLatlng());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
 //                    getBookmarkCurrentUser(holder);
 //                    bookmarkClickEvent(holder);
 //                    getHeartCurrentUser(holder);

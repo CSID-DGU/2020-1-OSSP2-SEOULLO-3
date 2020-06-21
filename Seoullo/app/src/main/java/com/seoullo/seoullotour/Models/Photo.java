@@ -161,8 +161,8 @@ public class Photo implements Parcelable, Serializable {
 
     public ArrayList<Place> getPlaces() { return places; }
 
-    public void setLatlng(ArrayList<Double> latlng) {
-        this.latlng = (ArrayList<Double>) latlng.clone();
+    public void setLatlng(ArrayList<Double> latlng) throws CloneNotSupportedException {
+        this.latlng = (ArrayList<Double>) CloneUtils.clone(latlng);
     }
 
     public ArrayList<Double> getLatlng() {
