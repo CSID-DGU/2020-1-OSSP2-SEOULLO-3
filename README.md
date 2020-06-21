@@ -82,7 +82,7 @@
 
 ## USED OPEN SOURCE
 
-    + BASE OPEN SOURCE PROJECT : <https://github.com/stephyswe/Android-Instagram>
+   ##### BASE OPEN SOURCE PROJECT : <https://github.com/stephyswe/Android-Instagram>
   
     + Bottom Navigation Bar : 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     + Glide version : 'com.github.bumptech.glide:glide:4.9.0'
