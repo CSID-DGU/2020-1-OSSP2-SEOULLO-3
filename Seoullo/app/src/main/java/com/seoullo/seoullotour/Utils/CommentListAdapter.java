@@ -88,7 +88,6 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 //            holder.likes = (TextView) convertView.findViewById(R.id.comment_likes);
             holder.profileImage = (CircleImageView) convertView.findViewById(R.id.comment_profile_image);
 
-
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

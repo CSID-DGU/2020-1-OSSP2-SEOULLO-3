@@ -48,11 +48,9 @@ public class HomeFragment extends Fragment {
     private ArrayList<Photo> mPaginatedPhotos;
     private ArrayList<String> mAllUserPosts;
     private ArrayList<Photo> photos;
-
     private ListView mListView;
     private com.seoullo.seoullotour.Utils.MainfeedListAdapter mAdapter;
     private int mResults;
-
     private static final String ARG_PARAM1 = "param1";
     private String mParam;
 
@@ -315,5 +313,13 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }*/
-
+    @Override
+    public void onResume() {
+        super.onResume();
+//        if (((HomeActivity) HomeFragment.this.getContext()).getCommentFlag() == 1) {
+//            mAdapter.notifyDataSetChanged();
+//            ((HomeActivity) HomeFragment.this.getContext()).zeroFlag();
+//        }
+    }
 }
+

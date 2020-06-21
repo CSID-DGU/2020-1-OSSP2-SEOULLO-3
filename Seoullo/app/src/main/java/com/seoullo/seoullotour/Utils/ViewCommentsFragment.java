@@ -62,6 +62,7 @@ public class ViewCommentsFragment extends Fragment {
         super();
         setArguments(new Bundle());
     }
+    private CommentListAdapter mAdapter;
 
     //firebase
     private FirebaseAuth mAuth;
@@ -101,8 +102,6 @@ public class ViewCommentsFragment extends Fragment {
             Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage() );
         }
         System.out.println(mPhoto.getComments().get(0)+"첫번째 게시글");
-
-
         return view;
     }
 
@@ -110,6 +109,7 @@ public class ViewCommentsFragment extends Fragment {
 
         CommentListAdapter adapter = new CommentListAdapter(mContext,
                 R.layout.layout_comment, mComments,mRequestManager);
+        mAdapter = adapter;
         mListView.setAdapter(adapter);
 
         mCheckMark.setOnClickListener(new View.OnClickListener() {
@@ -363,7 +363,11 @@ public class ViewCommentsFragment extends Fragment {
 
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
     @Override
     public void onStart() {
         super.onStart();

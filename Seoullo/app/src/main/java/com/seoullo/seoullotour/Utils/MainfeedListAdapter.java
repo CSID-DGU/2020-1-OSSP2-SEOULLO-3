@@ -180,16 +180,38 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         //set the comment
         List<Comment> comments = photosList.get(position).getComments();
 
-        holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
+        //holder.comments.setText("댓글 " + comments.size() + "개 모두 보기");
+
+        mReference.child("photos")
+                .child(holder.photo.getPhoto_id())
+                .child("comments")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            int num = (int) dataSnapshot.getChildrenCount();
+                            holder.comments.setText("댓글 " + num + "개 모두 보기");
+                        }else{
+                            holder.comments.setText("댓글 " + "0개 보기");
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: loading comment thread for " + getItem(position).getPhoto_id());
+                ((HomeActivity) mContext).oneFlag();
                 ((HomeActivity) mContext).onCommentThreadSelected(getItem(position),
                         mContext.getString(R.string.home_activity));
 
                 //going to need to do something else?
                 ((HomeActivity) mContext).hideLayout();
+
 
             }
         });
@@ -445,8 +467,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         latlngQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                holder.mPlace.setLatitude(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
-                holder.mPlace.setLongitude(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
+                if (dataSnapshot.getKey() != null) {
+                    System.out.println("키값은 ? "+ dataSnapshot.child("0").getKey() );
+                    holder.mPlace.setLatitude(Double.parseDouble(dataSnapshot.child("0").getValue().toString()));
+                    holder.mPlace.setLongitude(Double.parseDouble(dataSnapshot.child("1").getValue().toString()));
+                }
             }
 
             @Override

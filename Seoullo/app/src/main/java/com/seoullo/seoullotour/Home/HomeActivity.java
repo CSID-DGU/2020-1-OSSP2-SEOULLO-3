@@ -60,6 +60,8 @@ public class HomeActivity extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private int commentFlag = 0;
+
     //widgets
     private ViewPager mViewPager;
     private FrameLayout mFrameLayout;
@@ -217,7 +219,15 @@ public class HomeActivity extends AppCompatActivity implements
             }
         };
     }
-
+    public int getCommentFlag(){
+        return commentFlag;
+    }
+    public void oneFlag(){
+        commentFlag=1;
+    }
+    public void zeroFlag(){
+        commentFlag=0;
+    }
     @Override
     public void onStart() {
         super.onStart();
