@@ -63,6 +63,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'ua.org.tenletters.widget:diagonalscrollview:0.3.3'
     implementation "ua.org.tenletters.widget:diagonalscrollview:0.3.3"
-
+    implementation 'com.github.tylersuehr7:empty-state-recyclerview:1.0.4'
 
 }

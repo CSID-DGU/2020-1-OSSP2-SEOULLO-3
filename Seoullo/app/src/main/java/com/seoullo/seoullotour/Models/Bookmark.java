@@ -62,7 +62,7 @@ public class Bookmark implements Parcelable, Serializable {
     public void setLocation(String location) { this.location = location; }
 
     public void setLatlng(ArrayList<Double> latlng) {
-        this.latlng = (ArrayList<Double>) latlng;
+        this.latlng = (ArrayList<Double>) latlng.clone();
     }
 
     public ArrayList<Double> getLatlng() {

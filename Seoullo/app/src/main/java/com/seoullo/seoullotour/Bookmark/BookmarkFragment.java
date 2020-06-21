@@ -61,6 +61,7 @@ import com.seoullo.seoullotour.Models.Photo;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Recommend.RecommendFirstFragment;
+import com.tylersuehr.esr.EmptyStateRecyclerView;
 
 import org.w3c.dom.Text;
 
@@ -95,8 +96,22 @@ public class BookmarkFragment extends Fragment {
         ArrayList<Photo> bookmark = new ArrayList<>();
         mLinearLayout = view.findViewById(R.id.group_viewPager);
 
-        mCardView = (CardView) view.findViewById(R.id.cardView);
+        mCardView = (CardView) Zview.findViewById(R.id.cardView);
         //mCardView.setMaxCardElevation(mCardView.getCardElevation() * CardAdapter.MAX_ELEVATION_FACTOR);
+
+        addBookmarkButton = (Button) view.findViewById(R.id.add_bookmark_button);
+        BookmarkRecyclerViewAdapter adapter = new BookmarkRecyclerViewAdapter(bookmark);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
+        recyclerView.setEmptyView(findViewById(R.id.empty_view)); 	//Set EmptyView
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+        mRequestManager = Glide.with(this);
+        buttonEvent();
+        return view;
+    }
 
         mFragmentCardAdapter = new CardFragmentPagerAdapter(getFragmentManager(),
                 dpToPixels(2, this));
