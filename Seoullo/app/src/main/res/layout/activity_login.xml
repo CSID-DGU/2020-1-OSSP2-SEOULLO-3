@@ -1,80 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
-
-<LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="55dp"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp"
-    >
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="75dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="40dp"
-        android:src="@drawable/seoullo" />
-
-    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:inputType="textEmailAddress"
-        android:hint="Email"
-        android:id="@+id/input_email"/>
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:id="@+id/input_password" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
-        android:text="Login"
-        android:id="@+id/btn_login"
-        android:padding="12dp"
-        android:background="@drawable/white_rounded_button"/>
-
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:id="@+id/seoullo_logo"
+        android:src="@drawable/launch_icon_seoullo" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:text="No account yet? Create one"
+        android:id="@+id/login_desc"
+        android:layout_below="@id/seoullo_logo"
+        android:textColor="#6B6A6A"
         android:gravity="center"
-        android:textSize="16dp"
-        android:id="@+id/link_signup"
-        android:textColor="@color/link_blue" />
+        android:text="사람들과 장소를 공유하고\n 지도로 바로 확인해보세요 !"
+        />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="25dp"
+        android:paddingLeft="25dp"
+        android:paddingTop="50dp"
+        android:paddingRight="25dp">
 
-<ProgressBar
-    android:layout_width="200dp"
-    android:layout_height="200dp"
-    android:id="@+id/progressBar"
-    android:layout_centerInParent="true"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="가입한 계정 /  helloworld@email.com"
+            android:inputType="textEmailAddress"
+            android:textSize="14sp" />
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Please wait..."
-    android:textColor="@color/black"
-    android:textSize="20sp"
-    android:layout_alignBottom="@+id/progressBar"
-    android:layout_alignRight="@+id/progressBar"
-    android:layout_alignLeft="@+id/progressBar"
-    android:id="@+id/pleaseWait"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="비밀번호 / Password"
+            android:inputType="textPassword"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_shape"
+            android:elevation="2dp"
+            android:padding="12dp"
+            android:text="로그인 / LOGIN"
+            android:textColor="@color/theme_deepblue"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/link_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="계정 새로 만들기"
+            android:textColor="@color/theme_lightblue"
+            android:textSize="12dp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.Holo.Light.ProgressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/pleaseWait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:layout_centerInParent="true"
+        android:text="잠깐만 기다려주세요..."
+        android:textColor="#6B6A6A"
+        android:textSize="12sp" />
 
 </RelativeLayout>

@@ -217,7 +217,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mRelDirection.setVisibility(View.INVISIBLE);
         mRelSearch.setVisibility(View.INVISIBLE);
 
-        if(mPoint != null) {
+        if(mPoint != null) {    // [ RECOMMEND ] => [ MAP ]
             mRelDirection.setVisibility(View.VISIBLE);
             mRelSearch.setVisibility(View.GONE);
             mVicinity.setText(mPoint.location);
@@ -277,7 +277,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         } //if point null
 
-        //mPoint null 이면 검색창 띄워주기
+        //mPoint null 이면 검색창 띄워주기 : [ MAP ]
         else {
             mRelSearch.setVisibility(View.VISIBLE);
             mRelDirection.setVisibility(View.GONE);
@@ -404,6 +404,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                             }
                                         });
 
+
+                                        //hide mListBookmark
+                                        mListBookmark.setVisibility(View.GONE);
+                                        isBookmarkListOpen[0] = false;
                                         nMap.moveCamera(CameraUpdate.scrollAndZoomTo(itemLatLng, 14f));
                                     }
                                 });
