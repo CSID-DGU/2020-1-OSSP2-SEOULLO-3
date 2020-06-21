@@ -130,4 +130,4 @@
     
 ## LICENSE
 
-   #### Apache License 2.0
+   #### [Apache License 2.0](https://github.com/CSID-DGU/2020-1-OSSP2-SEOULLO-3/blob/master/LICENSE)
