@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="200dp"
-        android:text="empty bookmark" />
+        android:text="북마크한 게시물이 없습니다." />
 
     <Button
         android:id="@+id/add_bookmark_button"
@@ -22,7 +22,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/round_shape_addbookmark"
         android:gravity="center"
-        android:text="ADD BOOKMARK"
+        android:text="게시글 보러가"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:textStyle="bold" />
