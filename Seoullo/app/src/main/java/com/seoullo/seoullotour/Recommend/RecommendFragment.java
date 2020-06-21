@@ -70,6 +70,7 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
     private Place mPlace;
     private int RecommendFirst = 0;
     private int RecommendSecond = 0;
+    private int RecommendMode = 0;  //0 : more than 3, 1 : only 1
     private int cnt = 0;
     //뷰페이저
     public ViewPager viewPager;
@@ -126,50 +127,26 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
         //viewPager : at last
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(3);
         TabLayout tabLayout = (TabLayout)view.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager, true);
 
         //adapt to viewpager
         com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter viewPagerAdapter =
                 new com.seoullo.seoullotour.Recommend.ViewpagerAdapter.ViewpagerAdapter(getFragmentManager());
-//        if(placeList.size() != 0) {
-//
-//        } else {
-//            Toast.makeText(this.getContext(),"placeList is null",Toast.LENGTH_LONG).show();
-//        }
-        Random rand = new Random();
-        ArrayList<Integer> IntArr = new ArrayList<>();
-        for(int i=0;i<2;++i) {
-            int randnum = rand.nextInt(placeList.size());
-            if(RecommendFirst == 0) {
-                if(!IntArr.contains(randnum)) {
-                    if(placeList.get(randnum).getLatitude() != mPlace.getLatitude()) {
-                        IntArr.add(randnum);
-                        RecommendFirst = randnum;
-                    } else {
-                        i--;
-                        continue;
-                    }
-                }
-            }
-            else {
-                if(!IntArr.contains(randnum)) {
-                    if (placeList.get(randnum).getLatitude() != mPlace.getLatitude()) {
-                        IntArr.add(randnum);
-                        RecommendSecond = randnum;
-                    }
-                } else {
-                    i--;
-                    continue;
-                }
-            }
-        }
-        IntArr.clear();
-        viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
-        viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(RecommendFirst)));
-        viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(RecommendSecond)));
 
+        if(placeList.size() >= 3) {
+            viewPager.setOffscreenPageLimit(3);
+            RecommendFirst = 1; RecommendSecond = 2;
+            viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
+            viewPagerAdapter.addItem(new RecommendSecondFragment(placeList.get(RecommendFirst)));
+            viewPagerAdapter.addItem(new RecommendThirdFragment(placeList.get(RecommendSecond)));
+            RecommendMode = 0;
+        }
+        else {
+            viewPager.setOffscreenPageLimit(placeList.size());
+            viewPagerAdapter.addItem(new RecommendFirstFragment(UserId, ImageName, PhotoId));
+            RecommendMode = 1;
+        }
         //TODO : viewPager 스크롤 이벤트 처리
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -195,128 +172,177 @@ public class RecommendFragment extends Fragment implements OnMapReadyCallback {
         viewPager.setPageMargin((int) ((48 * getResources().getDisplayMetrics().density) / 2));
         //set current position
         viewPager.setCurrentItem(0, false);
-        //marker bubble info window
-        final boolean[] infoEvent = {false};
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        if(RecommendMode == 0) {
+            //marker bubble info window
+            final boolean[] infoEvent = {false};
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
+                }
 
-            @Override
-            public void onPageSelected(final int position) {
+                @Override
+                public void onPageSelected(final int position) {
 
-                infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
-                    @NonNull
-                    @Override
-                    public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                        infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                            @Override
-                            public boolean onClick(@NonNull Overlay overlay) {
+                    infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                        @NonNull
+                        @Override
+                        public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                            infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                                @Override
+                                public boolean onClick(@NonNull Overlay overlay) {
 
-                                Intent intent = new Intent(getActivity(), MapActivity.class);
-                                if(position == 0) {
-                                    Point point = new Point();
-                                    point.x = mPlace.getLatitude();
-                                    point.y = mPlace.getLongitude();
-                                    point.location = mPlace.getVicinity();
-                                    intent.putExtra("point", point);
+                                    Intent intent = new Intent(getActivity(), MapActivity.class);
+                                    if (position == 0) {
+                                        Point point = new Point();
+                                        point.x = mPlace.getLatitude();
+                                        point.y = mPlace.getLongitude();
+                                        point.location = mPlace.getVicinity();
+                                        intent.putExtra("point", point);
+                                    } else if (position == 1) {
+                                        Point point1 = new Point();
+                                        point1.location = placeList.get(RecommendFirst).getVicinity();
+                                        point1.x = placeList.get(RecommendFirst).getLatitude();
+                                        point1.y = placeList.get(RecommendFirst).getLongitude();
+                                        intent.putExtra("point", point1);
+                                    } else {
+                                        Point point2 = new Point();
+                                        point2.location = placeList.get(RecommendSecond).getVicinity();
+                                        point2.x = placeList.get(RecommendSecond).getLatitude();
+                                        point2.y = placeList.get(RecommendSecond).getLongitude();
+                                        intent.putExtra("point", point2);
+                                    }
+                                    startActivity(intent);
+                                    getActivity().finish();
+                                    return false;
                                 }
-                                else if(position == 1) {
-                                    Point point1 = new Point();
-                                    point1.location = placeList.get(RecommendFirst).getVicinity();
-                                    point1.x = placeList.get(RecommendFirst).getLatitude();
-                                    point1.y = placeList.get(RecommendFirst).getLongitude();
-                                    intent.putExtra("point", point1);
-                                }
-                                else {
-                                    Point point2 = new Point();
-                                    point2.location = placeList.get(RecommendSecond).getVicinity();
-                                    point2.x = placeList.get(RecommendSecond).getLatitude();
-                                    point2.y = placeList.get(RecommendSecond).getLongitude();
-                                    intent.putExtra("point", point2);
-                                }
+                            });
+                            switch (position) {
+                                case 0:
+                                    return mPlace.getVicinity();
+                                case 1:
+                                    return placeList.get(RecommendFirst).getName();
+                                case 2:
+                                    return placeList.get(RecommendSecond).getName();
+                                default:
+                                    return "장소 추천";
+                            }
+                        }
+                    });
+                    //click event
+                    marker.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+                            if (infoEvent[0] == false) {
+                                infoWindow.open(marker);
+                                infoEvent[0] = true;
+                            } else {
+                                infoWindow.close();
+                                infoEvent[0] = false;
+                            }
+                            return true;
+                        }
+                    });
+                    nMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                            infoWindow.close();
+                        }
+                    });
+
+                    if (placeList.size() >= 3) {
+                        switch (position) {
+                            case 0:
+                                LatLng latlng0 = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
+
+                                marker.setPosition(latlng0);
+                                marker.setIconTintColor(Color.GREEN);
+                                marker.setMap(nMap);
+                                CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 16f);
+                                nMap.moveCamera(cameraUpdate0);
+                                break;
+                            case 1:
+
+                                LatLng latlng1 = new LatLng(placeList.get(RecommendFirst).getLatitude(), placeList.get(RecommendFirst).getLongitude());
+                                marker.setPosition(latlng1);
+                                marker.setIconTintColor(Color.YELLOW);
+                                marker.setMap(nMap);
+                                CameraUpdate cameraUpdate1 = CameraUpdate.scrollAndZoomTo(latlng1, 16f);
+                                nMap.moveCamera(cameraUpdate1);
+                                break;
+                            case 2:
+
+                                LatLng latlng2 = new LatLng(placeList.get(RecommendSecond).getLatitude(), placeList.get(RecommendSecond).getLongitude());
+                                marker.setPosition(latlng2);
+                                marker.setIconTintColor(Color.BLUE);
+                                marker.setMap(nMap);
+                                CameraUpdate cameraUpdate2 = CameraUpdate.scrollAndZoomTo(latlng2, 16f);
+                                nMap.moveCamera(cameraUpdate2);
+                                break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    infoWindow.setMap(null);
+                }
+            });
+        } else {
+            //marker bubble info window
+            final boolean[] infoEvent = {false};
+            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                    infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+
+                            Intent intent = new Intent(getActivity(), MapActivity.class);
+                                Point point = new Point();
+                                point.x = mPlace.getLatitude();
+                                point.y = mPlace.getLongitude();
+                                point.location = mPlace.getVicinity();
+                                intent.putExtra("point", point);
                                 startActivity(intent);
                                 getActivity().finish();
                                 return false;
                             }
                         });
-                        switch (position) {
-                            case 0:
-                                return mPlace.getVicinity();
-                            case 1:
-                                return placeList.get(RecommendFirst).getName();
-                            case 2:
-                                return placeList.get(RecommendSecond).getName();
-                            default:
-                                return "장소 추천";
-                        }
+                    return mPlace.getVicinity();
                     }
                 });
-                //click event
-                marker.setOnClickListener(new Overlay.OnClickListener() {
-                    @Override
-                    public boolean onClick(@NonNull Overlay overlay) {
-                        if(infoEvent[0] == false) {
-                            infoWindow.open(marker);
-                            infoEvent[0] = true;
-                        }
-                        else {
-                            infoWindow.close();
-                            infoEvent[0] = false;
-                        }
-                        return true;
-                    }
-                });
-                nMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+            //click event
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    if (infoEvent[0] == false) {
+                        infoWindow.open(marker);
+                        infoEvent[0] = true;
+                    } else {
                         infoWindow.close();
+                        infoEvent[0] = false;
                     }
-                });
-
-                if(placeList.size() >= 3) {
-                    switch (position) {
-                        case 0:
-                            LatLng latlng0 = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
-
-                            marker.setPosition(latlng0);
-                            marker.setIconTintColor(Color.GREEN);
-                            marker.setMap(nMap);
-                            CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 16f);
-                            nMap.moveCamera(cameraUpdate0);
-                            break;
-                        case 1:
-
-                            LatLng latlng1 = new LatLng(placeList.get(RecommendFirst).getLatitude(), placeList.get(RecommendFirst).getLongitude());
-                            marker.setPosition(latlng1);
-                            marker.setIconTintColor(Color.YELLOW);
-                            marker.setMap(nMap);
-                            CameraUpdate cameraUpdate1 = CameraUpdate.scrollAndZoomTo(latlng1, 16f);
-                            nMap.moveCamera(cameraUpdate1);
-
-                            break;
-                        case 2:
-
-                            LatLng latlng2 = new LatLng(placeList.get(RecommendSecond).getLatitude(), placeList.get(RecommendSecond).getLongitude());
-                            marker.setPosition(latlng2);
-                            marker.setIconTintColor(Color.BLUE);
-                            marker.setMap(nMap);
-                            CameraUpdate cameraUpdate2 = CameraUpdate.scrollAndZoomTo(latlng2, 16f);
-                            nMap.moveCamera(cameraUpdate2);
-
-                            break;
-                    }
+                    return true;
                 }
-            }
+            });
+            nMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                    infoWindow.close();
+                }
+            });
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                infoWindow.setMap(null);
-            }
-        });
+            LatLng latlng0 = new LatLng(mPlace.getLatitude(), mPlace.getLongitude());
+            marker.setPosition(latlng0);
+            marker.setIconTintColor(Color.GREEN);
+            marker.setMap(nMap);
+            CameraUpdate cameraUpdate0 = CameraUpdate.scrollAndZoomTo(latlng0, 16f);
+            nMap.moveCamera(cameraUpdate0);
+        }
     }
     @Override
     public void onStart() {

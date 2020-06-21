@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         mDesc = (TextView) findViewById(R.id.login_desc);
 
         Log.d(TAG, "onCreate: started.");
-        
+
         mPleaseWait.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
 

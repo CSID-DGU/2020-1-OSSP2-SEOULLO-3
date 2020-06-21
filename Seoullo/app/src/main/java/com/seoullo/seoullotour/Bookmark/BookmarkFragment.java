@@ -49,6 +49,8 @@ public class BookmarkFragment extends Fragment {
     private static final String TAG = "BookmarkFragment";
 
     private Button addBookmarkButton;
+    private TextView emptyView;
+    private RecyclerView recyclerView;
     public RequestManager mRequestManager;
 
     public static BookmarkFragment newInstance() { return new BookmarkFragment(); }
@@ -65,11 +67,14 @@ public class BookmarkFragment extends Fragment {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
+        recyclerView = (RecyclerView) view.findViewById(R.id.bookmarkfragment_recyclerview);
+
         recyclerView.setAdapter(adapter);
+
         recyclerView.setLayoutManager(layoutManager);
         mRequestManager = Glide.with(this);
         buttonEvent();
+
         return view;
     }
 
@@ -152,6 +157,14 @@ public class BookmarkFragment extends Fragment {
                                 bookmark.setLikeCount(Integer.parseInt(objectMap.get("likeCount").toString()));
                                 bookmark.setLatlng((ArrayList<Double>) objectMap.get("latlng"));
                                 mBookmarkList.add(bookmark);
+
+                            }
+                            if(mBookmarkList.isEmpty()) {
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.rel_layout_3, EmptyView.newInstance());
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
                             }
                             notifyDataSetChanged();
                         }
@@ -162,6 +175,7 @@ public class BookmarkFragment extends Fragment {
                         }
 
                     });
+
         }
 
         @Override
