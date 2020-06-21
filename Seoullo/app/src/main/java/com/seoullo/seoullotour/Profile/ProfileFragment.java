@@ -1,6 +1,7 @@
 package com.seoullo.seoullotour.Profile;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -74,6 +77,11 @@ public class ProfileFragment extends Fragment {
 
     private static final int ACTIVITY_NUM = 4;
     private static final int NUM_GRID_COLUMNS = 3;
+
+    //report
+    private AlertDialog reportDialog;
+    private String[] reportlists = {"광고 계정", "허위 리뷰 계정"};
+    private boolean[] reportSelected = new boolean[reportlists.length];
 
     //firebase
     private FirebaseAuth mAuth;
@@ -195,45 +203,47 @@ public class ProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for ( DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                if (dataSnapshot.getKey() != null){
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                    try {
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                        photo.setImage_name(objectMap.get("image_name").toString());
+                        try {
+                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setImage_name(objectMap.get("image_name").toString());
 
-                        ArrayList<Comment> comments = new ArrayList<Comment>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comments)).getChildren()){
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
+                            ArrayList<Comment> comments = new ArrayList<Comment>();
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_comments)).getChildren()) {
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
+                            }
+
+                            photo.setComments(comments);
+
+                            List<Like> likesList = new ArrayList<Like>();
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_likes)).getChildren()) {
+                                Like like = new Like();
+                                like.setUser_id(dSnapshot.getValue(Like.class).getUser_id());
+                                likesList.add(like);
+                            }
+                            photo.setLikes(likesList);
+                            photos.add(photo);
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage());
                         }
-
-                        photo.setComments(comments);
-
-                        List<Like> likesList = new ArrayList<Like>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_likes)).getChildren()){
-                            Like like = new Like();
-                            like.setUser_id(dSnapshot.getValue(Like.class).getUser_id());
-                            likesList.add(like);
-                        }
-                        photo.setLikes(likesList);
-                        photos.add(photo);
-                    } catch (NullPointerException e) {
-                        Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage() );
                     }
-                }
+            }
                 //setup our image grid
                 int gridWidth = getResources().getDisplayMetrics().widthPixels;
                 int imageWidth = gridWidth/NUM_GRID_COLUMNS;
@@ -373,48 +383,110 @@ public class ProfileFragment extends Fragment {
     /**
      * Responsible for setting up the profile toolbar
      */
-    private void setupToolbar(){
+    private void setupToolbar() {
 
-        ((ProfileActivity)getActivity()).setSupportActionBar(toolbar);
+        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
+        if (currentuid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            profileMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: navigating to account settings.");
+                    //팝업메뉴
+                    final PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.logout_menu, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("로그아웃")) {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                getActivity().finish();
+                            } else if (item.getTitle().equals("제작")) {
+                                View popupView = getLayoutInflater().inflate(R.layout.layout_popup_credit, null);
+                                final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                popupWindow.setAnimationStyle(0);
+                                popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
-        profileMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: navigating to account settings.");
-                //팝업메뉴
-                final PopupMenu popupMenu = new PopupMenu(getContext(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.logout_menu,popupMenu.getMenu());
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getTitle().equals("로그아웃")) {
-                            FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            getActivity().finish();
-                        } else if(item.getTitle().equals("제작")){
-                            System.out.println("팝업=======");
-                            View popupView = getLayoutInflater().inflate(R.layout.layout_popup_credit, null);
-                            final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            popupWindow.setAnimationStyle(0);
-                            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0,0);
+                                Button closeBtn = (Button) popupView.findViewById(R.id.popupwindow_close);
+                                closeBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        popupWindow.dismiss();
+                                    }
+                                });
+                            }
 
-                            Button closeBtn = (Button) popupView.findViewById(R.id.popupwindow_close);
-                            closeBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    popupWindow.dismiss();
-                                }
-                            });
+                            return false;
                         }
+                    });
+                }
+            });
+    }
+        else{
+            profileMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: navigating to account settings.");
+                    //팝업메뉴
+                    final PopupMenu popupMenu = new PopupMenu(getContext(), v);
+                    popupMenu.getMenuInflater().inflate(R.menu.logout_menu_other, popupMenu.getMenu());
+                    popupMenu.show();
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("신고")) {
 
-                        return false;
-                    }
-                });
-            }
-        });
+                                reportDialog  = new AlertDialog.Builder(mContext)
+                                        .setMultiChoiceItems(reportlists, reportSelected, new DialogInterface.OnMultiChoiceClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                                reportSelected[i] = b;
+                                            }
+                                        })
+                                        .setTitle("신고")
+                                        .setPositiveButton("접수", new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                                for(int i = 0; i < reportSelected.length; i++) {
+                                                    if(reportSelected[i])
+                                                        myRef.child("reports")
+                                                                .child("user_reports")
+                                                                .child(currentuid)
+                                                                .child(String.valueOf(i))
+                                                                .setValue(reportlists[i]);
+                                                }
+                                                Toast.makeText(mContext, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).setNegativeButton("취소",null)
+                                        .show();
+                            } else if (item.getTitle().equals("제작")) {
+                                View popupView = getLayoutInflater().inflate(R.layout.layout_popup_credit, null);
+                                final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                popupWindow.setAnimationStyle(0);
+                                popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+                                Button closeBtn = (Button) popupView.findViewById(R.id.popupwindow_close);
+                                closeBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        popupWindow.dismiss();
+                                    }
+                                });
+                            }
+
+                            return false;
+                        }
+                    });
+                }
+            });
+
+        }
     }
 
     /**
