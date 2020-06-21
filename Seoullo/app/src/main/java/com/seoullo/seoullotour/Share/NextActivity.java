@@ -90,6 +90,7 @@ public class NextActivity extends AppCompatActivity {
     private static String API_KEY = "";
     private Geocoder geocoder;
     private ArrayList<Place> placeList = new ArrayList<>();
+    private boolean allowUpload = false;
 
     public NextActivity() {
     }
@@ -139,7 +140,7 @@ public class NextActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        setImage();
         TextView share = (TextView) findViewById(R.id.tvShare);
         //TODO : 장소검색이 안되는 경우 처리 -> 알림창 !
         share.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +159,11 @@ public class NextActivity extends AppCompatActivity {
                         System.out.println(mAuto.getText().toString());
                         pp = getLatlngFromLocation(mAuto.getText().toString());
 
-                        String json = getNearby(pp);
+                        String json = "";
+                        if(pp != null)
+                            json = getNearby(pp);
+                        else
+                            json = "null";
 
                         Bundle bun = new Bundle();
                         bun.putString("json", json);
@@ -167,23 +172,29 @@ public class NextActivity extends AppCompatActivity {
                         handler.sendMessage(msg);
                     }
                 }.start();
+
+
                 //==============================================place저장중===================================================
-                //upload image to firebase
-                Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
-                String caption = mCaption.getText().toString();
+                if(allowUpload) {
+                    //upload image to firebase
+                    Toast.makeText(NextActivity.this, "게시글을 올리는 중입니다..", Toast.LENGTH_SHORT).show();
+                    String caption = mCaption.getText().toString();
 
-                if (intent.hasExtra(getString(R.string.selected_image))) {
-                    imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-                    imgName = intent.getStringExtra("image_name");
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null ,location, imgName, placeList, mLatLng);
+                    if (intent.hasExtra(getString(R.string.selected_image))) {
+                        imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+                        imgName = intent.getStringExtra("image_name");
+                        mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
 
-                } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
-                    bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location,imgName, placeList, mLatLng);
+                    } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
+                        bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
+                        mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl, null, location, imgName, placeList, mLatLng);
+                    }
+                } else {
+                    Toast.makeText(NextActivity.this, "장소를 다시 선택해 주세요 !", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        setImage();
+
     }
 
     private void someMethod() {
@@ -206,6 +217,7 @@ public class NextActivity extends AppCompatActivity {
     private void setImage(){
         intent = getIntent();
         ImageView image = (ImageView) findViewById(R.id.imageShare);
+//        NextActivity.imageLoader.init(ImageLoaderConfiguration.createDefault(getBaseCont‌​ext()));
 
         if (intent.hasExtra(getString(R.string.selected_image))) {
             imgUrl = intent.getStringExtra(getString(R.string.selected_image));
@@ -405,15 +417,21 @@ public class NextActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(addressList.isEmpty() == false) {
 
-        resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
-        resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
-        resultPoint.location = findLocation;
+            resultPoint.x = Double.parseDouble(String.valueOf(addressList.get(0).getLatitude()));
+            resultPoint.y = Double.parseDouble(String.valueOf(addressList.get(0).getLongitude()));
+            resultPoint.location = findLocation;
 
-        mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLatitude())));
-        mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLongitude())));
+            mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLatitude())));
+            mLatLng.add(Double.parseDouble(String.valueOf(addressList.get(0).getLongitude())));
 
-        return resultPoint;
+            return resultPoint;
+        }
+        else {
+            return null;
+        }
+
     }
     //TODO: nearby recommended places !! -> 파싱을 고쳐야함 04/06
     public String getNearby(Point pDTO) {
@@ -475,8 +493,31 @@ public class NextActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
             String json = bun.getString("json");
-            //json PARSING
-            jsonParsing(json);
+            if(json != null) {
+                jsonParsing(json); //json PARSING
+
+                //check placeList is null or least under 3
+                if(placeList.size() < 3) {
+                    for(int i=0; i < 3 - placeList.size(); ++i) {
+                        Place extra = new Place();
+                        extra.setVicinity("근처에 추천장소가 없네요 :(");
+                        extra.setLatitude(0.0);
+                        extra.setLongitude(0.0);
+                        extra.setPhotoReference(null);
+                        extra.setName("추천장소가 없어요");
+                        ArrayList<String> et = new ArrayList<String>();
+                        et.add("CANNOT");
+                        et.add("FOUND");
+                        extra.setType(et);
+                    }
+                }
+
+                if(mLatLng != null) {
+                    allowUpload = true;
+                }
+                else allowUpload = false;
+            }
+            else allowUpload = false;
         }
     };
 
@@ -486,6 +527,7 @@ public class NextActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(json);
             JSONArray placeArray = jsonObject.getJSONArray("results");
             System.out.println("JSON PARSING !");
+
             for(int i=0; i<placeArray.length(); i++)
             {
                 JSONObject placeJsonObject = placeArray.getJSONObject(i);

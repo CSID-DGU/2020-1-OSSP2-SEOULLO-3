@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.seoullo.seoullotour.Home.HomeActivity;
@@ -209,7 +210,7 @@ public class GalleryFragment extends Fragment {
         Log.d(TAG, "setImage: setting image");
 
         ImageLoader imageLoader = ImageLoader.getInstance();
-
+        imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
         imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
