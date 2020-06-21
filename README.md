@@ -122,12 +122,15 @@
 ## USED API
 
   #### Google
-    - Firebase
     - Google Places API
   #### Naver
     - Mobile Dynamic Map API
     - Direction 5
-    
+  #### Firebase
+    - Firebase Authentication
+    - Firebase Database
+    - Firebase Storage 
+   
 ## LICENSE
 
    #### [Apache License 2.0](https://github.com/CSID-DGU/2020-1-OSSP2-SEOULLO-3/blob/master/LICENSE)
