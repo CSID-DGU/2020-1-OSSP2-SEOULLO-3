@@ -1,22 +1,15 @@
 package com.seoullo.seoullotour.Utils;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,22 +27,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Models.Comment;
-import com.seoullo.seoullotour.Models.Like;
 import com.seoullo.seoullotour.Models.Photo;
-import com.seoullo.seoullotour.Models.User;
-import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;

@@ -5,9 +5,6 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-
-import cz.msebera.android.httpclient.client.utils.CloneUtils;
 
 public class Bookmark implements Parcelable, Serializable {
 
@@ -20,10 +17,6 @@ public class Bookmark implements Parcelable, Serializable {
     private ArrayList<Double> latlng;
 
     public Bookmark() {
-    }
-
-    public Bookmark(String user_id) {
-        this.user_id = user_id;
     }
 
     protected Bookmark(Parcel in) {

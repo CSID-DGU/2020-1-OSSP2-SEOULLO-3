@@ -1,17 +1,8 @@
 package com.seoullo.seoullotour.Utils;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.usage.ExternalStorageStats;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.seoullo.seoullotour.Share.ShareActivity;
 
 public class FilePaths extends AppCompatActivity {
 /*    private Context mContext;

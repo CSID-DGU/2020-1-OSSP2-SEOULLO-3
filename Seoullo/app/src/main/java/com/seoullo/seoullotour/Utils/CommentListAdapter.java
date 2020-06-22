@@ -23,20 +23,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Models.Comment;
-import com.seoullo.seoullotour.Models.Photo;
-import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;

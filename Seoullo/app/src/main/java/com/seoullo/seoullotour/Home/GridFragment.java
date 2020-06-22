@@ -1,3 +1,13 @@
+/*
+ *
+ * Original Code
+ * https://github.com/stephyswe/Android-Instagram
+ * Apache License 2.0
+ * modified by Seoullo (getPhoto Function)
+ *
+ *
+ * */
+
 package com.seoullo.seoullotour.Home;
 
 import android.net.Uri;
@@ -8,9 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -22,10 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,14 +41,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.seoullo.seoullotour.Models.Comment;
 import com.seoullo.seoullotour.Models.Photo;
-import com.seoullo.seoullotour.Models.User;
 import com.seoullo.seoullotour.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GridFragment extends Fragment {
@@ -83,9 +86,7 @@ public class GridFragment extends Fragment {
 
         private ArrayList<Photo> photos;
 
-
         public GridFragmentRecyclerViewAdatper() {
-
             photos = new ArrayList<>();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_photos))
@@ -233,12 +234,7 @@ public class GridFragment extends Fragment {
 
             }
         }
-//        public Comparator<Photo> ComparatorByLikeNum = new Comparator<Photo>() {
-//            @Override
-//            public int compare(Photo o1, Photo o2) {
-//                return getString(o2.getLikeCount()).compareTo(getString(o1.getLikeCount()));
-//            }
-//        };
+
     }
 
     @Override
@@ -246,68 +242,3 @@ public class GridFragment extends Fragment {
         super.onDestroy();
     }
 }
- /*   private void getPhotos() {
-        Log.d(TAG, "getPhotos: getting photos");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(getString(R.string.dbname_photos))
-//                .child(getString(R.string.field_photo_id))
-                .orderByChild(getString(R.string.field_likes_count))
-//                .orderByValue()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            Photo photo = new Photo();
-                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                            Log.d(TAG, "getPhoto_id" + photo.getPhoto_id());
-                            photo.setImage_name(objectMap.get("image_name").toString());
-                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                            photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                            ArrayList<Comment> comments = new ArrayList<Comment>();
-                            for (DataSnapshot dSnapshot : singleSnapshot
-                                    .child(getString(R.string.field_comments)).getChildren()) {
-                                Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                comments.add(comment);
-                            }
-
-                            photo.setComments(comments);
-                            mPhotos.add(photo);
-                            Log.d(TAG, "포토아이디" + photo.getPhoto_id());
-                        }
-//                            displayPhotos();
-                        try {
-                            //최신순으로 보여줌.
-//                Collections.sort(mPhotos, new Comparator<Photo>() {
-//                    @Override
-//                    public int compare(Photo o1, Photo o2) {
-//                        return o2.getDate_created().compareTo(o1.getDate_created());
-//                    }
-//                });
-                            mResults = 10;
-                            mAdapter = new com.seoullo.seoullotour.Utils.MainfeedListAdapter(getActivity(), R.layout.layout_mainfeed_listitem, mPhotos, mRequestManager);
-                            mListView.setAdapter(mAdapter);
-
-                        } catch (NullPointerException e) {
-                            Log.e(TAG, "displayPhotos: NullPointerException: " + e.getMessage());
-                        } catch (IndexOutOfBoundsException e) {
-                            Log.e(TAG, "displayPhotos: IndexOutOfBoundsException: " + e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-}
-*/

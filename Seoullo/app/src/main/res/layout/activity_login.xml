@@ -15,15 +15,6 @@
         android:scaleType="fitCenter"
         android:id="@+id/seoullo_logo"
         android:src="@drawable/launch_icon_seoullo" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/login_desc"
-        android:layout_below="@id/seoullo_logo"
-        android:textColor="#6B6A6A"
-        android:gravity="center"
-        android:text="사람들과 장소를 공유하고\n 지도로 바로 확인해보세요 !"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"

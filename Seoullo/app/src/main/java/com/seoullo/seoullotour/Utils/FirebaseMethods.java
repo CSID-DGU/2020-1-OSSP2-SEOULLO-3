@@ -31,14 +31,10 @@ import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.Models.UserSettings;
 import com.seoullo.seoullotour.Profile.AccountSettingsActivity;
 import com.seoullo.seoullotour.R;
-import com.seoullo.seoullotour.Utils.FilePaths;
-import com.seoullo.seoullotour.Utils.ImageManager;
-import com.seoullo.seoullotour.Utils.StringManipulation;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 

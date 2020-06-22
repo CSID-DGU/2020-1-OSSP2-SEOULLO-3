@@ -2,18 +2,13 @@ package com.seoullo.seoullotour.Recommend;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -24,7 +19,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;
-import com.seoullo.seoullotour.Utils.MainfeedListAdapter;
 import com.seoullo.seoullotour.Utils.SectionsPagerAdapter;
 
 import java.util.ArrayList;

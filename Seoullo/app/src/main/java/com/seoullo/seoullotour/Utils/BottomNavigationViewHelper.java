@@ -3,27 +3,21 @@ package com.seoullo.seoullotour.Utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
 import com.seoullo.seoullotour.Bookmark.BookmarkActivity;
 import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Map.MapActivity;
 import com.seoullo.seoullotour.Profile.ProfileActivity;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Search.SearchActivity;
-import com.seoullo.seoullotour.Share.ShareActivity;
 
 public class BottomNavigationViewHelper {
 

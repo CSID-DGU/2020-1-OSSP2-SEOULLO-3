@@ -23,15 +23,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.seoullo.seoullotour.Home.HomeActivity;
 import com.seoullo.seoullotour.Profile.AccountSettingsActivity;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Utils.FilePaths;
 import com.seoullo.seoullotour.Utils.FileSearch;
 import com.seoullo.seoullotour.Utils.GridImageAdapter;
-import com.seoullo.seoullotour.Share.ShareActivity;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 

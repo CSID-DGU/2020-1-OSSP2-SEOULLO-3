@@ -2,12 +2,8 @@ package com.seoullo.seoullotour.Login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,15 +19,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.seoullo.seoullotour.Home.HomeActivity;
-import com.seoullo.seoullotour.Profile.ProfileActivity;
 import com.seoullo.seoullotour.R;
-
-import java.time.Clock;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by User on 6/19/2017.
@@ -60,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
         mContext = LoginActivity.this;
-        mDesc = (TextView) findViewById(R.id.login_desc);
 
         Log.d(TAG, "onCreate: started.");
 

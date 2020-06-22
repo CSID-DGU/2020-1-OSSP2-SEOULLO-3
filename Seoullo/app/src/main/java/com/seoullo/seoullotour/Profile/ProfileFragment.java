@@ -402,6 +402,7 @@ public class ProfileFragment extends Fragment {
                                 FirebaseAuth.getInstance().signOut();
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                                 startActivity(intent);
                                 getActivity().finish();
                             } else if (item.getTitle().equals("제작")) {

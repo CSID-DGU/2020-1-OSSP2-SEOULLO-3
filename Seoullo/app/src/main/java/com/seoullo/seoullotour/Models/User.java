@@ -3,8 +3,6 @@ package com.seoullo.seoullotour.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class User implements Parcelable{

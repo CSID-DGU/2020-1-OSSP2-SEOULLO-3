@@ -1,6 +1,5 @@
 package com.seoullo.seoullotour.Home;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,25 +9,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.seoullo.seoullotour.Login.LoginActivity;
 import com.seoullo.seoullotour.Models.Photo;
-import com.seoullo.seoullotour.Models.UserAccountSettings;
 import com.seoullo.seoullotour.R;
 import com.seoullo.seoullotour.Share.ShareActivity;
 import com.seoullo.seoullotour.Utils.BottomNavigationViewHelper;

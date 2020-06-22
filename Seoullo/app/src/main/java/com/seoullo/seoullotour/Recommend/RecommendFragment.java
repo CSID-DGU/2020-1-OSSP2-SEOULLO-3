@@ -6,17 +6,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -41,10 +38,7 @@ import com.seoullo.seoullotour.Models.Place;
 import com.seoullo.seoullotour.Models.Point;
 import com.seoullo.seoullotour.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class RecommendFragment extends Fragment implements OnMapReadyCallback {
 
