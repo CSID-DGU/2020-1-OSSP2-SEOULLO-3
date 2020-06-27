@@ -96,7 +96,7 @@
    
       google-services.json 파일을 다운 받아서 프로젝트 /app 에 추가해주세요 !
    
-      수정 경로 / Path : /app/res/values/keys.xml
+      수정 경로 / Path : /app/google-services.json
    
       Add your project to Firebase
       Firebase shows best instructions ! just follow the instructions
