@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- KEYS -->
-    <string name="NAVER_CLIENT_ID">8bw2ryp9g4</string>
-    <string name="NAVER_CLIENT_SECRET_ID">awuzD81qS8o7Ppp6yy6MiPok8Qud1mTnsO1YQ2cC</string>
-    <string name="GOOGLE_CLIENT_ID">AIzaSyD-86vBeKCwSat7Nl0Sa5BZMNGYxfQV6sg</string>
-</resources>
