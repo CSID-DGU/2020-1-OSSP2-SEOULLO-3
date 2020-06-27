@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "31823940316",
+    "firebase_url": "https://seoullo-4fbc1.firebaseio.com",
+    "project_id": "seoullo-4fbc1",
+    "storage_bucket": "seoullo-4fbc1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31823940316:android:689833d8cfbdae419c4219",
+        "android_client_info": {
+          "package_name": "com.seoullo.seoullotour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31823940316-9cgrdtefjmsg7r9fkjo8blrd0454f961.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seoullo.seoullotour",
+            "certificate_hash": "5f9967560bfe2a5091bfc691973d45523961390c"
+          }
+        },
+        {
+          "client_id": "31823940316-j0vgsgknv333isotts9aban183hvnual.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REPLACE google-services.json with your own json file"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31823940316-j0vgsgknv333isotts9aban183hvnual.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
