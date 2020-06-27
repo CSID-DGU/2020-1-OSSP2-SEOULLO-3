@@ -96,7 +96,7 @@
       
    #### FIREBASE API KEY : <https://console.firebase.google.com/>
    
-   ![image](https://user-images.githubusercontent.com/22142225/85913802-b8892680-b872-11ea-9a66-c113dfd14e93.png)
+   ![image](https://user-images.githubusercontent.com/22142225/85914323-acec2e80-b877-11ea-8536-3329d5489f1f.png)
    
       google-services.json 파일을 다운 받아서 프로젝트 /app 에 추가해주세요 !
    
