@@ -56,6 +56,62 @@
   ...
   
   ```
+  ## HOW TO USE API
+  
+  ### 🔑 **USE YOUR OWN API KEYS** 
+  #### NAVER API KEY : <https://console.ncloud.com/mc/solution/naverService/application>
+  
+  ![image](https://user-images.githubusercontent.com/22142225/85913606-34826f00-b871-11ea-91b8-59769ac6101c.png)
+
+      화면에 보이는 ClientID와 Client Secret 키 값을 복사해서 프로젝트에 추가해주세요 !
+      copy and add your own API key (ClientID and Client Secret) to your project !
+      
+      수정 경로 / Path : /app/res/values/keys.xml 
+      
+      + Client ID
+      + Client Secret
+      
+      * must include Android package name in NAVER CLOUD PLATFORM
+      
+         Add services to your project
+         - Mobile Dynamic Map
+         - Directions 5 
+         
+   #### GOOGLE API KEY : <https://console.developers.google.com/>
+   
+   ![image](https://user-images.githubusercontent.com/22142225/85913648-8cb97100-b871-11ea-9a83-0e16841333c9.png)
+   
+      화면에 보이는 키를 복사해서 프로젝트에 추가해주세요 !
+      copy and add your own API key to your project !
+      
+      수정 경로 / Path : /app/res/values/keys.xml
+   
+      Add library to your project
+      - Places API
+      - Directions API ( added in com.seoullo.seollotour.Map )
+      
+   #### FIREBASE API KEY : <https://console.firebase.google.com/>
+   
+   ![image](https://user-images.githubusercontent.com/22142225/85913802-b8892680-b872-11ea-9a66-c113dfd14e93.png)
+   
+      google-services.json 파일을 다운 받아서 프로젝트 /app 에 추가해주세요 !
+   
+      수정 경로 / Path : /app/res/values/keys.xml
+   
+      Add your project to Firebase
+      Firebase shows best instructions ! just follow the instructions
+      
+      * place google-services.json to your project
+
+
+
+#### /app/res/values/keys.xml
+![image](https://user-images.githubusercontent.com/22142225/85913694-e91c9080-b871-11ea-91dd-a33d433997e6.png)
+![image](https://user-images.githubusercontent.com/22142225/85913714-149f7b00-b872-11ea-9f11-b377867ff667.png)
+#### /app/google-services.json
+![image](https://user-images.githubusercontent.com/22142225/85913838-16b60980-b873-11ea-916d-3d013bc41f95.png)
+
+
 
 ## FUNCTIONS
   ```
@@ -94,31 +150,6 @@
     + Glide ImageLoader : 'com.github.bumptech.glide:glide:4.9.0'
     + Circle Image View : 'de.hdodenhof:circleimageview:3.1.0'
   
-## HOW TO USE API
-  
-  ### **USE YOUR OWN API KEYS**
-  #### NAVER API KEY : <https://console.ncloud.com/mc/solution/naverService/application>
-
-      + Client ID
-      + Client Secret
-      
-      * must include Android package name in NAVER CLOUD PLATFORM
-      
-         Add services to your project
-         - Mobile Dynamic Map
-         - Directions 5 
-        
-   #### GOOGLE API KEY : <https://console.developers.google.com/>
-      Add library to your project
-      - Places API
-      - Directions API ( added in com.seoullo.seollotour.Map )
-      
-   #### FIREBASE API KEY : <https://console.firebase.google.com/>
-      Add your project to Firebase
-      Firebase shows best instructions ! just follow the instructions
-      
-      * place google-services.json to your project
-
 ## USED API
 
   #### Google
