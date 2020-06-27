@@ -59,6 +59,10 @@
   ## HOW TO USE API
   
   ### 🔑 **USE YOUR OWN API KEYS** 
+    
+     본 프로젝트는 안드로이드 스튜디오 3.6.3 에서 진행되었습니다.
+     The project was carried out at Android Studio 3.6.3.
+    
   #### NAVER API KEY : <https://console.ncloud.com/mc/solution/naverService/application>
   
   ![image](https://user-images.githubusercontent.com/22142225/85913606-34826f00-b871-11ea-91b8-59769ac6101c.png)
