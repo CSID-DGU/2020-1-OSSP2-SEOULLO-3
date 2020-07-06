@@ -7,7 +7,10 @@
      이승환, 박종하, 최정인   
      
     Dongguk University Computer Science
-     Seunghwan Lee, Jongha Park, Jungin Choi   
+     Seunghwan Lee, Jongha Park, Jungin Choi  
+     
+## PLAY STORE
+<a href='https://play.google.com/store/apps/details?id=com.seoullo.seoullotour&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
   
 ## SEOULLO(서울로)
 
